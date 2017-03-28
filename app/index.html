@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="">
+	<head>
+		<title>test</title>
+		<meta charset="UTF-8">
+		<style type="text/css">
+			body{
+				font-family: monospace
+			}
+			#tetris{
+				position: absolute;
+				right: 0;
+				top: 0;
+			}
+			.dot{
+				position: absolute;
+				transition: 1s all;
+			}
+		</style>
+	</head>
+	<body>
+		<form id='addClaims'>
+			<input type='number' min='1' max='100' name='chargeNeeded' placeholder='chargeNeeded'><br>
+			<input type='number' min='1' max='100' name='deadline' placeholder='deadline'><br>
+			<select name='claimer'>
+				<option selected disabled>Claimer</option>
+				<option value='1'>1</option>
+				<option value='2'>2</option>
+				<option value='3'>3</option>
+			</select>
+			<select name='priority'>
+				<option selected disabled>Priority</option>
+				<option value='1'>1</option>
+				<option value='2'>2</option>
+				<option value='3'>3</option>
+			</select><br>
+			<input type='submit' value='CLAIM'>
+		</form>
+		<div class='claims'>
+			x
+		</div>
+		<div id="tetris"></div>
+
+		<script src="tetris.js"></script>
+		<script src="swarm.js"></script>
+		<script src="serialStuff.js"></script>
+		<script src="app.js"></script>
+ 	</body>
+</html>
