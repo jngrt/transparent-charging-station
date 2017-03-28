@@ -1,4 +1,6 @@
-
+/*
+* https://github.com/EmergingTechnologyAdvisors/node-serialport
+*/
 var SerialPort = require('serialport');
 var port = new SerialPort('/dev/pts/6');
 

@@ -72,8 +72,8 @@ jQuery(document).ready(function($) {
 
 function dummyData(t) {
 	//claimer, priority, chargeNeeded, deadline, info){
-	t.addClaim(1,1,20,10);
-	t.addClaim(2,1,30,20);
-	t.addClaim(3,1,10,30);
+	t.addClaim(1,10,60,10);
+	t.addClaim(2,10,60,20);
+	t.addClaim(3,10,200,30);
 
 }
