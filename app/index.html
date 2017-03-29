@@ -16,25 +16,40 @@
 				position: absolute;
 				transition: 1s all;
 			}
+			input, select {
+				width:200px;
+				display:block;
+				padding:5px;
+				margin-bottom:10px;
+			}
+			
 		</style>
 	</head>
 	<body>
 		<form id='addClaims'>
-			<input type='number' min='1' max='100' name='chargeNeeded' placeholder='chargeNeeded'><br>
-			<input type='number' min='1' max='100' name='deadline' placeholder='deadline'><br>
-			<select name='claimer'>
-				<option selected disabled>Claimer</option>
-				<option value='1'>1</option>
-				<option value='2'>2</option>
-				<option value='3'>3</option>
-			</select>
-			<select name='priority'>
-				<option selected disabled>Priority</option>
-				<option value='5'>5 - Philantropist</option>
-				<option value='10'>10 - Normal</option>
-				<option value='20'>20 - CEO</option>
-				<option value='1000'>1000 - Doctor</option>
-			</select><br>
+			<label>Claimer
+				<select name='claimer'>
+					<option disabled>Claimer</option>
+					<option selected value='1'>1</option>
+					<option value='2'>2</option>
+					<option value='3'>3</option>
+				</select>
+			</label>
+			<label>Priority
+				<select name='priority'>
+					<option disabled>Priority</option>
+					<option value='5'>5 - Philantropist</option>
+					<option selected value='10'>10 - Normal</option>
+					<option value='20'>20 - CEO</option>
+					<option value='1000'>1000 - Doctor</option>
+				</select>
+			</label>
+			<label>Charge needed
+				<input type='number' min='1' max='1000' name='chargeNeeded' placeholder='chargeNeeded' value="80">
+			</label>
+			<label>Deadline
+				<input type='number' min='1' max='1000' name='deadline' placeholder='deadline' value="40">
+			</label>
 			<input type='submit' value='CLAIM'>
 		</form>
 		<div class='claims'>

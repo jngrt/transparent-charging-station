@@ -26,23 +26,18 @@ const _ = require('underscore')
 const jQuery = require('jquery')
 const $ = jQuery;
 
-var ABSOLUTE_PRIORITY 	= 1,
-	MEDIUM_PRIORITY 	= 2,
-	NO_PRIORITY			= 3,
-	GREEN_PRIORITY 		= 4;
+const [ABSOLUTE_PRIORITY, MEDIUM_PRIORITY, NO_PRIORITY, GREEN_PRIORITY] = [1, 2, 3, 4];
 
-var linesPerHour 		= 4;
-var greenThreshold 		= 6; //6 gray energy, 6 green energy
-var tetris;
+const linesPerHour = 4;
+const greenThreshold = 6; //6 gray energy, 6 green energy
+let tetris;
 
-// var claimers = [
-// 	"▒","▓","░"
+// let claimers = [
+// 	'▒','▓','░'
 // ]
-var claimers = [ //sorry JG, ik wilde even spelen
-	"A","B","C"
-]
+const claimers = ['A', 'B', 'C'];
 
-jQuery(document).ready(function($) {
+jQuery(document).ready(function ($) {
 
 	tetris = new Tetris();
 	tetris.init();
@@ -52,28 +47,23 @@ jQuery(document).ready(function($) {
 	tetris.onUpdate(swarm.update);
 
 
-	$('form').on('submit',function(evt){
+	$('form#addClaims').on('submit', function (evt) {
 		evt.preventDefault();
 
-		var data = $('#addClaims').serializeArray().reduce(function(obj, item) {
-    	obj[item.name] = item.value;
-    	return obj;
+		let data = $('#addClaims').serializeArray().reduce(function (obj, item) {
+			obj[item.name] = item.value;
+			return obj;
 		}, {});
 
-		tetris.addClaim(
-			+data.claimer,
-			+data.priority,
-			+data.chargeNeeded,
-			+data.deadline
-		);
+		tetris.addClaim(+data.claimer, +data.priority, +data.chargeNeeded, +data.deadline);
 		return false;
 	})
 });
 
 function dummyData(t) {
 	//claimer, priority, chargeNeeded, deadline, info){
-	t.addClaim(1,10,60,10);
-	t.addClaim(2,10,60,20);
-	t.addClaim(3,10,200,30);
+	t.addClaim(1, 10, 60, 10);
+	t.addClaim(2, 10, 60, 20);
+	t.addClaim(3, 10, 200, 30);
 
 }
