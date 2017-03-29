@@ -28,23 +28,18 @@ const $ = jQuery;
 
 const [ABSOLUTE_PRIORITY, MEDIUM_PRIORITY, NO_PRIORITY, GREEN_PRIORITY] = [1, 2, 3, 4];
 
-const linesPerHour = 4;
 const greenThreshold = 6; //6 gray energy, 6 green energy
-let tetris;
 
-// let claimers = [
-// 	'▒','▓','░'
-// ]
-const claimers = ['A', 'B', 'C'];
+
 
 jQuery(document).ready(function ($) {
 
-	tetris = new Tetris();
-	tetris.init();
+	const tetris = new Tetris();
+	//tetris.init();
 	dummyData(tetris);
 
 	swarm = new Swarm();
-	tetris.onUpdate(swarm.update);
+	tetris.onUpdate(()=> swarm.update( tetris ));
 
 
 	$('form#addClaims').on('submit', function (evt) {

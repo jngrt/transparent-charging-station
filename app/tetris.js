@@ -1,50 +1,52 @@
 'use strict'
 
-const Tetris = function () {
+/*
+Two algorithm modes right now:
+SIMPLE -> Only looks at priority
+STRESS -> Only looks at stress regarding total available charge until deadline.
 
-  let height;
-  let width;
-  let element;
-  let start;
-  let now;
-  let minWidth;
-  let lines = [];
-  this.lines = lines;
-  let claims = [];
-  let onUpdateCallback;
+TODO: algorithm which makes use of both stress and priority
+*/
 
-  this.init = function (_start, _element, _height, _width, _minWidth) {
+const SIMPLE = 'simple';
+const STRESS = 'stress';
+ // let claimers = [
+    // 	'▒','▓','░'
+    // ]
+    const claimers = ['A', 'B', 'C'];
 
-    start = _start || 0;
-    element = _element || '#tetris';
-    height = _height || 12;
-    width = _width || 15;
-    minWidth = _minWidth || Math.round(width / 3);
-    now = start;
+class Tetris {
 
-    claims.length = 0;
-
-    //is there a previous Tetris? //restore from last session
-    //if not: create the first tetris
-    _.times(height * linesPerHour, createLine);
-    console.log(lines);
-    update();
-
+  constructor (_start, _element, _height, _width, _minWidth) {
+    this.start = _start || 0;
+    this.element = _element || '#tetris';
+    this.height = _height || 48;
+    this.width = _width || 15;
+    this.minWidth = _minWidth || Math.round(this.width / 3);
+    this.now = this.start;
+    this.lines = [];
+    this.claims = [];
+    this.onUpdateCallback = null;
+    this.algorithm = STRESS;
+   
+  
+    _.times( this.height, this.createLine, this);
+    console.log(this.lines);
+    this.update();
   }
 
-  const createLine = function (_lineTime) {
-
-    if (typeof _lineTime == 'undefined') {
-      _lineTime = lines.length || 0;
+  createLine (_lineTime) {
+    if ( _lineTime === void(0)) {
+      _lineTime = this.lines.length || 0;
     }
 
     //add random variations to width
-    const prev = lines.length ? _.last(lines).pixels.length : 0;
+    const prev = this.lines.length ? _.last(this.lines).pixels.length : 0;
     const lineLength = prev ?
-      _.random(minWidth, width) :
+      _.random(this.minWidth, this.width) :
       _.random(
-        Math.max(minWidth, prev - 1),
-        Math.min(width, prev + 1)
+        Math.max(this.minWidth, prev - 1),
+        Math.min(this.width, prev + 1)
       );
 
     //add line
@@ -53,92 +55,144 @@ const Tetris = function () {
       meta: {},
       pixels: Array(lineLength).fill(0)
     };
-    lines.push(line);
+    this.lines.push(line);
   }
 
   //claiming algorihm
-  this.addClaim = function (claimer, priority, chargeNeeded, deadline, info) {
+  addClaim(claimer, priority, chargeNeeded, deadline, info) {
 
     //we're not checking for a double claim. If this claimer was still claiming, we need to remove the previous claim.
-    claims = _.reject(claims, function (claim) {
+    this.claims = _.reject(this.claims, function (claim) {
       return claim.claimer == claimer
     });
 
     //now add the new claim to the list
-    claims.push({
+    this.claims.push({
       claimer: claimer,
       priority: priority,
       chargeNeeded: chargeNeeded,
       deadline: deadline,
       chargeReceived: 0,
-      claimStart: now
+      claimStart: this.now
     });
 
     //sort by user
-    claims = _.sortBy(claims, 'claimer');
+    this.claims = _.sortBy(this.claims, 'claimer');
 
     //process the claims
-    processClaims();
+    this.processClaims();
 
   }
-  let processClaims = function () {
+  processClaims () {
 
-    //print the current claims
-    $('.claims').empty();
-    _.each(claims, function (claim) {
-      $('.claims').append(JSON.stringify(claim)).append('<br>');
-    })
+    this.printClaims();
 
     //we process the claims per line.
-    let totalReceived = {};
-    _.each(lines, function (line, lineNo) {
+    let _totalReceived = {};
+    _.each(this.lines, function (_line, _lineNo) {
 
-      let pixels = line.pixels;
-      let totalPriority = 0;
+      let _pixels = _line.pixels;
 
-      //Copy claims for this line
-      // filter out past deadlines (_.without)
-      line.claims = _.map(claims, function (claim) {
+      // copy claims which are applicable for this line
+      this.filterLineClaims(_line, _totalReceived);
+     
+      if( this.algorithm === SIMPLE ) {
+        // Turn priority into pixels
+        this.priorityToPixelsNeeded( _line );
+        // Check for remainders after rounding
+        this.checkLeftoversSimple( _line );
+
+      } else if ( this.algorithm === STRESS ) {
+        // calculate how much charge is available for each claimer until deadline
+        this.calculateStress( _line, _totalReceived );
+        this.stressToPixelsNeeded( _line );
+        this.checkLeftoversStress( _line );
+      }
+    
+      // Keep track of how much charge is received up until this line
+      this.updateTotalReceived( _line, _totalReceived, _lineNo === 0  );
+
+
+      // Fill the pixels based on the claims
+      this.fillPixels( _line );
+      
+    }, this)
+
+    console.log(this.claims);
+    this.update();
+
+  }
+  printClaims() {
+    //print the current claims
+    $('.claims').empty();
+    _.each(this.claims, function (claim) {
+      $('.claims').append(JSON.stringify(claim)).append('<br>');
+    })  
+  }
+  filterLineClaims( _line, _totalReceived ) {
+     _line.claims = _.map(this.claims, function (claim) {
 
         // Filter out if past deadline
-        if (claim.deadline < line.t) {
+        if (claim.deadline < _line.t) {
           return;
         }
 
         // Filter out if no more is needed
-        if (totalReceived[claim.claimer] >= claim.chargeNeeded) {
+        if (_totalReceived[claim.claimer] >= claim.chargeNeeded) {
           return;
         }
 
-        totalPriority += claim.priority;
+        //totalPriority += claim.priority;
         return _.clone(claim);
 
       });
 
-      line.claims = _.without(line.claims, undefined);
+      _line.claims = _.without(_line.claims, undefined);
+  }
+  calculateStress(_line, _totalReceived) {
 
-      // Calculate pixels based on priority
-      _.each(line.claims, function (claim) {
-        claim.pixels = Math.round(claim.priority / totalPriority * pixels.length);
+    _.each(_line.claims, _claim => {
+      let _recv = _totalReceived[_claim.claimer] || 0;
+      _claim.available = this.calculateAvailableCharge( this.now, _claim.deadline);
+      _claim.stress = ( _claim.chargeNeeded - _recv ) / _claim.available;
+    });
+  }
+  calculateAvailableCharge(_start, _end) {
+    return _.reduce(this.lines, (t, v, i) => ( i >= _start && i <= _end )? t + v.pixels.length: t, 0);
+  }
+
+   priorityToPixelsNeeded(_line) {
+    // Calculate pixels based on priority
+      const _totalPriority = _.reduce(_line.claims, (_tot, _c) => _tot + _c.priority, 0);
+
+      _.each(_line.claims, _claim => {
+        _claim.pixels = Math.round(_claim.priority / _totalPriority * _line.pixels.length);
       });
-
-
+  }
+  stressToPixelsNeeded(_line ) {
+    const _totalStress =  _.reduce(_line.claims, (_tot, _c) => _tot + _c.stress, 0);
+    _.each(_line.claims, _claim => {
+      _claim.pixels = Math.round(_claim.stress / _totalStress * _line.pixels.length);
+    })
+  }
+   checkLeftoversSimple( _line ) {
+    
       // Check if there is discrepancy bc of rounding
-      let pixelsNeeded = getPixelsNeeded(line.claims);
-      let diff = pixels.length - pixelsNeeded;
+      let pixelsNeeded = this.getPixelsNeeded(_line.claims);
+      let diff = _line.pixels.length - pixelsNeeded;
       let oldDiff = diff;
 
       // If more pixels needed than available
       // (due to rounding) remove low prio pixels
 
-      while (line.claims.length > 1 && diff < 0) {
+      while (_line.claims.length > 1 && diff < 0) {
         //subtract from lowest priority;
-        let lowestPrio = _.min(line.claims, function (c) {
+        let lowestPrio = _.min(_line.claims, function (c) {
           return c.priority;
         }).priority;
 
-        _.each(line.claims, function (c) {
-          if (diff < 0 && c.priority == lowestPrio) {
+        _.each(_line.claims, function (c) {
+          if (diff < 0 && c.priority === lowestPrio) {
             c.pixels--;
             diff++;
           }
@@ -147,113 +201,172 @@ const Tetris = function () {
 
       // If more pixels available then needed
       // deal out to highest prio
-      while (line.claims.length > 1 && diff > 0) {
+      while (_line.claims.length > 1 && diff > 0) {
         //subtract from lowest priority;
-        let highestPrio = _.min(line.claims, function (c) {
+        let highestPrio = _.min(_line.claims, function (c) {
           return c.priority;
         }).priority;
-        _.each(line.claims, function (c) {
-          if (diff > 0 && c.priority == highestPrio) {
+        _.each(_line.claims, function (c) {
+          if (diff > 0 && c.priority === highestPrio) {
             c.pixels++;
             diff--;
           }
         });
       }
 
-      let newDiff = pixels.length - getPixelsNeeded(line.claims);
+      let newDiff = _line.pixels.length - this.getPixelsNeeded(_line.claims);
 
       if (oldDiff != 0) {
         console.log(
-          lineNo + " - needed:" + pixelsNeeded + " avlbl:" + pixels.length + " diff:" + oldDiff + " newDiff:" + newDiff);
+          _line.t + " - needed:" + pixelsNeeded + " avlbl:" + _line.pixels.length + " diff:" + oldDiff + " newDiff:" + newDiff);
       }
-
-      // Keep track of how much charge is received
-      _.each(line.claims, function (c) {
-        if (!lineNo) {
-          totalReceived[c.claimer] = 0;
-        }
-
-        totalReceived[c.claimer] += c.pixels
-        c.chargeReceived = totalReceived[c.claimer];
-
-
-      });
-
-      // Translate the claims to the pixels
-      let fillIndex = 0;
-      pixels.fill(0);
-      _.each(line.claims, function (c) {
-
-        let start = fillIndex;
-        let end = start + c.pixels;
-
-        pixels.fill(c.claimer, start, end);
-
-        fillIndex = end;
-      });
-    })
-
-    console.log(claims);
-    update();
-
   }
 
-  function getPixelsNeeded(claims) {
+     checkLeftoversStress( _line ) {
+    
+      // Check if there is discrepancy bc of rounding
+      let pixelsNeeded = this.getPixelsNeeded(_line.claims);
+      let diff = _line.pixels.length - pixelsNeeded;
+      let oldDiff = diff;
+
+      // If more pixels needed than available
+      // (due to rounding) remove low prio pixels
+
+      while (_line.claims.length > 1 && diff < 0) {
+        //subtract from lowest priority;
+        let lowestStress = _.min(_line.claims, function (c) {
+          return c.stress;
+        }).stress;
+
+        _.each(_line.claims, function (c) {
+          if (diff < 0 && c.stress === lowestStress) {
+            c.pixels--;
+            diff++;
+          }
+        });
+      }
+
+      // If more pixels available then needed
+      // deal out to highest prio
+      while (_line.claims.length > 1 && diff > 0) {
+        //subtract from lowest priority;
+        let highestStress = _.min(_line.claims, function (c) {
+          return c.stress;
+        }).stress;
+        _.each(_line.claims, function (c) {
+          if (diff > 0 && c.stress === highestStress) {
+            c.pixels++;
+            diff--;
+          }
+        });
+      }
+
+      let newDiff = _line.pixels.length - this.getPixelsNeeded(_line.claims);
+
+      if (oldDiff != 0) {
+        console.log(
+          _line.t + " - needed:" + pixelsNeeded + " avlbl:" + _line.pixels.length + " diff:" + oldDiff + " newDiff:" + newDiff);
+      }
+  }
+
+   getPixelsNeeded(claims) {
     return _.reduce(claims, function (total, c) {
       return total + c.pixels;
     }, 0);
   }
 
-  //process line
+   updateTotalReceived( _line, _totalReceived, _isFirst ) {
+    _.each(_line.claims, function (_c) {
+      if (_isFirst) {
+        _totalReceived[_c.claimer] = 0;
+      }
 
-  //...
-
-  //visualization
-  this.onUpdate = function (_callback) {
-    //only one accomidates for one callback... shoddy solution... sorry for this.
-    onUpdateCallback = _callback;
+      _totalReceived[_c.claimer] += _c.pixels
+      _c.chargeReceived = _totalReceived[_c.claimer];
+    });
+  }
+  
+   fillPixels( _line ) {
+    _line.pixels.fill(0);
+    
+    _.reduce(_line.claims, function (_fillIndex, _c) {
+      _line.pixels.fill(_c.claimer, _fillIndex, _fillIndex + _c.pixels);
+      return _fillIndex + _c.pixels;
+    }, 0);
   }
 
-  let update = function () {
+  //visualization
+  onUpdate (_callback) {
+    //only one accomidates for one callback... shoddy solution... sorry for this.
+    this.onUpdateCallback = _callback;
+  }
+
+  update () {
     //do things
-    if (typeof onUpdateCallback === "function") {
-      onUpdateCallback(tetris);
+    if (typeof this.onUpdateCallback === "function") {
+      this.onUpdateCallback();
     }
 
     //render function of tetris might be obsolete if swarm does this trick.
-    render();
+    this.render();
   }
-  let render = function () {
-    $(element).empty();
-    for (let i = lines.length - 1; i >= 0; i--) { //render lines
-      let line = lines[i];
+  render () {
+    $(this.element).empty();
+    
+    let htmlStr = '';
+
+    for (let i = this.lines.length - 1; i >= 0; i--) { //render lines
+      let line = this.lines[i];
       let pixels = line.pixels;
-      $(element).append('<i>' + (("0" + i).slice(-2)) + ':' + line.t + ':</i>');
+      //$(this.element).append('<i>' + (("0" + i).slice(-2)) + ':' + line.t + ':</i>');
+      htmlStr += '<tr><td>' + i + '</td><td>' + line.t + '</td>';
+      //htmlStr += '<td>Recv</td><td>Avail</td><td>Stress</td><td>Deadline</td>';
+      for (let j = 1; j <= 3; j++){
+        let foundClaim = _.find(line.claims, c => c.claimer === j)
+        if ( foundClaim ) {
+          htmlStr += '<td>';
+          htmlStr += foundClaim.chargeReceived + ':' + foundClaim.available + ':' + foundClaim.stress.toFixed(2);
+          htmlStr += '</td>';
+        } else {
+          htmlStr += '<td> - </td>';
+        }
+
+      }
+      // _.each(line.claims, _c => {
+      //   htmlStr += '<td>';
+      //   htmlStr += _c.chargeReceived + ':' + _c.available + ':' + _c.stress;
+      //   htmlStr += '</td>';
+      // });
+
+      htmlStr += '<td>'
       for (let j = 0; j < pixels.length; j++) { //render pixels
         let pixel = '♢';
         if (pixels[j] > 0) {
           pixel = claimers[pixels[j] - 1];
-          if (fullyCharged(line.claims, pixels[j])) {
+          /*if (this.isfullyCharged(line.claims, pixels[j])) {
             pixel = '<span style="color:green">' + pixel + '</span>';
-          } else if (deadlineReached(line.claims, pixels[j], line.t)) {
+          } else if (this.hasReachedDeadline(line.claims, pixels[j], line.t)) {
             pixel = '<span style="color:red">' + pixel + '</span>';
           } else {
             pixel = '<span style="color:' + 
             ['lightgrey','grey','black'][pixels[j]-1] + 
             '">' + pixel + '</span>';
-          }
+          }*/
         }
-        $(element).append('<span class="pixel">' + pixel + '</span>');
-      };
-      $(element).append('<br>'); //clear line
-    };
+        //$(this.element).append('<span class="pixel">' + pixel + '</span>');
+        htmlStr += pixel;
+      }
+      htmlStr += '</td></tr>';
+      //$(this.element).append('<br>'); //clear line
+    }
+    $(this.element).html( htmlStr );
   }
-  let deadlineReached = function (claims, claimer, time) {
+   hasReachedDeadline (claims, claimer, time) {
     return !!_.find(claims, function (c) {
       return c.claimer == claimer && time == c.deadline;
     });
   }
-  let fullyCharged = function (claims, claimer) {
+   isfullyCharged  (claims, claimer) {
     return !!_.find(claims, function (c) {
       return c.claimer == claimer && c.chargeReceived >= c.chargeNeeded;
     });

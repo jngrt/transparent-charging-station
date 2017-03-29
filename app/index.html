@@ -7,10 +7,17 @@
 			body{
 				font-family: monospace
 			}
-			#tetris{
+			/*#tetris{
 				position: absolute;
 				right: 0;
 				top: 0;
+			}*/
+			th {
+				max-width:100px;
+			}
+			td {
+				text-align:center;
+				border:solid 1px gainsboro;
 			}
 			.dot{
 				position: absolute;
@@ -55,7 +62,27 @@
 		<div class='claims'>
 			x
 		</div>
-		<div id="tetris"></div>
+		<div>
+			<table>
+				<thead>
+					<tr>
+						<th>Index</th>
+						<th>Time</th>
+						<th>C1</th>
+						<th>C2</th>
+						<th>C3</th>
+						<!--<th>Charge received</th>
+						<th>Available until deadline</th>
+						<th>Stress</th>
+						<th>Deadline</th>-->
+						<th>Pixels</th>
+					</tr>
+				</thead>
+				<tbody id="tetris">
+				</tbody>
+			</table>
+
+		</div>
 
 		<script src="tetris.js"></script>
 		<script src="swarm.js"></script>
