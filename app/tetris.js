@@ -6,10 +6,17 @@ SIMPLE -> Only looks at priority
 STRESS -> Only looks at stress regarding total available charge until deadline.
 
 TODO: algorithm which makes use of both stress and priority
+Proposal:
+- For each line make a priority based division of all charge up until all deadlines.
+- Then calculate stress based on these divisions.
+- Then distribute this line partly based on stress partly based on priority.
+- Then go to next line and repeat.
+
 */
 
-const SIMPLE = 'simple';
+const PRIORITY = 'priority';
 const STRESS = 'stress';
+const COMBINED = 'combined';
  // let claimers = [
     // 	'▒','▓','░'
     // ]
@@ -96,7 +103,7 @@ class Tetris {
       // copy claims which are applicable for this line
       this.filterLineClaims(_line, _totalReceived);
      
-      if( this.algorithm === SIMPLE ) {
+      if( this.algorithm === PRIORITY ) {
         // Turn priority into pixels
         this.priorityToPixelsNeeded( _line );
         // Check for remainders after rounding
@@ -104,6 +111,10 @@ class Tetris {
 
       } else if ( this.algorithm === STRESS ) {
         // calculate how much charge is available for each claimer until deadline
+        this.calculateStress( _line, _totalReceived );
+        this.stressToPixelsNeeded( _line );
+        this.checkLeftoversStress( _line );
+      } else if ( this.algorithm === COMBINED ) {
         this.calculateStress( _line, _totalReceived );
         this.stressToPixelsNeeded( _line );
         this.checkLeftoversStress( _line );
@@ -149,11 +160,20 @@ class Tetris {
 
       _line.claims = _.without(_line.claims, undefined);
   }
+
+  /*
+  * Stress is calculated looking at total charge available until deadline.
+  * Dividing this based on priority.
+  * So now it assumes for every claimer X that the other claimers will also charge until 
+  * claimer X's deadline.
+  */
   calculateStress(_line, _totalReceived) {
+      const _totalPriority = _.reduce(_line.claims, (_tot, _c) => _tot + _c.priority, 0);
 
     _.each(_line.claims, _claim => {
       let _recv = _totalReceived[_claim.claimer] || 0;
-      _claim.available = this.calculateAvailableCharge( this.now, _claim.deadline);
+      let totalAvailable = this.calculateAvailableCharge( _line.t, _claim.deadline);
+      _claim.available = totalAvailable * ( _claim.priority / _totalPriority );    
       _claim.stress = ( _claim.chargeNeeded - _recv ) / _claim.available;
     });
   }
@@ -170,6 +190,9 @@ class Tetris {
       });
   }
   stressToPixelsNeeded(_line ) {
+    //TODO: use the priority in the stress calculation
+    const _totalPriority = _.reduce(_line.claims, (_tot, _c) => _tot + _c.priority, 0);
+
     const _totalStress =  _.reduce(_line.claims, (_tot, _c) => _tot + _c.stress, 0);
     _.each(_line.claims, _claim => {
       _claim.pixels = Math.round(_claim.stress / _totalStress * _line.pixels.length);
@@ -325,7 +348,7 @@ class Tetris {
         let foundClaim = _.find(line.claims, c => c.claimer === j)
         if ( foundClaim ) {
           htmlStr += '<td>';
-          htmlStr += foundClaim.chargeReceived + ':' + foundClaim.available + ':' + foundClaim.stress.toFixed(2);
+          htmlStr += foundClaim.chargeReceived + ':' + foundClaim.available.toFixed(2) + ':' + foundClaim.stress.toFixed(2);
           htmlStr += '</td>';
         } else {
           htmlStr += '<td> - </td>';
@@ -343,7 +366,7 @@ class Tetris {
         let pixel = '♢';
         if (pixels[j] > 0) {
           pixel = claimers[pixels[j] - 1];
-          /*if (this.isfullyCharged(line.claims, pixels[j])) {
+          if (this.isfullyCharged(line.claims, pixels[j])) {
             pixel = '<span style="color:green">' + pixel + '</span>';
           } else if (this.hasReachedDeadline(line.claims, pixels[j], line.t)) {
             pixel = '<span style="color:red">' + pixel + '</span>';
@@ -351,7 +374,7 @@ class Tetris {
             pixel = '<span style="color:' + 
             ['lightgrey','grey','black'][pixels[j]-1] + 
             '">' + pixel + '</span>';
-          }*/
+          }
         }
         //$(this.element).append('<span class="pixel">' + pixel + '</span>');
         htmlStr += pixel;
