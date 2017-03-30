@@ -17,7 +17,7 @@
 			}
 			td {
 				text-align:center;
-				border:solid 1px gainsboro;
+				border-bottom:solid 1px gainsboro;
 			}
 			.dot{
 				position: absolute;
@@ -29,40 +29,94 @@
 				padding:5px;
 				margin-bottom:10px;
 			}
-			
+			form{
+				padding: 10px;
+				display: inline-block;
+				border: 1px solid gainsboro;
+			}
+			.claims{
+				position: absolute;
+				right: 0;
+				top: 0;
+			}
+			.col1{
+				position: fixed;
+				left: 0;
+				width: 300px;
+
+			}
+			.col2{
+				position: absolute;
+				left: 300px;
+				top: 0;
+			}
+
 		</style>
 	</head>
 	<body>
-		<form id='addClaims'>
-			<label>Claimer
-				<select name='claimer'>
-					<option disabled>Claimer</option>
-					<option selected value='1'>1</option>
-					<option value='2'>2</option>
-					<option value='3'>3</option>
-				</select>
-			</label>
-			<label>Priority
-				<select name='priority'>
-					<option disabled>Priority</option>
-					<option value='5'>5 - Philantropist</option>
-					<option selected value='10'>10 - Normal</option>
-					<option value='20'>20 - CEO</option>
-					<option value='1000'>1000 - Doctor</option>
-				</select>
-			</label>
-			<label>Charge needed
-				<input type='number' min='1' max='1000' name='chargeNeeded' placeholder='chargeNeeded' value="80">
-			</label>
-			<label>Deadline
-				<input type='number' min='1' max='1000' name='deadline' placeholder='deadline' value="40">
-			</label>
-			<input type='submit' value='CLAIM'>
-		</form>
 		<div class='claims'>
 			x
 		</div>
-		<div>
+		<div class='col1'>
+			<form class='addClaims'>
+				<!-- <h2>Socket 1</h2> -->
+				<input type="hidden" name="claimer" value='1'>
+				<label>Charge needed
+					<input type="range" min="0" max="200" value="0" name="chargeNeeded" class="claim">
+				</label>
+				<label>Deadline
+					<input type="range" min="0" max="48" value='0' name="deadline" class="deadline">
+				</label>
+				<label>Priority
+					<select name='priority'>
+						<option disabled>Priority</option>
+						<option value='5'>5 - Philantropist</option>
+						<option selected value='10'>10 - Normal</option>
+						<option value='20'>20 - CEO</option>
+						<option value='1000'>1000 - Doctor</option>
+					</select>
+				</label>
+			</form>
+			<form class='addClaims'>
+				<!-- <h2>Socket 2</h2> -->
+				<input type="hidden" name="claimer" value='2'>
+				<label>Charge needed
+					<input type="range" min="0" max="200" value="0" name="chargeNeeded" class="claim">
+				</label>
+				<label>Deadline
+					<input type="range" min="0" max="48" value='0' name="deadline" class="deadline">
+				</label>
+				<label>Priority
+					<select name='priority'>
+						<option disabled>Priority</option>
+						<option value='5'>5 - Philantropist</option>
+						<option selected value='10'>10 - Normal</option>
+						<option value='20'>20 - CEO</option>
+						<option value='1000'>1000 - Doctor</option>
+					</select>
+				</label>
+			</form>
+			<form class='addClaims'>
+				<!-- <h2>Socket 3</h2> -->
+				<input type="hidden" name="claimer" value='3'>
+				<label>Charge needed
+					<input type="range" min="0" max="200" value="0" name="chargeNeeded" class="claim">
+				</label>
+				<label>Deadline
+					<input type="range" min="0" max="48" value='0' name="deadline" class="deadline">
+				</label>
+				<label>Priority
+					<select name='priority'>
+						<option disabled>Priority</option>
+						<option value='5'>5 - Philantropist</option>
+						<option selected value='10'>10 - Normal</option>
+						<option value='20'>20 - CEO</option>
+						<option value='1000'>1000 - Doctor</option>
+					</select>
+				</label>
+			</form>
+		</div>
+		<div class="col2">
 			For each user [Charge received: Available until deadline:Stress]
 			<table>
 				<thead>

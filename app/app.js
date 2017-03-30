@@ -39,16 +39,18 @@ jQuery(document).ready(function ($) {
 	dummyData(tetris);
 
 	swarm = new Swarm();
-	tetris.onUpdate(()=> swarm.update( tetris ));
+	tetris.onUpdate(() => swarm.update( tetris ));
 
 
-	$('form#addClaims').on('submit', function (evt) {
+	$('form.addClaims :input').on('input', function (evt) {
 		evt.preventDefault();
 
-		let data = $('#addClaims').serializeArray().reduce(function (obj, item) {
+		let data = $(evt.target).parents("form").serializeArray().reduce(function (obj, item) {
 			obj[item.name] = item.value;
 			return obj;
 		}, {});
+
+		console.log("data",data);
 
 		tetris.addClaim(+data.claimer, +data.priority, +data.chargeNeeded, +data.deadline);
 		return false;

@@ -17,10 +17,7 @@ Proposal:
 const PRIORITY = 'priority';
 const STRESS = 'stress';
 const COMBINED = 'combined';
- // let claimers = [
-    // 	'▒','▓','░'
-    // ]
-    const claimers = ['A', 'B', 'C'];
+const claimers = ['A', 'B', 'C'];
 
 class Tetris {
 
@@ -376,7 +373,7 @@ class Tetris {
 
       htmlStr += '<td>'
       for (let j = 0; j < pixels.length; j++) { //render pixels
-        let pixel = '♢';
+        let pixel = '.';
         if (pixels[j] > 0) {
           pixel = claimers[pixels[j] - 1];
           if (this.isfullyCharged(line.claims, pixels[j])) {
