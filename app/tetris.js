@@ -34,7 +34,7 @@ class Tetris {
     this.lines = [];
     this.claims = [];
     this.onUpdateCallback = null;
-    this.algorithm = STRESS;
+    this.algorithm = COMBINED;
    
   
     _.times( this.height, this.createLine, this);
@@ -116,7 +116,7 @@ class Tetris {
         this.checkLeftoversStress( _line );
       } else if ( this.algorithm === COMBINED ) {
         this.calculateStress( _line, _totalReceived );
-        this.stressToPixelsNeeded( _line );
+        this.combinedToPixelsNeeded( _line );
         this.checkLeftoversStress( _line );
       }
     
@@ -191,12 +191,25 @@ class Tetris {
   }
   stressToPixelsNeeded(_line ) {
     //TODO: use the priority in the stress calculation
-    const _totalPriority = _.reduce(_line.claims, (_tot, _c) => _tot + _c.priority, 0);
+    //const _totalPriority = _.reduce(_line.claims, (_tot, _c) => _tot + _c.priority, 0);
 
     const _totalStress =  _.reduce(_line.claims, (_tot, _c) => _tot + _c.stress, 0);
     _.each(_line.claims, _claim => {
       _claim.pixels = Math.round(_claim.stress / _totalStress * _line.pixels.length);
-    })
+    });
+  }
+  combinedToPixelsNeeded(_line){
+    const _totalPriority = _.reduce(_line.claims, (_tot, _c) => _tot + _c.priority, 0);
+    const _totalStress =  _.reduce(_line.claims, (_tot, _c) => _tot + _c.stress, 0);
+
+
+    _.each(_line.claims, _claim => {
+      _claim.pixels = 
+        Math.round(
+          _claim.stress / _totalStress * (_line.pixels.length/3*1) +
+          _claim.priority / _totalPriority * (_line.pixels.length/3*2)
+        )
+    });
   }
    checkLeftoversSimple( _line ) {
     
