@@ -25,7 +25,7 @@ class Tetris {
     this.start = _start || 0;
     this.element = _element || '#tetris';
     this.height = _height || 48;
-    this.width = _width || 15;
+    this.width = _width || 6;
     this.minWidth = _minWidth || Math.round(this.width / 3);
     this.now = this.start;
     this.lines = [];
@@ -105,7 +105,6 @@ class Tetris {
         this.priorityToPixelsNeeded( _line );
         // Check for remainders after rounding
         this.checkLeftoversSimple( _line );
-
       } else if ( this.algorithm === STRESS ) {
         // calculate how much charge is available for each claimer until deadline
         this.calculateStress( _line, _totalReceived );
@@ -164,21 +163,29 @@ class Tetris {
   * So now it assumes for every claimer X that the other claimers will also charge until 
   * claimer X's deadline.
   */
+
   calculateStress(_line, _totalReceived) {
-      const _totalPriority = _.reduce(_line.claims, (_tot, _c) => _tot + _c.priority, 0);
+    const _totalPriority = _.reduce(_line.claims, (_tot, _c) => _tot + _c.priority, 0);
 
     _.each(_line.claims, _claim => {
       let _recv = _totalReceived[_claim.claimer] || 0;
       let totalAvailable = this.calculateAvailableCharge( _line.t, _claim.deadline);
-      _claim.available = totalAvailable * ( _claim.priority / _totalPriority );    
-      _claim.stress = ( _claim.chargeNeeded - _recv ) / _claim.available;
+      _claim.available = totalAvailable * ( _claim.priority / _totalPriority ); 
+      //_claim.stress = ( _claim.chargeNeeded - _recv ) / _claim.available;
+   
+
+      //if stress > 1, means there is more available than you need
+      //if stress < 1, means there is way less available than you need.
+      _claim.stress =  _.min([20,Math.ceil(( _claim.chargeNeeded - _recv ) / _claim.available)]);
+
     });
   }
+  
   calculateAvailableCharge(_start, _end) {
     return _.reduce(this.lines, (t, v, i) => ( i >= _start && i <= _end )? t + v.pixels.length: t, 0);
   }
 
-   priorityToPixelsNeeded(_line) {
+  priorityToPixelsNeeded(_line) {
     // Calculate pixels based on priority
       const _totalPriority = _.reduce(_line.claims, (_tot, _c) => _tot + _c.priority, 0);
 
@@ -195,20 +202,27 @@ class Tetris {
       _claim.pixels = Math.round(_claim.stress / _totalStress * _line.pixels.length);
     });
   }
+
   combinedToPixelsNeeded(_line){
     const _totalPriority = _.reduce(_line.claims, (_tot, _c) => _tot + _c.priority, 0);
     const _totalStress =  _.reduce(_line.claims, (_tot, _c) => _tot + _c.stress, 0);
 
 
     _.each(_line.claims, _claim => {
+      // _claim.pixels = 
+      //   Math.round(
+      //     _claim.stress / _totalStress * (_line.pixels.length/3*1) +
+      //     _claim.priority / _totalPriority * (_line.pixels.length/3*2)
+          
+      //   )
       _claim.pixels = 
         Math.round(
-          _claim.stress / _totalStress * (_line.pixels.length/3*1) +
-          _claim.priority / _totalPriority * (_line.pixels.length/3*2)
+          (_claim.stress + _claim.priority) / (_totalStress + _totalPriority) * _line.pixels.length          
         )
     });
   }
-   checkLeftoversSimple( _line ) {
+
+  checkLeftoversSimple( _line ) {
     
       // Check if there is discrepancy bc of rounding
       let pixelsNeeded = this.getPixelsNeeded(_line.claims);
@@ -255,7 +269,7 @@ class Tetris {
       }
   }
 
-     checkLeftoversStress( _line ) {
+  checkLeftoversStress( _line ) {
     
       // Check if there is discrepancy bc of rounding
       let pixelsNeeded = this.getPixelsNeeded(_line.claims);
@@ -319,9 +333,9 @@ class Tetris {
     });
   }
   
-   fillPixels( _line ) {
+  fillPixels( _line ) {
     _line.pixels.fill(0);
-    
+  
     _.reduce(_line.claims, function (_fillIndex, _c) {
       _line.pixels.fill(_c.claimer, _fillIndex, _fillIndex + _c.pixels);
       return _fillIndex + _c.pixels;
@@ -377,13 +391,13 @@ class Tetris {
         if (pixels[j] > 0) {
           pixel = claimers[pixels[j] - 1];
           if (this.isfullyCharged(line.claims, pixels[j])) {
-            pixel = '<span style="color:green">' + pixel + '</span>';
+            pixel = '<span class="pixel" style="color:green">' + pixel + '</span>';
           } else if (this.hasReachedDeadline(line.claims, pixels[j], line.t)) {
-            pixel = '<span style="color:red">' + pixel + '</span>';
+            pixel = '<span class="pixel" style="color:red">' + pixel + '</span>';
           } else {
-            pixel = '<span style="color:' + 
+            pixel = '<span class="pixel pixel' + pixel + '" style="color:' + 
             ['lightgrey','grey','black'][pixels[j]-1] + 
-            '">' + pixel + '</span>';
+            '">&nbsp;</span>';
           }
         }
         //$(this.element).append('<span class="pixel">' + pixel + '</span>');

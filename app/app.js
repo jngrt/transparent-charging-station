@@ -30,8 +30,6 @@ const $ = jQuery;
 
 const greenThreshold = 6; //6 gray energy, 6 green energy
 
-
-
 jQuery(document).ready(function ($) {
 
 	const tetris = new Tetris();

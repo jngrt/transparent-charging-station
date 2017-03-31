@@ -16,13 +16,25 @@
 				max-width:100px;
 			}
 			td {
-				text-align:center;
-				border-bottom:solid 1px gainsboro;
+				text-align:left;
+				border-bottom:solid 1px #eee;
 			}
 			.dot{
 				position: absolute;
 				transition: 1s all;
 			}
+			.pixel{
+				display: inline-block;
+				height: 12px;
+				width: 12px;
+				line-height: 12px;
+				text-align: center;
+				background-color: #eee;
+				border-radius: 6px;
+			}
+				.pixelA{ background-color: red; }
+				.pixelB{ background-color: green; }
+				.pixelC{ background-color: blue; }
 			input, select {
 				width:200px;
 				display:block;
@@ -32,8 +44,12 @@
 			form{
 				padding: 10px;
 				display: inline-block;
-				border: 1px solid gainsboro;
+				border: 5px solid #eee;
+				margin: 5px;
 			}
+				.formA{ border: 5px solid red;}
+				.formB{ border: 5px solid green;}
+				.formC{ border: 5px solid blue;}
 			.claims{
 				position: absolute;
 				right: 0;
@@ -58,7 +74,7 @@
 			x
 		</div>
 		<div class='col1'>
-			<form class='addClaims'>
+			<form class='addClaims formA'>
 				<!-- <h2>Socket 1</h2> -->
 				<input type="hidden" name="claimer" value='1'>
 				<label>Charge needed
@@ -70,14 +86,14 @@
 				<label>Priority
 					<select name='priority'>
 						<option disabled>Priority</option>
-						<option value='5'>5 - Philantropist</option>
+						<option value='1'>1 - Philantropist</option>
 						<option selected value='10'>10 - Normal</option>
-						<option value='20'>20 - CEO</option>
+						<option value='50'>50 - CEO</option>
 						<option value='1000'>1000 - Doctor</option>
 					</select>
 				</label>
 			</form>
-			<form class='addClaims'>
+			<form class='addClaims formB'>
 				<!-- <h2>Socket 2</h2> -->
 				<input type="hidden" name="claimer" value='2'>
 				<label>Charge needed
@@ -89,14 +105,14 @@
 				<label>Priority
 					<select name='priority'>
 						<option disabled>Priority</option>
-						<option value='5'>5 - Philantropist</option>
+						<option value='1'>1 - Philantropist</option>
 						<option selected value='10'>10 - Normal</option>
-						<option value='20'>20 - CEO</option>
+						<option value='50'>50 - CEO</option>
 						<option value='1000'>1000 - Doctor</option>
 					</select>
 				</label>
 			</form>
-			<form class='addClaims'>
+			<form class='addClaims formC'>
 				<!-- <h2>Socket 3</h2> -->
 				<input type="hidden" name="claimer" value='3'>
 				<label>Charge needed
@@ -108,9 +124,9 @@
 				<label>Priority
 					<select name='priority'>
 						<option disabled>Priority</option>
-						<option value='5'>5 - Philantropist</option>
+						<option value='1'>1 - Philantropist</option>
 						<option selected value='10'>10 - Normal</option>
-						<option value='20'>20 - CEO</option>
+						<option value='50'>50 - CEO</option>
 						<option value='1000'>1000 - Doctor</option>
 					</select>
 				</label>
