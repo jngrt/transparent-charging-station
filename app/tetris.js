@@ -19,6 +19,9 @@ const STRESS = 'stress';
 const COMBINED = 'combined';
 const claimers = ['A', 'B', 'C'];
 
+const _maxStress = 50;
+
+
 class Tetris {
 
   constructor (_start, _element, _height, _width, _minWidth) {
@@ -32,7 +35,7 @@ class Tetris {
     this.claims = [];
     this.onUpdateCallback = null;
     this.algorithm = COMBINED;
-   
+
   
     _.times( this.height, this.createLine, this);
     console.log(this.lines);
@@ -45,14 +48,13 @@ class Tetris {
     }
 
     //add random variations to width
-    const prev = this.lines.length ? _.last(this.lines).pixels.length : 0;
-    const lineLength = prev ?
-      _.random(this.minWidth, this.width) :
-      _.random(
-        Math.max(this.minWidth, prev - 1),
-        Math.min(this.width, prev + 1)
-      );
-
+    const prev = (this.lines.length > 0) ? _.last(this.lines).pixels.length : _.random(this.minWidth, this.width);
+    const variation = Math.round(_.random(-2,2));
+    
+    let lineLength = prev + variation;
+    if(lineLength <= this.minWidth) lineLength = this.minWidth;
+    if(lineLength > this.maxWidth) lineLength = this.maxWidth;
+       
     //add line
     const line = {
       t: _lineTime,
@@ -86,6 +88,10 @@ class Tetris {
     //process the claims
     this.processClaims();
 
+  }
+  clearLine(){
+    //clear line and save it to the record
+    //this.updateTotalReceived() ...?
   }
   processClaims () {
 
@@ -125,7 +131,7 @@ class Tetris {
       
     }, this)
 
-    console.log(this.claims);
+    // console.log(this.claims);
     this.update();
 
   }
@@ -139,13 +145,20 @@ class Tetris {
   filterLineClaims( _line, _totalReceived ) {
      _line.claims = _.map(this.claims, function (claim) {
 
-        // Filter out if past deadline
-        if (claim.deadline < _line.t) {
-          return;
+        if(claim.deadline < _line.t && _totalReceived[claim.claimer] <= claim.chargeNeeded){
+          claim.deadline++;
+          claim.overdue = true;
+          if(_.has(claim, "originalDeadline")) claim.originalDeadline = true;
         }
+
+        // Filter out if past deadline
+        // if (claim.deadline < _line.t) {
+        //   return;
+        // }
 
         // Filter out if no more is needed
         if (_totalReceived[claim.claimer] >= claim.chargeNeeded) {
+          if(_.has(claim, "overdue")) claim.overdue = false;
           return;
         }
 
@@ -172,11 +185,12 @@ class Tetris {
       let totalAvailable = this.calculateAvailableCharge( _line.t, _claim.deadline);
       _claim.available = totalAvailable * ( _claim.priority / _totalPriority ); 
       //_claim.stress = ( _claim.chargeNeeded - _recv ) / _claim.available;
-   
+  
 
       //if stress > 1, means there is more available than you need
       //if stress < 1, means there is way less available than you need.
-      _claim.stress =  _.min([20,Math.ceil(( _claim.chargeNeeded - _recv ) / _claim.available)]);
+      //cap it to 20, because reasons.
+      _claim.stress =  _.min([_maxStress,Math.ceil(( _claim.chargeNeeded - _recv ) / _claim.available)]);
 
     });
   }
@@ -215,10 +229,9 @@ class Tetris {
       //     _claim.priority / _totalPriority * (_line.pixels.length/3*2)
           
       //   )
-      _claim.pixels = 
-        Math.round(
-          (_claim.stress + _claim.priority) / (_totalStress + _totalPriority) * _line.pixels.length          
-        )
+
+      //made simplified version.
+      _claim.pixels = Math.round((_claim.stress + _claim.priority) / (_totalStress + _totalPriority) * _line.pixels.length);
     });
   }
 
@@ -264,8 +277,7 @@ class Tetris {
       let newDiff = _line.pixels.length - this.getPixelsNeeded(_line.claims);
 
       if (oldDiff != 0) {
-        console.log(
-          _line.t + " - needed:" + pixelsNeeded + " avlbl:" + _line.pixels.length + " diff:" + oldDiff + " newDiff:" + newDiff);
+        // console.log(_line.t + " - needed:" + pixelsNeeded + " avlbl:" + _line.pixels.length + " diff:" + oldDiff + " newDiff:" + newDiff);
       }
   }
 
@@ -311,8 +323,7 @@ class Tetris {
       let newDiff = _line.pixels.length - this.getPixelsNeeded(_line.claims);
 
       if (oldDiff != 0) {
-        console.log(
-          _line.t + " - needed:" + pixelsNeeded + " avlbl:" + _line.pixels.length + " diff:" + oldDiff + " newDiff:" + newDiff);
+        // console.log(_line.t + " - needed:" + pixelsNeeded + " avlbl:" + _line.pixels.length + " diff:" + oldDiff + " newDiff:" + newDiff);
       }
   }
 
@@ -390,14 +401,18 @@ class Tetris {
         let pixel = '.';
         if (pixels[j] > 0) {
           pixel = claimers[pixels[j] - 1];
+          
           if (this.isfullyCharged(line.claims, pixels[j])) {
             pixel = '<span class="pixel" style="color:green">' + pixel + '</span>';
+          
           } else if (this.hasReachedDeadline(line.claims, pixels[j], line.t)) {
-            pixel = '<span class="pixel" style="color:red">' + pixel + '</span>';
+            // pixel = '<span class="pixel" style="color:red">' + pixel + '</span>';
+            pixel = '<span class="pixel overdue pixel' + pixel + '">&nbsp;</span>';
+
+          
           } else {
-            pixel = '<span class="pixel pixel' + pixel + '" style="color:' + 
-            ['lightgrey','grey','black'][pixels[j]-1] + 
-            '">&nbsp;</span>';
+            pixel = '<span class="pixel pixel' + pixel + '">&nbsp;</span>';
+          
           }
         }
         //$(this.element).append('<span class="pixel">' + pixel + '</span>');

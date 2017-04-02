@@ -35,7 +35,7 @@ jQuery(document).ready(function ($) {
 	const tetris = new Tetris();
 
 	swarm = new Swarm();
-	tetris.onUpdate(() => swarm.update( tetris ));
+	tetris.onUpdate(() => swarm.update( tetris.lines ));
 
 
 	$('form.addClaims :input').on('input', function (evt) {
