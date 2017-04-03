@@ -1,18 +1,40 @@
-var Swarm = function(){
+var Dot = function(x, y, pixel, claim, parent){
 
-	//dispatches group of circles (A/B/C)
+	var el;
+	var diffX = 20;
+	var diffY = 20;
+	var claimers = ["","A","B","C"];
+
+	this.convert = function(){
+
+	}
+
+	var translate = function(){
+		el.css({
+			left: x * diffX,
+			top: y * diffY
+		})
+	}
+
+
+	this.init = function(){
+
+		el = $("<div class='dot pixel"+claimers[pixel]+"'>"+pixel+"</div>").appendTo(parent);
+		translate();
+	}()
+}
+
+var Swarm = function(){
 
 	var pixelWidth = 20;
 	var gutter = 20;
 
-	var throttle = 1000; //time out in ms
+	var el = $("#swarm")
+
+	var throttle = 200; //time out in ms
 	var renderTimeout;
 
-	var swarm = [];
-
-	var getTetrisLength = function(lines){
-
-	}
+	var allDots = [];
 
 
 	this.update = function(_lines){
@@ -20,26 +42,26 @@ var Swarm = function(){
 		//we get the lines in, now lets make it work.
 		lines = _lines;
 
+		//throttle rerendering
 		if(renderTimeout) clearTimeout(renderTimeout);
 		renderTimeout = setTimeout(render, throttle);
 
-		render();
+		// render();
 	}
 
 	var render = function(){
 
-		_.each(lines, function(line, _l){
-			
+		for (var l = lines.length - 1; l >= 0; l--) {
+			var line = lines[l];
 			var claims = line.claims;
 
-			_.each(line.pixels, function(pixel, _p){
+			for (var p = line.pixels.length - 1; p >= 0; p--) {
+				var pixel = line.pixels[p];
+				allDots.push(new Dot(p, l, pixel, claims[line.pixels],el));
+			};
+		};
 
-				if(claims[pixel])
-				//iterate over the pixels.
-				console.log(pixel, _l, _p);
-
-			});
-		});
+		
 
 
 	}

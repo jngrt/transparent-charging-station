@@ -19,9 +19,21 @@
 				text-align:left;
 				border-bottom:solid 1px #eee;
 			}
+			#swarm{
+				position: absolute;
+				right: 0;
+				top: 0;
+				width: 200px;
+				height: 100%;
+			}
 			.dot{
 				position: absolute;
 				transition: 1s all;
+				top: 0;
+				left: 0;
+				width: 10px;
+				height: 10px;
+				background-color: #eee;
 			}
 			.pixel{
 				display: inline-block;
@@ -74,6 +86,8 @@
 		</style>
 	</head>
 	<body>
+		<div id='swarm'>
+		</div>
 		<div class='claims'>
 			x
 		</div>

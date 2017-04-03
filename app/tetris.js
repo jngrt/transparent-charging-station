@@ -24,12 +24,13 @@ const _maxStress = 50;
 
 class Tetris {
 
-  constructor (_start, _element, _height, _width, _minWidth) {
+  constructor (_start, _element, _height, _width, _minWidth, _maxWidth) {
     this.start = _start || 0;
     this.element = _element || '#tetris';
     this.height = _height || 48;
     this.width = _width || 6;
-    this.minWidth = _minWidth || Math.round(this.width / 3);
+    this.minWidth = _minWidth || Math.round(this.width / 2);
+    this.maxWidth = _maxWidth || Math.round(this.width * 2);
     this.now = this.start;
     this.lines = [];
     this.claims = [];
@@ -148,7 +149,6 @@ class Tetris {
         if(claim.deadline < _line.t && _totalReceived[claim.claimer] <= claim.chargeNeeded){
           claim.deadline++;
           claim.overdue = true;
-          if(_.has(claim, "originalDeadline")) claim.originalDeadline = true;
         }
 
         // Filter out if past deadline
