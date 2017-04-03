@@ -1,4 +1,11 @@
 /*
+TODO: 
+- Add tetris.getHistoryForClaimer function
+- Add timer class which calls tetris.increaseTime
+- Add playback functionality (get array of history from Tetris, and replay this)
+- Add application states and transitions
+
+
 	PIXEL
 		3px x 3px
 		has owner
@@ -33,9 +40,12 @@ const greenThreshold = 6; //6 gray energy, 6 green energy
 jQuery(document).ready(function ($) {
 
 	const tetris = new Tetris();
+	
+	//for debug
+	document.tetris = tetris;
 
 	swarm = new Swarm();
-	tetris.onUpdate(() => swarm.update( tetris.lines ));
+	tetris.onUpdate(() => swarm.update( tetris.getCurrentGrid() ));
 
 
 	$('form.addClaims :input').on('input', function (evt) {

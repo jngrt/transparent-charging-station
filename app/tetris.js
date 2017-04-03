@@ -5,14 +5,12 @@ Two algorithm modes right now:
 SIMPLE -> Only looks at priority
 STRESS -> Only looks at stress regarding total available charge until deadline.
 
-TODO: algorithm which makes use of both stress and priority
-Proposal:
-- For each line make a priority based division of all charge up until all deadlines.
-- Then calculate stress based on these divisions.
-- Then distribute this line partly based on stress partly based on priority.
-- Then go to next line and repeat.
+
 
 */
+const GRID_HEIGHT = 48;
+const GRID_WIDTH = 12;
+const HISTORY_LINES = 10;
 
 const PRIORITY = 'priority';
 const STRESS = 'stress';
@@ -42,6 +40,18 @@ class Tetris {
     console.log(this.lines);
     this.update();
   }
+  getCurrentGrid() {
+    let lowIndex = _.findIndex(this.lines, line => line.t === this.now, this);
+    lowIndex = ~lowIndex ? lowIndex : 0;
+    let highIndex = Math.min( lowIndex + GRID_HEIGHT, this.lines.length - 1);
+    return this.lines.slice(lowIndex,highIndex);
+  }
+  increaseTime() {
+    this.now++;
+    this.createLine();
+    this.processClaims();
+    console.log('no of lines:'+ this.lines.length);
+  }
 
   createLine (_lineTime) {
     if ( _lineTime === void(0)) {
@@ -56,13 +66,19 @@ class Tetris {
     if(lineLength <= this.minWidth) lineLength = this.minWidth;
     if(lineLength > this.maxWidth) lineLength = this.maxWidth;
        
-    //add line
+    // add line
     const line = {
       t: _lineTime,
       meta: {},
       pixels: Array(lineLength).fill(0)
     };
     this.lines.push(line);
+
+    // check total size
+    // (make sure we don't run out of memory)
+    if( this.lines.length > GRID_HEIGHT + HISTORY_LINES){
+      this.lines.shift();
+    }
   }
 
   //claiming algorihm
@@ -233,7 +249,9 @@ class Tetris {
       //   )
 
       //made simplified version.
-      _claim.pixels = Math.round((_claim.stress + _claim.priority) / (_totalStress + _totalPriority) * _line.pixels.length);
+      _claim.pixels = Math.round(
+        (_claim.stress + _claim.priority) / (_totalStress + _totalPriority) * _line.pixels.length
+      );
     });
   }
 
@@ -375,12 +393,15 @@ class Tetris {
     
     let htmlStr = '';
 
-    for (let i = this.lines.length - 1; i >= 0; i--) { //render lines
+    let lowIndex = _.findIndex(this.lines, line => line.t === this.now, this);
+    lowIndex = ~lowIndex ? lowIndex : 0;
+
+    let highIndex = Math.min( lowIndex + GRID_HEIGHT, this.lines.length - 1);
+
+    for (let i = highIndex; i >= lowIndex; i--) { //render lines
       let line = this.lines[i];
       let pixels = line.pixels;
-      //$(this.element).append('<i>' + (("0" + i).slice(-2)) + ':' + line.t + ':</i>');
       htmlStr += '<tr><td>' + i + '</td><td>' + line.t + '</td>';
-      //htmlStr += '<td>Recv</td><td>Avail</td><td>Stress</td><td>Deadline</td>';
       for (let j = 1; j <= 3; j++){
         let foundClaim = _.find(line.claims, c => c.claimer === j)
         if ( foundClaim ) {
@@ -390,13 +411,7 @@ class Tetris {
         } else {
           htmlStr += '<td> - </td>';
         }
-
       }
-      // _.each(line.claims, _c => {
-      //   htmlStr += '<td>';
-      //   htmlStr += _c.chargeReceived + ':' + _c.available + ':' + _c.stress;
-      //   htmlStr += '</td>';
-      // });
 
       htmlStr += '<td>'
       for (let j = 0; j < pixels.length; j++) { //render pixels

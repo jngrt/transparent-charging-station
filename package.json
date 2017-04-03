@@ -1,7 +1,7 @@
 {
-  "name": "electron-quick-start",
+  "name": "Transparant Charging Station",
   "version": "1.0.0",
-  "description": "A minimal Electron application",
+  "description": "What a electric vehicle charging station in the future could look like",
   "main": "main.js",
   "scripts": {
     "start": "electron ."
@@ -18,12 +18,13 @@
   "license": "CC0-1.0",
   "devDependencies": {
     "electron": "~1.6.2",
+    "electron-packager": "^8.6.0",
     "electron-rebuild": "^1.5.7",
-    "serialport": "^4.0.7",
-    "electron-reload": "^1.1.0"
+    "serialport": "^4.0.7"
   },
   "dependencies": {
     "jquery": "^3.2.1",
-    "underscore": "^1.8.3"
+    "underscore": "^1.8.3",
+    "electron-reload": "^1.1.0"
   }
 }
