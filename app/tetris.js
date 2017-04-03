@@ -146,15 +146,6 @@ class Tetris {
   filterLineClaims( _line, _totalReceived ) {
      _line.claims = _.map(this.claims, function (claim) {
 
-        if(claim.deadline < _line.t && _totalReceived[claim.claimer] <= claim.chargeNeeded){
-          claim.deadline++;
-          claim.overdue = true;
-        }
-
-        // Filter out if past deadline
-        // if (claim.deadline < _line.t) {
-        //   return;
-        // }
 
         // Filter out if no more is needed
         if (_totalReceived[claim.claimer] >= claim.chargeNeeded) {
@@ -162,8 +153,19 @@ class Tetris {
           return;
         }
 
-        //totalPriority += claim.priority;
-        return _.clone(claim);
+        let _lineClaim = _.clone(claim);
+
+        if(_lineClaim.deadline < _line.t && _totalReceived[_lineClaim.claimer] <= _lineClaim.chargeNeeded){
+          //_lineClaim.deadline++;
+          _lineClaim.overdue = true;
+        }
+
+        // Filter out if past deadline
+        // if (claim.deadline < _line.t) {
+        //   return;
+        // }
+
+        return _lineClaim;
 
       });
 
@@ -383,7 +385,7 @@ class Tetris {
         let foundClaim = _.find(line.claims, c => c.claimer === j)
         if ( foundClaim ) {
           htmlStr += '<td>';
-          htmlStr += foundClaim.chargeReceived + ':' + foundClaim.available.toFixed(2) + ':' + foundClaim.stress.toFixed(2);
+          htmlStr += foundClaim.chargeReceived + '|' + foundClaim.available.toFixed(2) + '|' + foundClaim.stress.toFixed(2) + '|' + (foundClaim.overdue?'O':'-');
           htmlStr += '</td>';
         } else {
           htmlStr += '<td> - </td>';
@@ -402,16 +404,13 @@ class Tetris {
         if (pixels[j] > 0) {
           pixel = claimers[pixels[j] - 1];
           
-          if (this.isfullyCharged(line.claims, pixels[j])) {
-            pixel = '<span class="pixel" style="color:green">' + pixel + '</span>';
-          
-          } else if (this.hasReachedDeadline(line.claims, pixels[j], line.t)) {
-            // pixel = '<span class="pixel" style="color:red">' + pixel + '</span>';
-            pixel = '<span class="pixel overdue pixel' + pixel + '">&nbsp;</span>';
+          let overdue = this.isOverdue(line.claims, pixels[j], line.t) ? ' overdue':'';
 
+          if (this.isfullyCharged(line.claims, pixels[j])) {
+            pixel = '<span class="pixel pixel'+ pixel + overdue + '" style="color:white">' + pixel + '</span>';
           
           } else {
-            pixel = '<span class="pixel pixel' + pixel + '">&nbsp;</span>';
+            pixel = '<span class="pixel pixel' + pixel + overdue + '">&nbsp;</span>';
           
           }
         }
@@ -422,6 +421,11 @@ class Tetris {
       //$(this.element).append('<br>'); //clear line
     }
     $(this.element).html( htmlStr );
+  }
+  isOverdue(claims, claimer, time) {
+      return !!_.find(claims, function(c) {
+        return c.claimer == claimer && c.overdue;
+      });
   }
    hasReachedDeadline (claims, claimer, time) {
     return !!_.find(claims, function (c) {
