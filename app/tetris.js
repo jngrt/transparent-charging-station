@@ -31,12 +31,22 @@ class Tetris {
     this.maxWidth = _maxWidth || Math.round(this.width * 2);
     this.now = this.start;
     this.lines = [];
-    this.claims = [];
     this.onUpdateCallback = null;
+    this.onUnplugCallback = null;
     this.algorithm = COMBINED;
 
   
     _.times( this.height, this.createLine, this);
+
+    this.claims = _.times(3, n => ({
+      claimer: n+1,
+      priority: 0,
+      chargeNeeded: 0,
+      deadline: 0,
+      chargeReceived: 0,
+      claimStart: -1
+    }));
+
     console.log(this.lines);
     this.update();
   }
@@ -46,16 +56,37 @@ class Tetris {
     let highIndex = Math.min( lowIndex + GRID_HEIGHT, this.lines.length - 1);
     return this.lines.slice(lowIndex,highIndex);
   }
+  getHistoryGrid( claimer ) {
+    //TODO: return the history for a claimer, to be replayed
+  }
   increaseTime() {
     this.now++;
+    this.updateReceived();
     this.createLine();
     this.processClaims();
-    console.log('no of lines:'+ this.lines.length);
+    return this.now;
+  }
+
+  get time() {
+    return this.now;
+  }
+  updateReceived() {
+    //Every time the time increases we update the amount of charge received
+    let line = _.find(this.lines, ln => ln.t === this.now - 1);
+    if(!line) return;
+    
+    _.each(this.claims, c => {
+      let lc = _.find(line.claims, lc => lc.claimer === c.claimer );
+      if(lc){
+        c.chargeReceived += lc.pixels;
+      }
+    });
   }
 
   createLine (_lineTime) {
+    
     if ( _lineTime === void(0)) {
-      _lineTime = this.lines.length || 0;
+      _lineTime = this.lines.length ? _.last(this.lines).t + 1 : 0;
     }
 
     //add random variations to width
@@ -82,25 +113,32 @@ class Tetris {
   }
 
   //claiming algorihm
-  addClaim(claimer, priority, chargeNeeded, deadline, info) {
+  updateClaim(claimer, pluggedIn, priority, chargeNeeded, deadline, info) {
+    
 
-    //we're not checking for a double claim. If this claimer was still claiming, we need to remove the previous claim.
-    this.claims = _.reject(this.claims, function (claim) {
-      return claim.claimer == claimer
+    _.find(this.claims, c => {
+      //TODO check events: plug in / plug out...
+      //TODO update the last line because of plug out.
+      // And trigger the animation.
+      
+      if( c.claimer === claimer ) {
+        if( !pluggedIn && ~c.claimStart ) {
+          _.extend( c, {
+            priority:0, chargeNeeded:0, deadline:0, chargeReceived: 0, claimStart: -1
+          });
+          this.onUnplugCallback();
+        } else if( pluggedIn ) {
+          _.extend( c, { 
+            priority: priority, 
+            chargeNeeded: chargeNeeded, 
+            deadline: deadline,
+            claimStart: ( ~c.claimStart ? c.claimStart : this.now )
+          });
+        }
+        return true;
+      }
+
     });
-
-    //now add the new claim to the list
-    this.claims.push({
-      claimer: claimer,
-      priority: priority,
-      chargeNeeded: chargeNeeded,
-      deadline: deadline,
-      chargeReceived: 0,
-      claimStart: this.now
-    });
-
-    //sort by user
-    this.claims = _.sortBy(this.claims, 'claimer');
 
     //process the claims
     this.processClaims();
@@ -114,15 +152,37 @@ class Tetris {
 
     this.printClaims();
 
+
+    // TODO: check from which point in history to start?..
+    // TODO: get totalReceived from history.
+    // Then start going trhough the lines starting from "now"
+    // Or whenever a line is shifted update the claim object! better
+    // Keep track of state of claimers:
+    //   - plugged in/out / 
+
     //we process the claims per line.
-    let _totalReceived = {};
+    let _totalReceived = {1:0,2:0,3:0};
+    if ( this.now > 0 ) {
+      _.each(this.claims, c => {
+        _totalReceived[c.claimer] = c.chargeReceived;
+      });
+    }
+    
+     
     _.each(this.lines, function (_line, _lineNo) {
+      if ( _line.t < this.now ) {
+        return;
+      }
+      
 
       let _pixels = _line.pixels;
 
       // copy claims which are applicable for this line
-      this.filterLineClaims(_line, _totalReceived);
+      this.copyAndFilterClaims(_line, _totalReceived);
      
+      // TODO for every algo calculate a claim-strength instead of directly to pixels
+      // then use one function to check for leftovers, based on claimstrength
+      // TODO: don't take more than needed: on the last line a claimer will now often claim too much.
       if( this.algorithm === PRIORITY ) {
         // Turn priority into pixels
         this.priorityToPixelsNeeded( _line );
@@ -142,7 +202,6 @@ class Tetris {
       // Keep track of how much charge is received up until this line
       this.updateTotalReceived( _line, _totalReceived, _lineNo === 0  );
 
-
       // Fill the pixels based on the claims
       this.fillPixels( _line );
       
@@ -154,20 +213,24 @@ class Tetris {
   }
   printClaims() {
     //print the current claims
-    $('.claims').empty();
-    _.each(this.claims, function (claim) {
-      $('.claims').append(JSON.stringify(claim)).append('<br>');
+    _.each(this.claims, function (claim, n) {
+      $('.form' + claimers[n] + ' .debug').html(JSON.stringify(claim));
     })  
   }
-  filterLineClaims( _line, _totalReceived ) {
+  copyAndFilterClaims( _line, _totalReceived ) {
      _line.claims = _.map(this.claims, function (claim) {
 
 
-        // Filter out if no more is needed
-        if (_totalReceived[claim.claimer] >= claim.chargeNeeded) {
-          if(_.has(claim, "overdue")) claim.overdue = false;
+        // Filter out if not plugged in
+        if (!~claim.claimStart) {
           return;
         }
+
+        // Filter out if no more is needed
+        if (_totalReceived[claim.claimer] >= claim.chargeNeeded) {
+          return;
+        }
+
 
         let _lineClaim = _.clone(claim);
 
@@ -387,6 +450,10 @@ class Tetris {
 
     //render function of tetris might be obsolete if swarm does this trick.
     this.render();
+  }
+
+  onUnplug( _cb ) {
+    this.onUnplugCallback = _cb;
   }
   render () {
     $(this.element).empty();

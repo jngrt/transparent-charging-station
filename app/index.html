@@ -19,13 +19,7 @@
 				text-align:left;
 				border-bottom:solid 1px #eee;
 			}
-			#swarm{
-				position: absolute;
-				right: 0;
-				top: 0;
-				width: 200px;
-				height: 100%;
-			}
+		
 			.dot{
 				position: absolute;
 				transition: 1s all;
@@ -57,30 +51,45 @@
 				padding:5px;
 				margin-bottom:10px;
 			}
+			input[type="checkbox"] {
+				display:inline;
+				width: 20px;
+			}
 			form{
 				padding: 10px;
 				display: inline-block;
 				border: 5px solid #eee;
 				margin: 5px;
+				width: 210px;
 			}
-				.formA{ border: 5px solid red;}
-				.formB{ border: 5px solid green;}
-				.formC{ border: 5px solid blue;}
-			.claims{
+			.debug {
+				width: 200px;
+				word-wrap: break-word; 
+			}
+			.formA{ border: 5px solid red;}
+			.formB{ border: 5px solid green;}
+			.formC{ border: 5px solid blue;}
+			
+			#swarm{
 				position: absolute;
 				right: 0;
 				top: 0;
+				width: 200px;
+				height: 100%;
+				display:none;
 			}
 			.col1{
-				position: fixed;
+				position: absolute;
 				left: 0;
 				width: 300px;
-
+				
 			}
-			.col2{
+			.debug-grid{
 				position: absolute;
 				left: 300px;
+				width:600px;
 				top: 0;
+				height:100%;
 			}
 
 		</style>
@@ -88,13 +97,13 @@
 	<body>
 		<div id='swarm'>
 		</div>
-		<div class='claims'>
-			x
-		</div>
+		
 		<div class='col1'>
+			<button class="toggle-timer">Timer</button><div class="time-display">0</div>
 			<form class='addClaims formA'>
 				<!-- <h2>Socket 1</h2> -->
 				<input type="hidden" name="claimer" value='1'>
+				<label><input type="checkbox" name="pluggedIn"/>Plugged in</label><br/>
 				<label>Charge needed
 					<input type="range" min="0" max="200" value="0" name="chargeNeeded" class="claim">
 				</label>
@@ -110,10 +119,13 @@
 						<option value='1000'>1000 - Doctor</option>
 					</select>
 				</label>
+				<div class="debug"></div>
 			</form>
 			<form class='addClaims formB'>
 				<!-- <h2>Socket 2</h2> -->
 				<input type="hidden" name="claimer" value='2'>
+				<label><input type="checkbox" name="pluggedIn"/>Plugged in</label><br/>
+
 				<label>Charge needed
 					<input type="range" min="0" max="200" value="0" name="chargeNeeded" class="claim">
 				</label>
@@ -129,10 +141,12 @@
 						<option value='1000'>1000 - Doctor</option>
 					</select>
 				</label>
+				<div class="debug"></div>
 			</form>
 			<form class='addClaims formC'>
 				<!-- <h2>Socket 3</h2> -->
 				<input type="hidden" name="claimer" value='3'>
+				<label><input type="checkbox" name="pluggedIn"/>Plugged in</label><br/>				
 				<label>Charge needed
 					<input type="range" min="0" max="200" value="0" name="chargeNeeded" class="claim">
 				</label>
@@ -148,9 +162,10 @@
 						<option value='1000'>1000 - Doctor</option>
 					</select>
 				</label>
+				<div class="debug">
 			</form>
 		</div>
-		<div class="col2">
+		<div class="debug-grid">
 			For each user [Charge received: Available until deadline:Stress]
 			<table>
 				<thead>

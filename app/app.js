@@ -35,6 +35,9 @@ const $ = jQuery;
 
 // const [ABSOLUTE_PRIORITY, MEDIUM_PRIORITY, NO_PRIORITY, GREEN_PRIORITY] = [1, 2, 3, 4];
 
+const [NORMAL,REPLAY] = _.times(2,n=>n);
+let appState = NORMAL;
+
 const greenThreshold = 6; //6 gray energy, 6 green energy
 
 jQuery(document).ready(function ($) {
@@ -46,16 +49,61 @@ jQuery(document).ready(function ($) {
 
 	swarm = new Swarm();
 	tetris.onUpdate(() => swarm.update( tetris.getCurrentGrid() ));
+	tetris.onUnplug(() => {
 
+	});
 
+	$('form.addClaims input:checkbox').change( function(evt){
+		let form = $(evt.target).parents("form");
+		getDataFromForm(form, tetris);
+		evt.preventDefault();
+	});
 	$('form.addClaims :input').on('input', function (evt) {
-		var form = $(evt.target).parents("form");
+		let form = $(evt.target).parents("form");
 		getDataFromForm(form, tetris);
 		evt.preventDefault();
 	})
 	$("form").each(function(index){
 		getDataFromForm($(this), tetris);
 	});
+
+	/*
+	PLAYBACK HISTORY
+	*/
+	function doReplay(){
+		appState = REPLAY;
+		stopTimer();
+		//TODO: get the one who plugged out, do replay
+		let history = tetris.getHistoryGrid();
+
+	}
+
+
+	/*
+	TIMER RELATED THINGS
+	 */
+	let timer;
+	
+	$('.toggle-timer').click( e => {
+		if(timer) {
+			window.clearInterval(timer);
+			timer = null;
+		} else {
+			startTimer();
+		}
+		
+
+	});
+	function stopTimer(){
+		window.clearInterval(timer);
+	}
+	function startTimer(){
+		timer = window.setInterval(updateTime,500);
+	}
+	function updateTime(){
+		$('.time-display').html( tetris.increaseTime() );
+	}
+	
 });
 
 function getDataFromForm(form, tetris){
@@ -64,5 +112,5 @@ function getDataFromForm(form, tetris){
 		return obj;
 	}, {});
 
-	tetris.addClaim(+data.claimer, +data.priority, +data.chargeNeeded, +data.deadline);
+	tetris.updateClaim(+data.claimer, !!data.pluggedIn, +data.priority, +data.chargeNeeded, +data.deadline);
 }
