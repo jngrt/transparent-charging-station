@@ -4,34 +4,11 @@ TODO:
 - Add timer class which calls tetris.increaseTime
 - Add playback functionality (get array of history from Tetris, and replay this)
 - Add application states and transitions
-
-
-	PIXEL
-		3px x 3px
-		has owner
-			none, A, B, C
-			...
-
-	TETRIS
-		Init, width, height
-
-	DIRECTOR
-
-		divides all available pis
-
-	ACTORS
-		Regular
-			gets no priority
-		Doctor
-			gets all priority
-		Premium
-			gets some priority
-		Philantropist
-			give away priority?
 */
-const _ = require('underscore')
+const _ 	 = require('underscore')
 const jQuery = require('jquery')
-const $ = jQuery;
+const $ 	 = jQuery;
+const SerialPort = require('serialport');
 
 // const [ABSOLUTE_PRIORITY, MEDIUM_PRIORITY, NO_PRIORITY, GREEN_PRIORITY] = [1, 2, 3, 4];
 
@@ -51,6 +28,35 @@ jQuery(document).ready(function ($) {
 	tetris.onUpdate(() => swarm.update( tetris.getCurrentGrid() ));
 	tetris.onUnplug(() => {
 
+
+	});
+
+	SerialPort.list(function (err, ports) {
+	  ports.forEach(function(port) {
+	    console.log(port.comName);
+	    console.log(port.pnpId);
+	    console.log(port.manufacturer);
+
+		// port.on('open', function() {
+		//   port.write('Charge station says hi', function(err) {
+		//     if (err) {
+		//       return console.log('Error on write: ', err.message);
+		//     }
+		//     console.log('message written');
+		//   });
+		// });
+
+		// port.on('data', function (data) {
+		//   console.log('Data: ' + data);
+		// });
+
+		// // open errors will be emitted as an error event
+		// port.on('error', function(err) {
+		//   console.log('Error: ', err.message);
+		// })
+
+
+	  });
 	});
 
 	$('form.addClaims input:checkbox').change( function(evt){
