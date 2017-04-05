@@ -25,7 +25,7 @@ class Tetris {
   constructor (_start, _element, _height, _width, _minWidth, _maxWidth) {
     this.start = _start || 0;
     this.element = _element || '#tetris';
-    this.height = _height || 48;
+    this.height = _height || GRID_HEIGHT;
     this.width = _width || 6;
     this.minWidth = _minWidth || Math.round(this.width / 2);
     this.maxWidth = _maxWidth || Math.round(this.width * 2);
@@ -36,7 +36,7 @@ class Tetris {
     this.algorithm = COMBINED;
 
   
-    _.times( this.height, this.createLine, this);
+    _.times( GRID_HEIGHT, this.createLine, this);
 
     this.claims = _.times(3, n => ({
       claimer: n,
@@ -54,23 +54,25 @@ class Tetris {
   getCurrentGrid() {
     let lowIndex = _.findIndex(this.lines, line => line.t === this.now, this);
     lowIndex = ~lowIndex ? lowIndex : 0;
-    let highIndex = Math.min( lowIndex + GRID_HEIGHT, this.lines.length - 1);
+    let highIndex = Math.min( lowIndex + GRID_HEIGHT + 1, this.lines.length);
     return this.lines.slice(lowIndex,highIndex);
   }
-  getHistoryGrid( claimer ) {
-    //TODO: account for the case where someone quickly plugs in and out
-    //return the history for a claimer, to be replayed
+  getReplayLines( claimer ) {
    
-    
-    // end: when claimer plugged out 
-    let highIndex = _.findIndex(this.lines, line => line.t === this.now, this);
-
-    let claimStart = this.claims[claimer].claimStart;
     // start: when claimer plugged in
+    let claimStart = this.claims[claimer].claimStart;
     let lowIndex = _.findLastIndex(this.lines, line => line.t === claimStart );
     lowIndex = ~lowIndex ? lowIndex : 0;
     
-    return this.lines.slice(lowIndex,highIndex);
+    // end: when claimer plugged out 
+    let predEnd = this.claims[claimer].predictedClaimEnd;
+    let highIndex = this.lines.length - 1;
+    if ( ~predEnd ) {
+      highIndex = _.findIndex(this.lines, line => line.t === predEnd, this);
+      highIndex = ~highIndex ? highIndex : this.lines.length - 1;
+    }
+
+    return this.lines.slice(lowIndex,highIndex + 1);
   }
   increaseTime() {
     this.now++;
@@ -135,10 +137,11 @@ class Tetris {
     }
 
     if( !pluggedIn && ~c.claimStart ) {
+      let replayLines = this.getReplayLines( claimer );
       _.extend( c, {
         priority:0, chargeNeeded:0, deadline:0, chargeReceived: 0, claimStart: -1
       });
-      this.onUnplugCallback( claimer );
+      this.onUnplugCallback( claimer, replayLines );
     } else if( pluggedIn ) {
       _.extend( c, { 
         priority: priority, 
@@ -158,16 +161,6 @@ class Tetris {
     //this.updateTotalReceived() ...?
   }
   processClaims () {
-
-    this.printClaims();
-
-
-    // TODO: check from which point in history to start?..
-    // TODO: get totalReceived from history.
-    // Then start going trhough the lines starting from "now"
-    // Or whenever a line is shifted update the claim object! better
-    // Keep track of state of claimers:
-    //   - plugged in/out / 
 
     //we process the claims per line.
     let _totalReceived = [0,0,0];
@@ -218,12 +211,7 @@ class Tetris {
     this.update();
 
   }
-  printClaims() {
-    //print the current claims
-    _.each(this.claims, function (claim, n) {
-      $('.form' + claimers[n] + ' .debug').html(JSON.stringify(claim));
-    })  
-  }
+
   copyAndFilterClaims( _line, _totalReceived ) {
      _line.claims = _.map(this.claims, function (claim) {
 
@@ -429,9 +417,14 @@ class Tetris {
         _totalReceived[_c.claimer] = 0;
       }
 
-      _totalReceived[_c.claimer] += _c.pixels
+      _totalReceived[_c.claimer] += _c.pixels;
       _c.chargeReceived = _totalReceived[_c.claimer];
-    });
+
+      // check if this claimer is done charging
+      if ( _c.chargeReceived >= _c.chargeNeeded ) {
+        this.claims[_c.claimer].predictedClaimEnd = _line.t;
+      }
+    }, this);
   }
   
   fillPixels( _line ) {
@@ -456,13 +449,21 @@ class Tetris {
     }
 
     //render function of tetris might be obsolete if swarm does this trick.
-    this.render();
+    this.debugRender();
   }
 
   onUnplug( _cb ) {
     this.onUnplugCallback = _cb;
   }
-  render () {
+  printClaims() {
+    //print the current claims
+    _.each(this.claims, function (claim, n) {
+      $('.form' + claimers[n] + ' .debug').html(JSON.stringify(claim));
+    })  
+  }
+  debugRender () {
+    this.printClaims();
+
     $(this.element).empty();
     
     let htmlStr = '';
