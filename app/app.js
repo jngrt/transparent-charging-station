@@ -115,5 +115,5 @@ function getDataFromForm(form, tetris){
 		return obj;
 	}, {});
 
-	tetris.updateClaim(+data.claimer, !!data.pluggedIn, +data.priority, +data.chargeNeeded, +data.deadline);
+	tetris.updateClaim(+data.claimer, !!data.pluggedIn, +data.card, +data.chargeNeeded, +data.deadline);
 }
