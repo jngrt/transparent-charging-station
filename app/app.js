@@ -15,7 +15,6 @@ const SerialPort = require('serialport');
 const [NORMAL,REPLAY] = _.times(2,n=>n);
 let appState = NORMAL;
 
-const greenThreshold = 6; //6 gray energy, 6 green energy
 
 jQuery(document).ready(function ($) {
 
@@ -24,8 +23,8 @@ jQuery(document).ready(function ($) {
 	//for debug
 	document.tetris = tetris;
 
-	//swarm = new Swarm();
-	//tetris.onUpdate(() => swarm.update( tetris.getCurrentGrid() ));
+	swarm = new Swarm("#tetris_ui");
+	tetris.onUpdate(() => swarm.update( tetris.getCurrentGrid() ));
 	tetris.onUnplug( claimer => {
 		doReplay(claimer);
 	});
@@ -103,7 +102,7 @@ jQuery(document).ready(function ($) {
 		window.clearInterval(timer);
 	}
 	function startTimer(){
-		timer = window.setInterval(updateTime,500);
+		timer = window.setInterval(updateTime,1000);
 	}
 	function updateTime(){
 		$('.time-display').html( tetris.increaseTime() );
