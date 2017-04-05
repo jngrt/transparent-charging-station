@@ -44,7 +44,8 @@ class Tetris {
       chargeNeeded: 0,
       deadline: 0,
       chargeReceived: 0,
-      claimStart: -1
+      claimStart: -1,
+      predictedClaimEnd: -1
     }));
 
     console.log(this.lines);
@@ -69,7 +70,6 @@ class Tetris {
     let lowIndex = _.findLastIndex(this.lines, line => line.t === claimStart );
     lowIndex = ~lowIndex ? lowIndex : 0;
     
-    Math.min( lowIndex + GRID_HEIGHT, this.lines.length - 1);
     return this.lines.slice(lowIndex,highIndex);
   }
   increaseTime() {
