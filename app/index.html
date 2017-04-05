@@ -11,7 +11,17 @@
 				font-family: monospace
 			}
 			th {
-				max-width:100px;
+				max-width:120px;
+			}
+			th.claimer-info {
+				width:150px;
+			}
+			tr.now {
+				background-color:aquamarine;
+				font-weight: bolder;
+			}
+			.message {
+				font-size: 7px;
 			}
 			td {
 				text-align:left;
@@ -140,6 +150,16 @@
 				<label>Deadline
 					<input type="range" min="0" max="48" value='0' name="deadline" class="deadline">
 				</label>
+				<label>Card
+					<select name="card">
+						<option disabled>Card</option>
+						<option value="1">DiscountCharge - low priority</option>
+						<option value="2">Gift-A-Charge - Normal priority</option>
+						<option value="3">Optimus Platinum - High priority</option>
+						<option value="4">Medical Doctor - Top priority</option>
+					</select>
+				</label>
+				<!--
 				<label>Priority
 					<select name='priority'>
 						<option disabled>Priority</option>
@@ -149,6 +169,7 @@
 						<option value='1000'>1000 - Doctor</option>
 					</select>
 				</label>
+				-->
 				<div class="debug"></div>
 			</form>
 			<form class='addClaims formB'>
@@ -162,6 +183,16 @@
 				<label>Deadline
 					<input type="range" min="0" max="48" value='0' name="deadline" class="deadline">
 				</label>
+				<label>Card
+					<select name="card">
+						<option disabled>Card</option>
+						<option value="1">DiscountCharge - low priority</option>
+						<option value="2">Gift-A-Charge - Normal priority</option>
+						<option value="3">Optimus Platinum - High priority</option>
+						<option value="4">Medical Doctor - Top priority</option>
+					</select>
+				</label>
+				<!--
 				<label>Priority
 					<select name='priority'>
 						<option disabled>Priority</option>
@@ -171,6 +202,7 @@
 						<option value='1000'>1000 - Doctor</option>
 					</select>
 				</label>
+				-->
 				<div class="debug"></div>
 			</form>
 			<form class='addClaims formC'>
@@ -183,6 +215,16 @@
 				<label>Deadline
 					<input type="range" min="0" max="48" value='0' name="deadline" class="deadline">
 				</label>
+				<label>Card
+					<select name="card">
+						<option disabled>Card</option>
+						<option value="1">DiscountCharge - low priority</option>
+						<option value="2">Gift-A-Charge - Normal priority</option>
+						<option value="3">Optimus Platinum - High priority</option>
+						<option value="4">Medical Doctor - Top priority</option>
+					</select>
+				</label>
+				<!--
 				<label>Priority
 					<select name='priority'>
 						<option disabled>Priority</option>
@@ -192,6 +234,7 @@
 						<option value='1000'>1000 - Doctor</option>
 					</select>
 				</label>
+				-->
 				<div class="debug">
 			</form>
 		</div>
@@ -202,9 +245,9 @@
 					<tr>
 						<th>Index</th>
 						<th>Time</th>
-						<th>C1</th>
-						<th>C2</th>
-						<th>C3</th>
+						<th class="claimer-info">C1</th>
+						<th class="claimer-info">C2</th>
+						<th class="claimer-info">C3</th>
 						<!--<th>Charge received</th>
 						<th>Available until deadline</th>
 						<th>Stress</th>

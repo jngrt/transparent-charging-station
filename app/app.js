@@ -15,6 +15,7 @@ const SerialPort = require('serialport');
 const [NORMAL,REPLAY] = _.times(2,n=>n);
 let appState = NORMAL;
 
+const greenThreshold = 6; //6 gray energy, 6 green energy
 
 jQuery(document).ready(function ($) {
 
@@ -23,11 +24,9 @@ jQuery(document).ready(function ($) {
 	//for debug
 	document.tetris = tetris;
 
-	swarm = new Swarm("#tetris_ui");
-	tetris.onUpdate(() => swarm.update( tetris.getCurrentGrid() ));
-	tetris.onUnplug( claimer => {
-		doReplay(claimer);
-	});
+	//swarm = new Swarm();
+	//tetris.onUpdate(() => swarm.update( tetris.getCurrentGrid() ));
+	tetris.onUnplug( doReplay );
 
 	SerialPort.list(function (err, ports) {
 	  ports.forEach(function(port) {
@@ -74,12 +73,12 @@ jQuery(document).ready(function ($) {
 	/*
 	PLAYBACK HISTORY
 	*/
-	function doReplay( claimer ){
+	function doReplay( claimer, lines ){
+		
 		appState = REPLAY;
 		stopTimer();
-		//TODO: get the one who plugged out, do replay
-		let history = tetris.getHistoryGrid(claimer);
-		console.log(history);
+		
+		console.log(lines);
 	}
 
 
@@ -102,17 +101,11 @@ jQuery(document).ready(function ($) {
 		window.clearInterval(timer);
 	}
 	function startTimer(){
-		timer = window.setInterval(updateTime,1000);
+		timer = window.setInterval(updateTime,500);
 	}
 	function updateTime(){
 		$('.time-display').html( tetris.increaseTime() );
 	}
-
-	$(window).on("keypress",function(evt){
-		if(evt.charCode == 120){ //x
-			$(".debug-ui").toggle();
-		}
-	})
 	
 });
 
@@ -122,5 +115,5 @@ function getDataFromForm(form, tetris){
 		return obj;
 	}, {});
 
-	tetris.updateClaim(+data.claimer, !!data.pluggedIn, +data.priority, +data.chargeNeeded, +data.deadline);
+	tetris.updateClaim(+data.claimer, !!data.pluggedIn, +data.card, +data.chargeNeeded, +data.deadline);
 }
