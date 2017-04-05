@@ -108,6 +108,12 @@ jQuery(document).ready(function ($) {
 	function updateTime(){
 		$('.time-display').html( tetris.increaseTime() );
 	}
+
+	$(window).on("keypress",function(evt){
+		if(evt.charCode == 120){ //x
+			$(".debug-ui").toggle();
+		}
+	})
 	
 });
 

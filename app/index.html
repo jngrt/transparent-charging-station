@@ -4,14 +4,10 @@
 		<title>test</title>
 		<meta charset="UTF-8">
 		<style type="text/css">
+			
 			body{
 				font-family: monospace
 			}
-			/*#tetris{
-				position: absolute;
-				right: 0;
-				top: 0;
-			}*/
 			th {
 				max-width:100px;
 			}
@@ -78,27 +74,42 @@
 				height: 100%;
 				display:none;
 			}
-			.col1{
+			.debug-ui{
+				background-color: rgba(255,255,255,.9);
+				border: 1px solid black;
+			}
+			.debug-input{
 				position: absolute;
-				left: 0;
+				left: 10px;
+				top: 10px;
 				width: 300px;
-				
+				z-index: 999;
 			}
 			.debug-grid{
 				position: absolute;
-				left: 300px;
+				left: 320px;
+				top: 10px;
 				width:600px;
-				top: 0;
-				height:100%;
+				z-index: 999;
 			}
-
+			#ui{
+				position: absolute;
+				left: 0;
+				top: 0;
+				width: 1080px;
+				height: 2560px;
+				background-color: blue;
+				transform-origin: 0 0;
+				transform: scale(.4);
+			}
 		</style>
 	</head>
 	<body>
-		<div id='swarm'>
+		<div id="ui"> 
+			<!-- this contains the enire interface -->
+			x
 		</div>
-		
-		<div class='col1'>
+		<div class='debug-input debug-ui'>
 			<button class="toggle-timer">Timer</button><div class="time-display">0</div>
 			<form class='addClaims formA'>
 				<!-- <h2>Socket 1</h2> -->
@@ -165,7 +176,7 @@
 				<div class="debug">
 			</form>
 		</div>
-		<div class="debug-grid">
+		<div class="debug-grid debug-ui">
 			For each user [Charge received: Available until deadline:Stress]
 			<table>
 				<thead>
@@ -185,7 +196,6 @@
 				<tbody id="tetris">
 				</tbody>
 			</table>
-
 		</div>
 
 		
