@@ -24,11 +24,10 @@ jQuery(document).ready(function ($) {
 	//for debug
 	document.tetris = tetris;
 
-	swarm = new Swarm();
-	tetris.onUpdate(() => swarm.update( tetris.getCurrentGrid() ));
-	tetris.onUnplug(() => {
-
-
+	//swarm = new Swarm();
+	//tetris.onUpdate(() => swarm.update( tetris.getCurrentGrid() ));
+	tetris.onUnplug( claimer => {
+		doReplay(claimer);
 	});
 
 	SerialPort.list(function (err, ports) {
@@ -76,12 +75,12 @@ jQuery(document).ready(function ($) {
 	/*
 	PLAYBACK HISTORY
 	*/
-	function doReplay(){
+	function doReplay( claimer ){
 		appState = REPLAY;
 		stopTimer();
 		//TODO: get the one who plugged out, do replay
-		let history = tetris.getHistoryGrid();
-
+		let history = tetris.getHistoryGrid(claimer);
+		console.log(history);
 	}
 
 
