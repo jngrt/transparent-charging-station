@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="">
+	<head>
+		<title>test</title>
+		<meta charset="UTF-8">
+		<style type="text/css">
+			body{
+				font-family: monospace
+			}
+			/*#tetris{
+				position: absolute;
+				right: 0;
+				top: 0;
+			}*/
+			th {
+				max-width:100px;
+			}
+			td {
+				text-align:left;
+				border-bottom:solid 1px #eee;
+			}
+		
+			.dot{
+				position: absolute;
+				transition: 1s all;
+				top: 0;
+				left: 0;
+				width: 10px;
+				height: 10px;
+				background-color: #eee;
+			}
+			.pixel{
+				display: inline-block;
+				height: 12px;
+				width: 12px;
+				line-height: 12px;
+				text-align: center;
+				background-color: #eee;
+				border-radius: 6px;
+			}
+				.pixelA{ background-color: red; }
+				.pixelB{ background-color: green; }
+				.pixelC{ background-color: blue; }
+				.overdue{ animation: pulse .5s infinite alternate;}
+
+				@keyframes pulse {0% {  opacity: 0; } 100% { opacity: 1; } }
+
+			input, select {
+				width:200px;
+				display:block;
+				padding:5px;
+				margin-bottom:10px;
+			}
+			input[type="checkbox"] {
+				display:inline;
+				width: 20px;
+			}
+			form{
+				padding: 10px;
+				display: inline-block;
+				border: 5px solid #eee;
+				margin: 5px;
+				width: 210px;
+			}
+			.debug {
+				width: 200px;
+				word-wrap: break-word; 
+			}
+			.formA{ border: 5px solid red;}
+			.formB{ border: 5px solid green;}
+			.formC{ border: 5px solid blue;}
+			
+			#swarm{
+				position: absolute;
+				right: 0;
+				top: 0;
+				width: 200px;
+				height: 100%;
+				display:none;
+			}
+			.col1{
+				position: absolute;
+				left: 0;
+				width: 300px;
+				
+			}
+			.debug-grid{
+				position: absolute;
+				left: 300px;
+				width:600px;
+				top: 0;
+				height:100%;
+			}
+
+		</style>
+	</head>
+	<body>
+		<div id='swarm'>
+		</div>
+		
+		<div class='col1'>
+			<button class="toggle-timer">Timer</button><div class="time-display">0</div>
+			<form class='addClaims formA'>
+				<!-- <h2>Socket 1</h2> -->
+				<input type="hidden" name="claimer" value='0'>
+				<label><input type="checkbox" name="pluggedIn"/>Plugged in</label><br/>
+				<label>Charge needed
+					<input type="range" min="0" max="200" value="0" name="chargeNeeded" class="claim">
+				</label>
+				<label>Deadline
+					<input type="range" min="0" max="48" value='0' name="deadline" class="deadline">
+				</label>
+				<label>Priority
+					<select name='priority'>
+						<option disabled>Priority</option>
+						<option value='1'>1 - Philantropist</option>
+						<option selected value='10'>10 - Normal</option>
+						<option value='50'>50 - CEO</option>
+						<option value='1000'>1000 - Doctor</option>
+					</select>
+				</label>
+				<div class="debug"></div>
+			</form>
+			<form class='addClaims formB'>
+				<!-- <h2>Socket 2</h2> -->
+				<input type="hidden" name="claimer" value='1'>
+				<label><input type="checkbox" name="pluggedIn"/>Plugged in</label><br/>
+
+				<label>Charge needed
+					<input type="range" min="0" max="200" value="0" name="chargeNeeded" class="claim">
+				</label>
+				<label>Deadline
+					<input type="range" min="0" max="48" value='0' name="deadline" class="deadline">
+				</label>
+				<label>Priority
+					<select name='priority'>
+						<option disabled>Priority</option>
+						<option value='1'>1 - Philantropist</option>
+						<option selected value='10'>10 - Normal</option>
+						<option value='50'>50 - CEO</option>
+						<option value='1000'>1000 - Doctor</option>
+					</select>
+				</label>
+				<div class="debug"></div>
+			</form>
+			<form class='addClaims formC'>
+				<!-- <h2>Socket 3</h2> -->
+				<input type="hidden" name="claimer" value='2'>
+				<label><input type="checkbox" name="pluggedIn"/>Plugged in</label><br/>				
+				<label>Charge needed
+					<input type="range" min="0" max="200" value="0" name="chargeNeeded" class="claim">
+				</label>
+				<label>Deadline
+					<input type="range" min="0" max="48" value='0' name="deadline" class="deadline">
+				</label>
+				<label>Priority
+					<select name='priority'>
+						<option disabled>Priority</option>
+						<option value='1'>1 - Philantropist</option>
+						<option selected value='10'>10 - Normal</option>
+						<option value='50'>50 - CEO</option>
+						<option value='1000'>1000 - Doctor</option>
+					</select>
+				</label>
+				<div class="debug">
+			</form>
+		</div>
+		<div class="debug-grid">
+			For each user [Charge received: Available until deadline:Stress]
+			<table>
+				<thead>
+					<tr>
+						<th>Index</th>
+						<th>Time</th>
+						<th>C1</th>
+						<th>C2</th>
+						<th>C3</th>
+						<!--<th>Charge received</th>
+						<th>Available until deadline</th>
+						<th>Stress</th>
+						<th>Deadline</th>-->
+						<th>Pixels</th>
+					</tr>
+				</thead>
+				<tbody id="tetris">
+				</tbody>
+			</table>
+
+		</div>
+
+		
+		<script src="tetris.js"></script>
+		<script src="swarm.js"></script>
+		<!-- // <script src="serialStuff.js"></script> -->
+		<script src="app.js"></script>
+ 	</body>
+</html>
