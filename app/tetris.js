@@ -39,7 +39,7 @@ class Tetris {
     _.times( this.height, this.createLine, this);
 
     this.claims = _.times(3, n => ({
-      claimer: n+1,
+      claimer: n,
       priority: 0,
       chargeNeeded: 0,
       deadline: 0,
@@ -57,11 +57,24 @@ class Tetris {
     return this.lines.slice(lowIndex,highIndex);
   }
   getHistoryGrid( claimer ) {
-    //TODO: return the history for a claimer, to be replayed
+    //TODO: account for the case where someone quickly plugs in and out
+    //return the history for a claimer, to be replayed
+   
+    
+    // end: when claimer plugged out 
+    let highIndex = _.findIndex(this.lines, line => line.t === this.now, this);
+
+    let claimStart = this.claims[claimer].claimStart;
+    // start: when claimer plugged in
+    let lowIndex = _.findLastIndex(this.lines, line => line.t === claimStart );
+    lowIndex = ~lowIndex ? lowIndex : 0;
+    
+    Math.min( lowIndex + GRID_HEIGHT, this.lines.length - 1);
+    return this.lines.slice(lowIndex,highIndex);
   }
   increaseTime() {
     this.now++;
-    this.updateReceived();
+    this.updateChargeReceived();
     this.createLine();
     this.processClaims();
     return this.now;
@@ -70,17 +83,15 @@ class Tetris {
   get time() {
     return this.now;
   }
-  updateReceived() {
+  updateChargeReceived() {
     //Every time the time increases we update the amount of charge received
     let line = _.find(this.lines, ln => ln.t === this.now - 1);
     if(!line) return;
     
-    _.each(this.claims, c => {
-      let lc = _.find(line.claims, lc => lc.claimer === c.claimer );
-      if(lc){
-        c.chargeReceived += lc.pixels;
-      }
+    _.each(line.claims, lc => {
+      this.claims[lc.claimer].chargeReceived += lc.pixels;
     });
+
   }
 
   createLine (_lineTime) {
@@ -114,31 +125,29 @@ class Tetris {
 
   //claiming algorihm
   updateClaim(claimer, pluggedIn, priority, chargeNeeded, deadline, info) {
-    
-
-    _.find(this.claims, c => {
-      //TODO check events: plug in / plug out...
+     //TODO check events: plug in / plug out...
       //TODO update the last line because of plug out.
       // And trigger the animation.
-      
-      if( c.claimer === claimer ) {
-        if( !pluggedIn && ~c.claimStart ) {
-          _.extend( c, {
-            priority:0, chargeNeeded:0, deadline:0, chargeReceived: 0, claimStart: -1
-          });
-          this.onUnplugCallback();
-        } else if( pluggedIn ) {
-          _.extend( c, { 
-            priority: priority, 
-            chargeNeeded: chargeNeeded, 
-            deadline: deadline,
-            claimStart: ( ~c.claimStart ? c.claimStart : this.now )
-          });
-        }
-        return true;
-      }
 
-    });
+    let c = this.claims[claimer];
+    if(!c) {
+      throw new Error('Not a valid claimer:' + claimer);
+    }
+
+    if( !pluggedIn && ~c.claimStart ) {
+      _.extend( c, {
+        priority:0, chargeNeeded:0, deadline:0, chargeReceived: 0, claimStart: -1
+      });
+      this.onUnplugCallback( claimer );
+    } else if( pluggedIn ) {
+      _.extend( c, { 
+        priority: priority, 
+        chargeNeeded: chargeNeeded, 
+        deadline: deadline,
+        claimStart: ( ~c.claimStart ? c.claimStart : this.now )
+      });
+    }
+       
 
     //process the claims
     this.processClaims();
@@ -161,11 +170,9 @@ class Tetris {
     //   - plugged in/out / 
 
     //we process the claims per line.
-    let _totalReceived = {1:0,2:0,3:0};
+    let _totalReceived = [0,0,0];
     if ( this.now > 0 ) {
-      _.each(this.claims, c => {
-        _totalReceived[c.claimer] = c.chargeReceived;
-      });
+      _totalReceived = _.map(this.claims, c => c.chargeReceived);
     }
     
      
@@ -469,7 +476,8 @@ class Tetris {
       let line = this.lines[i];
       let pixels = line.pixels;
       htmlStr += '<tr><td>' + i + '</td><td>' + line.t + '</td>';
-      for (let j = 1; j <= 3; j++){
+      
+      for (let j = 0; j < 3; j++){
         let foundClaim = _.find(line.claims, c => c.claimer === j)
         if ( foundClaim ) {
           htmlStr += '<td>';
@@ -484,7 +492,7 @@ class Tetris {
       for (let j = 0; j < pixels.length; j++) { //render pixels
         let pixel = '.';
         if (pixels[j] > 0) {
-          pixel = claimers[pixels[j] - 1];
+          pixel = claimers[pixels[j]];
           
           let overdue = this.isOverdue(line.claims, pixels[j], line.t) ? ' overdue':'';
 
