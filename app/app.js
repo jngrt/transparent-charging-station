@@ -24,7 +24,7 @@ jQuery(document).ready(function ($) {
 	//for debug
 	document.tetris = tetris;
 
-	//swarm = new Swarm();
+	swarm = new Swarm("#tetris-ui");
 	//tetris.onUpdate(() => swarm.update( tetris.getCurrentGrid() ));
 	tetris.onUnplug( doReplay );
 
