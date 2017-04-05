@@ -435,7 +435,7 @@ class Tetris {
   }
   
   fillPixels( _line ) {
-    _line.pixels.fill(0);
+    _line.pixels.fill(-1);
   
     _.reduce(_line.claims, function (_fillIndex, _c) {
       _line.pixels.fill(_c.claimer, _fillIndex, _fillIndex + _c.pixels);
@@ -491,7 +491,7 @@ class Tetris {
       htmlStr += '<td>'
       for (let j = 0; j < pixels.length; j++) { //render pixels
         let pixel = '.';
-        if (pixels[j] > 0) {
+        if (pixels[j] > -1) {
           pixel = claimers[pixels[j]];
           
           let overdue = this.isOverdue(line.claims, pixels[j], line.t) ? ' overdue':'';
