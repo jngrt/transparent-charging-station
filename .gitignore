@@ -1,6 +1,3 @@
 node_modules
 .vscode
-.sublime-project
-.sublime-workspace
-chargestation.sublime-project
-chargestation.sublime-workspace
+builds/

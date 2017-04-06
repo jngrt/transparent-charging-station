@@ -30,9 +30,9 @@ jQuery(document).ready(function ($) {
 
 	SerialPort.list(function (err, ports) {
 	  ports.forEach(function(port) {
-	    console.log(port.comName);
-	    console.log(port.pnpId);
-	    console.log(port.manufacturer);
+	    console.log('comName', port.comName);
+	    console.log('pnpId',port.pnpId);
+	    console.log('manufacturer', port.manufacturer);
 
 		// port.on('open', function() {
 		//   port.write('Charge station says hi', function(err) {
