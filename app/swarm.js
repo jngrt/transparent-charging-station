@@ -1,10 +1,4 @@
-var dotSize = 46;
 
-const 	DIRECTION_SOUTH = 0,
-		DIRECTION_ALL = 1;
-
-const 	SPOT_CLAIMED = "claimed",
-		SPOT_VACANT = "vacant";
 
 
 /*
@@ -22,6 +16,14 @@ const 	SPOT_CLAIMED = "claimed",
 
 
 var Swarm = function(_parent){
+
+	var dotSize = 46;
+
+	const 	DIRECTION_SOUTH = 0,
+			DIRECTION_ALL = 1;
+
+	const 	SPOT_CLAIMED = "claimed",
+			SPOT_VACANT = "vacant";
 	
 	var _this = this;
 

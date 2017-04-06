@@ -113,10 +113,20 @@
 					height: 320px;
 					border: 3px solid red;
 				}
-			.dot{
+			.line{
 				position: absolute;
+				left: 0;
+				top: 0;
+				height: 46px;
+				width: 552px;
+				transition: all 1s;
+
+			}
+			.dot{
+				/*position: absolute;
 				left: 50%;
-				bottom: 0;
+				bottom: 0;*/
+				display: inline-block;
 				width: 46px;
 				height: 46px;
 				border: 11px solid white;
@@ -128,6 +138,9 @@
 				font-size: 18px;
 				transition: all 1s;
 			}
+				.dot0{ background-color: red; }
+				.dot1{ background-color: green; }
+				.dot2{ background-color: blue; }
 		</style>
 	</head>
 	<body>
@@ -262,8 +275,7 @@
 
 		
 		<script src="tetris.js"></script>
-		<script src="dot.js"></script>
-		<script src="swarm.js"></script>
+		<script src="swarm2.js"></script>
 		<!-- // <script src="serialStuff.js"></script> -->
 		<script src="app.js"></script>
  	</body>

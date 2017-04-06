@@ -27,7 +27,7 @@ var Dot = function(_x, _y, _claimer, _parent){
 	
 	this.findNextDestination = function(destinations, _direction){
 		
-		var destination_directions = [[_this.y-1], [_this.y-1, _this.y+1, _this.y]]; //DIRECTION_SOUTH, DIRECTION_ALL
+		var destination_directions = [[_this.y-1], [_this.y-1, _this.y+1]]; //DIRECTION_SOUTH, DIRECTION_ALL
 		var directions = destination_directions[_direction];
 
 		var reused = false;
@@ -85,11 +85,11 @@ var Dot = function(_x, _y, _claimer, _parent){
 
 	this.init = function(){
 
-		animationDelay = 10;
+		animationDelay = 10*this.x*this.y;
 
 		el = $("<div></div>")
 			.addClass("dot")
-			.html(this.claimer)
+			.addClass("dot"+this.claimer)
 			.appendTo(this.parent)
 		
 		moveDelayed();
