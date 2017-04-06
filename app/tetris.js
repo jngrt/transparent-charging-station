@@ -20,7 +20,11 @@ const cards = {
   '1':{ priority:1, name: 'DiscountCharge'},
   '2':{ priority:10, name: 'Gift-A-Charge' },
   '3':{ priority:50, name: 'Optimus Platinum'},
-  '4':{ priority:1000, name: 'Medical Doctor'}
+  '4':{ priority:1000, name: 'Medical Doctor'},
+  '65':{ priority:1, name: 'DiscountCharge'},
+  '66':{ priority:10, name: 'Gift-A-Charge' },
+  '67':{ priority:50, name: 'Optimus Platinum'},
+  '68':{ priority:1000, name: 'Medical Doctor'}
 };
 const _maxStress = 50;
 
@@ -131,7 +135,30 @@ class Tetris {
     }
   }
 
-  //claiming algorihm
+  updateCard(claimer, card){
+    if( !cards[card] ){
+      console.error('Undefined card: '+card);
+      return;
+    }
+    let priority = cards[card].priority;
+    let c = this.claims[claimer];
+    if(!c) {
+      throw new Error('Not a valid claimer:' + claimer);
+    }
+    
+    _.extend( c, {
+      priority: priority,
+      card: card
+    })
+
+    this.processClaims();
+  }
+
+  updateParameters(claimer, deadline, chargeNeeded){
+    
+  }
+
+
   updateClaim(claimer, pluggedIn, card, chargeNeeded, deadline, info) {
      //TODO check events: plug in / plug out...
       //TODO update the last line because of plug out.
