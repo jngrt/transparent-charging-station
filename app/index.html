@@ -4,14 +4,12 @@
 		<title>test</title>
 		<meta charset="UTF-8">
 		<style type="text/css">
+			*{
+				box-sizing: border-box;
+			}
 			body{
 				font-family: monospace
 			}
-			/*#tetris{
-				position: absolute;
-				right: 0;
-				top: 0;
-			}*/
 			th {
 				max-width:120px;
 			}
@@ -30,15 +28,6 @@
 				border-bottom:solid 1px #eee;
 			}
 		
-			.dot{
-				position: absolute;
-				transition: 1s all;
-				top: 0;
-				left: 0;
-				width: 10px;
-				height: 10px;
-				background-color: #eee;
-			}
 			.pixel{
 				display: inline-block;
 				height: 12px;
@@ -70,7 +59,6 @@
 				display: inline-block;
 				border: 5px solid #eee;
 				margin: 5px;
-				width: 210px;
 			}
 			.debug {
 				width: 200px;
@@ -80,35 +68,90 @@
 			.formB{ border: 5px solid green;}
 			.formC{ border: 5px solid blue;}
 			
-			#swarm{
-				position: absolute;
-				right: 0;
-				top: 0;
-				width: 200px;
-				height: 100%;
-				display:none;
+			.debug-ui{
+				background-color: rgba(255,255,255,.9);
+				border: 1px solid black;
 			}
-			.col1{
+			.debug-input{
 				position: absolute;
-				left: 0;
+				left: 10px;
+				top: 10px;
 				width: 300px;
-				
+				z-index: 999;
 			}
 			.debug-grid{
 				position: absolute;
-				left: 300px;
+				left: 310px;
+				top: 0px;
 				width:600px;
-				top: 0;
-				height:100%;
+				z-index: 999;
 			}
+			#ui{
+				position: absolute;
+				right: 10px;
+				top: 10px;
+				width: 1080px;
+				height: 2560px;
+				transform-origin: top right;
+				transform: scale(.4);
+				border: 3px solid black;
 
+			}
+				#tetris_ui{
+					position: absolute;
+					left: 264px;
+					top: 0px;
+					width: 552px;
+					height: 2208px;
+					border: 3px solid blue;
+				}
+				#socket-ui{
+					position: absolute;
+					left: 0;
+					bottom: 0;
+					width: 1080px;
+					height: 320px;
+					border: 3px solid red;
+				}
+			.line{
+				position: absolute;
+				left: 0;
+				top: 0;
+				height: 46px;
+				width: 552px;
+				transition: all 1s;
+
+			}
+			.dot{
+				/*position: absolute;
+				left: 50%;
+				bottom: 0;*/
+				display: inline-block;
+				width: 46px;
+				height: 46px;
+				border: 11px solid white;
+				background-color: black;
+				border-radius: 100%;
+				color: white;
+				line-height: 24px;
+				text-align: center;
+				font-size: 18px;
+				transition: all 1s;
+			}
+				.dot0{ background-color: red; }
+				.dot1{ background-color: green; }
+				.dot2{ background-color: blue; }
 		</style>
 	</head>
 	<body>
-		<div id='swarm'>
+		<div id="ui"> 
+			<!-- this contains the enire interface -->
+			<div id="tetris_ui">
+			</div>
+			<div id="socket-ui">
+			</div>
 		</div>
-		
-		<div class='col1'>
+		<div class='debug-input debug-ui'>
 			<button class="toggle-timer">Timer</button><div class="time-display">0</div>
 			<form class='addClaims formA'>
 				<!-- <h2>Socket 1</h2> -->
@@ -208,7 +251,7 @@
 				<div class="debug">
 			</form>
 		</div>
-		<div class="debug-grid">
+		<div class="debug-grid debug-ui">
 			For each user [Charge received: Available until deadline:Stress]
 			<table>
 				<thead>
@@ -228,11 +271,10 @@
 				<tbody id="tetris">
 				</tbody>
 			</table>
-
 		</div>
 
 		<script src="tetris.js"></script>
-		<script src="swarm.js"></script>
+		<script src="swarm2.js"></script>
 		<!-- // <script src="serialStuff.js"></script> -->
 		<script src="app.js"></script>
  	</body>

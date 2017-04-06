@@ -27,8 +27,8 @@ jQuery(document).ready(function ($) {
 	//for debug
 	document.tetris = tetris;
 
-	//swarm = new Swarm();
-	//tetris.onUpdate(() => swarm.update( tetris.getCurrentGrid() ));
+	swarm = new NewSwarm("#tetris_ui");
+	tetris.onUpdate(() => swarm.update( tetris.getCurrentGrid() ));
 	tetris.onUnplug( doReplay );
 
 	
@@ -96,6 +96,11 @@ jQuery(document).ready(function ($) {
 	function updateTime(){
 		$('.time-display').html( tetris.increaseTime() );
 	}
+	$(window).on('keypress', function(event) {
+		if(event.charCode == 120){
+			$(".debug-ui").toggle();
+		};
+	});
 	
 });
 
