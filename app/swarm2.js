@@ -5,7 +5,7 @@ var Line = function(_line, _i, _parent){
 	var _this = this;
 
 	var line = _line;
-	var i = index = _i;
+	var index = _i;
 	var parent = _parent;
 	var parentHeight = $(parent).height();
 
@@ -18,20 +18,20 @@ var Line = function(_line, _i, _parent){
 	const bgColorAvailable = "#eee";
 	const bgColorNotAvailable = "white";
 
-
 	var createLine = function(){
-		return $("<div></div>").addClass("line").appendTo(parent);
+		return $("<div data-index="+index+"></div>").addClass("line").appendTo(parent);
 	}
 	var createDot = function(){
 		return $("<div></div>").addClass("dot").appendTo(el);
 	}
 	var claimDots = function(){
+		
 		//we have a line and empty pixels.
-			
-		//CENTER ALIGNED
+		
 		var offset = Math.round((12-line.length)/2);
 
 		_.each(dots, function(dot, i){
+			
 			if(_.isUndefined(line[i])){
 				var bgColor = bgColorNotAvailable;
 			} else if (line[i]<0) {
@@ -39,46 +39,30 @@ var Line = function(_line, _i, _parent){
 			} else {
 				var bgColor = bgColors[line[i]];
 			}
+
 			if(i < offset) dot.css("background-color",bgColorNotAvailable);
 			if(i+offset < 12) dots[i+offset].css("background-color",bgColor);
 		});
-
-		//LEFT ALIGNED
-		// _.each(dots, function(dot, i){
-		// 	if(_.isUndefined(line[i])){
-		// 		var bgColor = bgColorNotAvailable;
-		// 	} else if (line[i]<0) {
-		// 		var bgColor = bgColorAvailable;
-		// 	} else {
-		// 		var bgColor = bgColors[line[i]];
-		// 	}
-		// 	dot.css("background-color",bgColor);
-		// })
 	}
 	var moveLine = function(){
-		_.delay(function(){
-			console.log("how many lines should i move? "+i);
-			el.css("top",parentHeight - i*lineHeight);
-		}, index*20);
+		var _offset = Math.round(parentHeight - ((index+1)*lineHeight));
+		console.log("how many lines should i move? "+index, _offset, Math.round(parentHeight));
+		el.css("top",_offset);
 	}
 	var clearLine = function(){
-		el.css("top",parentHeight + 320 + lineHeight);
+		el.css("top",parentHeight + 320 + lineHeight).one("transitionend",kill);
 		_this.cleared = true;
-
-		el.one("transitionend",function(){
-			kill();
-		})
 	}
 	var kill = function(){
 		el.remove();
 		delete this;
 	}
-	this.redraw = function(_line, newLine){
+	this.redraw = function(_line, _clearLine){
 		line = _line;
 		//if we have a new line, do the animation
-		if(newLine){
-			i--;
-			if(i < 0){
+		if(_clearLine){
+			index--;
+			if(index < 0){
 				clearLine();
 			} else {
 				moveLine();
@@ -99,9 +83,9 @@ var Line = function(_line, _i, _parent){
 		moveLine();
 
 		//then we fill it with dots
-		for (var i = 0; i < 12; i++) {
+		_.times(12, function(){
 			dots.push(createDot());
-		};
+		});
 
 		//then we claim the dots
 		claimDots();	
@@ -111,15 +95,11 @@ var Line = function(_line, _i, _parent){
 var NewSwarm = function(_parent){
 
 	var _this = this;
-
-	//rendering vars
 	var parent = _parent;
 
-	//variables for animation
 	var throttle = 200, 
 		calculationTimeout;
 
-	//keeping track of dots
 	var lines 			= [],
 		destinations 	= [];
 	
@@ -132,6 +112,9 @@ var NewSwarm = function(_parent){
 
 		//we get the lines in, now lets make it work.
 		destinations = _.map(_lines, function(line){return line.pixels});
+		console.log('update');
+
+
 
 		clearLine = (_lines[0].t > time);
 		time = _lines[0].t;
@@ -144,7 +127,8 @@ var NewSwarm = function(_parent){
 		// if(calculationTimeout) clearTimeout(calculationTimeout);
 		// calculationTimeout = setTimeout(calculate, throttle);
 
-		_.debounce(calculate, throttle);
+		// _.debounce(calculate);
+		calculate();
 
 	}
 
@@ -153,8 +137,9 @@ var NewSwarm = function(_parent){
 	}
 
 	var createLines = function(_destinations){
-		console.log("creating "+_destinations.length+" new lines")
-		_.each(_destinations, function(destination_line) {
+		// console.log("creating "+_destinations.length+" new lines")
+		_.each(_destinations, function(destination_line, index) {
+
 			var line = createLine(destination_line, lines.length, parent);
 			line.init();
 			lines.push(line);
@@ -162,19 +147,28 @@ var NewSwarm = function(_parent){
 	}
 
 	var calculate = function(){
+		console.log('calculate - ', destinations.length);
 	
-		_.each(lines,function(line, i){
-			if(line.cleared){ 
-				console.log("line "+i+" is cleared");
-				delete lines[i]; 
+		_.each(destinations,function(destination, index){
+			if(!lines[index]) return; 
+			//this line does not exists.
+
+			if(lines[index].cleared){ 
+				//this line was cleared in the last cycle
+				console.log("line "+index+" is cleared");
+				delete lines[index]; 
 			} else {
-				line.redraw(destinations[i],clearLine);
+				//this line can still be redrawn
+				lines[index].redraw(destination,clearLine);
+				delete destinations[index]; //this line has been animated, so clear it from destinations.
 			}
-			delete destinations[i]; //this line has been animated, so clear it from destinations.
 		})
+
 
 		lines 			= _.compact(lines);
 		destinations 	= _.compact(destinations);
+
+		console.log("This many destinations have been unfulfilled ",destinations.length);
 		
 		createLines(destinations);
 
@@ -184,3 +178,17 @@ var NewSwarm = function(_parent){
 
 
 }
+
+
+
+//LEFT ALIGNED
+// _.each(dots, function(dot, i){
+// 	if(_.isUndefined(line[i])){
+// 		var bgColor = bgColorNotAvailable;
+// 	} else if (line[i]<0) {
+// 		var bgColor = bgColorAvailable;
+// 	} else {
+// 		var bgColor = bgColors[line[i]];
+// 	}
+// 	dot.css("background-color",bgColor);
+// })
