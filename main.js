@@ -19,8 +19,8 @@ function createWindow () {
   // Create the browser window.
   mainWindow = new BrowserWindow({
     width: 800, 
-    height: 600, 
-    kiosk:true,
+    height: 1000, 
+    //kiosk:true,
     autoHideMenuBar:true
   });
   // mainWindow.setFullScreen(true);
