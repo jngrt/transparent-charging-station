@@ -12,13 +12,17 @@ var ControlPanel = function(_id, _parent){
 	var lines = [];
 	var claims = [];
 
+	var lastChargeReq = 0;
+	var lastDeadlineReq = 0;
+
 	var currentState = 0;
 	var lastState = -1;
 	
 	const STATE_PLUG_IN = 0;
 	const STATE_TAP_TO_START = 1;
-	const STATE_CHANGE = 2;
+	const STATE_CHANGE_PARAMS = 2;
 	const STATE_CHARGING = 3;
+	const STATE_CHARGE_FULL = 4;
 
 	var data = {};
 	
@@ -30,6 +34,7 @@ var ControlPanel = function(_id, _parent){
 			chargePlan: "No Plan Selected",
 			chargePlanMeta: "-",
 			notificationMsg: "No Warnings",
+			notificationChargedMsg: "No Warnings",
 			deadlineValue: "12:00",
 			deadlineReqValue: "12:00",
 			chargeValuePerc: 100,
@@ -51,7 +56,6 @@ var ControlPanel = function(_id, _parent){
 
 	var bleep = function(_times){
 		var times = _times + 1; 
-		console.log(times + " bleeps socket"+id);
 		el.addClass(bleepClass)
 			.css("animation-iteration-count",times)
 			.one("animationend",function(){ 
@@ -72,17 +76,25 @@ var ControlPanel = function(_id, _parent){
 		el.children('.state').hide();		
 	}
 	var stateChange = function(){
-		if(currentState == lastState) return;
-		console.log(id+" --> changing state to "+currentState);
-		lastState = currentState;
-		el.children('.state').fadeOut();
-		el.children('.state'+currentState).fadeIn();
+		if(currentState != lastState){
+			//elegant transition
+			el.children('.state').fadeOut();
+			el.children('.state'+currentState).fadeIn();
+			lastState = currentState;
+			return;
+		};
+		//cut to state
+		el.children('.state'+currentState).show();
+		
 	}
 
 	var timestampToHour = function(timestamp){
 
-		var hour = Math.floor(timestamp/4)%24;
-		var min = (timestamp%4)*15;
+		var hour = (Math.floor(timestamp/4)+12)%24;
+		var min = Math.abs((timestamp%4)*15);
+
+		hour = (hour < 10) ? "0"+hour : hour;
+		min = (min < 10) ? "0"+min : min;
 
 		return hour +":"+min;
 
@@ -103,29 +115,57 @@ var ControlPanel = function(_id, _parent){
 		//first we extract all variables from the tetris and claims.
 
 		var myClaim = claims[id];
+		currentState = 1;
 		
 		//if ClaimStart == -1, nothing is happening
 		if(myClaim.claimStart < 0){
-			currentState = 0;
+			currentState = STATE_PLUG_IN;
 			stateChange();
 			return; //no need to change the data.
 		}
-		if(myClaim.card < 1){
-			currentState = 1;
+		if(myClaim.card < 1){ //still need to swipe card.
+			currentState = STATE_TAP_TO_START;
 		} else {
-			currentState = 2;
+			//has this request been changed?
+			if(myClaim.chargeReceived > 0 && myClaim.chargeReceived >= myClaim.chargeNeeded){
+				currentState = STATE_CHARGE_FULL;
+				if(myClaim.predictedClaimEnd > myClaim.deadline){
+					data.notificationChargedMsg = "Not charged within deadline";
+				} else {
+					data.notificationChargedMsg = "";
+				}
+			} else if(lastDeadlineReq == myClaim.deadline && lastChargeReq == myClaim.chargeNeeded){
+				currentState = STATE_CHARGING;
+			} else {
+				currentState = STATE_CHANGE_PARAMS;
+			}
+			
 			data.chargePlan = cards[myClaim.card].name;
 			data.chargePlanMeta = cards[myClaim.card].name;
 		}
 
+		if(myClaim.predictedClaimEnd > myClaim.deadline){
+			data.notificationMsg = "You won't make your deadline";
+		} else {
+			data.notificationMsg = "";
+		}
 
-		data.notificationMsg = "No Warnings";
-		data.deadlineValue = "12:00";
-		data.deadlineReqValue = "12:00";
-		data.chargeValuePerc = 100;
-		data.chargeReqValue = 10;
+		//find 
+		var claimId = lines[0].claims[id]; 
+
+		// if(claimId){
+		// 	data.chargeValuePerc = (Math.round(claimId.chargeReceived / claimId.chargeNeeded).toFixed(2))*100;
+		// } else {
+			data.chargeValuePerc = Math.round(100*(myClaim.chargeReceived / myClaim.chargeNeeded));
+		// }
+
+		data.deadlineValue = timestampToHour(myClaim.predictedClaimEnd);
+		data.deadlineReqValue = timestampToHour(myClaim.deadline);
+		data.chargeReqValue = myClaim.chargeNeeded;
+
+		lastChargeReq = myClaim.chargeNeeded;
+		lastDeadlineReq = myClaim.deadline;
 		
-
 		/*
 		card : 1
 		chargeNeeded : 68
@@ -135,10 +175,10 @@ var ControlPanel = function(_id, _parent){
 		deadline : 12
 		predictedClaimEnd : 28
 		priority : 1
-
 		*/
-		stateChange();
 		render();
+		console.log("going to rerender for state ",currentState);
+		stateChange();
 		clearLine();
 
 	}
@@ -155,7 +195,7 @@ var ControlPanel = function(_id, _parent){
 		//now we have a box;
 		el.click(function(){
 			currentState++;
-			currentState%=4;
+			currentState%=5;
 			stateChange();
 		})
 

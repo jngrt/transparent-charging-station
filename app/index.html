@@ -218,9 +218,32 @@
 					<span class='ui-personal-plan'><%= rc.chargePlan %></span>
 					<span class='ui-personal-meta'><%= rc.chargePlanMeta %></small>
 				</div>
+				<% if(rc.notificationMsg != ""){ %> 
 				<div class='ui-notification'>
 					<%= rc.notificationMsg %>
 				</div>
+				<% } %>
+				<div class='ui-deadline'>
+					<div class='ui-deadline-value'><%= rc.deadlineReqValue %></div>						
+					<div class='ui-deadline-unit'>today / tomorrow</div>						
+					<div class='ui-deadline-label'>deadline</div>						
+				</div>
+				<div class='ui-charge'>
+					<div class='ui-charge-value'><%= rc.chargeReqValue %></div>
+					<div class='ui-charge-unit'>kWh</div>
+					<div class='ui-charge-label'>charge</div>
+				</div>
+			</div>
+			<div class='state state3'>
+				<div class='ui-personal-info'>
+					<span class='ui-personal-plan'><%= rc.chargePlan %></span>
+					<span class='ui-personal-meta'><%= rc.chargePlanMeta %></small>
+				</div>
+				<% if(rc.notificationMsg != ""){ %> 
+				<div class='ui-notification'>
+					<%= rc.notificationMsg %>
+				</div>
+				<% } %>
 				<div class='ui-progress-deadline'>
 					<h1>expected finished</h1>
 					<div class='ui-progress-deadline-value'><%= rc.deadlineValue %></div>
@@ -230,6 +253,18 @@
 					<h1>currently charged</h1>
 					<div class='ui-progress-charge-value'><%= rc.chargeValuePerc %></div>
 					<div class='ui-progress-charge-label'><%= rc.chargeReqValue %></div>				
+				</div>
+			</div>
+			<div class='state state4'>
+				<div class='ui-charged'>
+					<div class='ui-charged-box'>
+						<span>This car is fully charged</span>
+						<% if(rc.notificationChargedMsg != ""){ %> 
+						<div class='ui-notification-charged'>
+							<%= rc.notificationChargedMsg %>
+						</div>
+						<% } %>
+					</div>
 				</div>
 			</div>
 		</script>
