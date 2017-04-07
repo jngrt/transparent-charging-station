@@ -18,19 +18,24 @@ let readersCallback;
 let encodersCallback;
 let plugsCallback;
 
+const STX = '\2';
+const ETX = '\3';
+
+let plugsBuffer = '';
+
 exports.init = function(){
 	SerialPort.list( (err, ports) => {
 		_.each(ports, port => {
-			console.log(port);
+			//console.log(port);
 			if( port.pnpId === void 0 )
 				return;
 			let dev = _.find(devices, dev => dev.pnpId === port.pnpId );
 			if( dev ) {
 				console.log( 'Found device ', dev, port );
 				startListening( dev, port );
+			} else if( ~port.manufacturer.indexOf('Arduino')){
+				console.log('This Arduino is not configured', port);
 			}
-			
-
 		});
 	});
 }
@@ -41,7 +46,7 @@ exports.setEncodersCallback = function( cb ){
 	encodersCallback = cb;
 }
 exports.setPlugsCallback = function( cb ) {
-	encodersCallback = cb;
+	plugsCallback = cb;
 }
 
 
@@ -74,6 +79,7 @@ function readersData( data ) {
 	if( data.length !== 4 ) return;
 	
 	let dataStr = data.toString('utf8');
+	
 	let plug = +dataStr.substr(1,1);
 	let card = +dataStr.substr(2,2);
 	if( readersCallback )
@@ -99,12 +105,39 @@ function encodersData( data ) {
 	let encoder = +dataStr.substr(2,1);
 	let claimer = ~~(encoder / 2);
 	
-
 }
 function plugsData( data ) {
 	console.log('plugsData');
-	console.log(data);
-	console.log(data.toString('utf8'));
+	plugsBuffer += data.toString('utf8');
+	console.log(plugsBuffer);
 
+	while( ~plugsBuffer.indexOf(STX) && ~plugsBuffer.indexOf(ETX)){
+	
+		let stxi = plugsBuffer.indexOf(STX);
+
+		//Remove any chars before STX
+		if( stxi > 0 ) {
+			plugsBuffer = plugsBuffer.substr(stxi)
+			stxi = 0;
+		}
+
+		let etxi = plugsBuffer.indexOf(ETX);
+		if( !~etxi )
+			return;
+			
+		let msg = plugsBuffer.substring(stxi+1,etxi);
+		plugsBuffer = plugsBuffer.substr(etxi+1);
+		let split = msg.split(',');
+		
+		if( split.length !== 3 )
+			return;
+	
+		let plug = +split[1];
+		let pluggedIn = !!+split[2];
+	
+		if( plugsCallback ) {
+			plugsCallback({claimer:plug, pluggedIn:pluggedIn});
+		}
+	}
 }
 

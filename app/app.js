@@ -34,6 +34,8 @@ jQuery(document).ready(function ($) {
 
 	ArduinoManager.init();
 	ArduinoManager.setReadersCallback( onCardScan );
+	ArduinoManager.setPlugsCallback( onPlug );
+	ArduinoManager.setEncodersCallback( onEncoders );
 	const tetris = new Tetris();
 	
 	//for debug
@@ -73,6 +75,12 @@ jQuery(document).ready(function ($) {
 
 	function onCardScan( obj ) {
 		tetris.updateCard( obj.claimer, obj.card );
+	}
+	function onPlug( obj ) {
+		console.log( obj );
+	}
+	function onEncoders( obj ) {
+		console.log(obj);
 	}
 
 	/*
