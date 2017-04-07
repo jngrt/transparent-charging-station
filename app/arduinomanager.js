@@ -2,6 +2,8 @@ const SerialPort = require('serialport');
 const [READERS,ENCODERS,PLUGS] = [0,1,2];
 const callbacks = [];
 
+let lightsDev;
+
 const STX = '\2';
 const ETX = '\3';
 
@@ -25,10 +27,20 @@ exports.setPlugsCallback = function( cb ) {
 	callbacks[PLUGS] = cb;
 }
 
+exports.setLights = function( leds ) {
+	if(!lightsDev) return console.log('leds arduino not yet known');
+
+	lightsDev.write(leds.join(''),err=>{
+		if(err) return console.log('Lights error: ', err);
+		console.log('Leds data sent succesfully');
+	});
+}
+
 
 function startListening( portInfo ) {
 	
 	let sp = new SerialPort(portInfo.comName, { baudRate: 115200});
+
 	sp.on('error', err => console.log('Error: ', err.message));
 	//let fn = {readers:readersData, encoders:encodersData, plugs: plugsData}[dev.type];
 	
@@ -67,6 +79,10 @@ function startListening( portInfo ) {
 			
 			if( callbacks[devType] ) {
 				callbacks[devType](plug, value);
+			}
+
+			if( !lightsDev && devType === PLUGS ) {
+				lightsDev = sp;
 			}
 		}
 	});
