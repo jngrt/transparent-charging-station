@@ -26,7 +26,7 @@ var ControlPanel = function(_id, _parent){
 
 	var data = {};
 	
-	var throttle = 300, 
+	var throttle = 20, 
 		calculationTimeout;
 		
 	var setDefaultData = function(){
@@ -100,9 +100,8 @@ var ControlPanel = function(_id, _parent){
 
 	}
 
-	this.update = function(_lines, _claims){
+	this.update = function(_claims){
 
-		lines = _lines;
 		claims = _claims;
 
 		if(calculationTimeout) clearTimeout(calculationTimeout);
@@ -141,7 +140,7 @@ var ControlPanel = function(_id, _parent){
 			}
 			
 			data.chargePlan = cards[myClaim.card].name;
-			data.chargePlanMeta = cards[myClaim.card].name;
+			data.chargePlanMeta = cards[myClaim.card].info.join(" • ");
 		}
 
 		if(myClaim.predictedClaimEnd > myClaim.deadline){
@@ -150,32 +149,16 @@ var ControlPanel = function(_id, _parent){
 			data.notificationMsg = "";
 		}
 
-		//find 
-		var claimId = lines[0].claims[id]; 
-
-		// if(claimId){
-		// 	data.chargeValuePerc = (Math.round(claimId.chargeReceived / claimId.chargeNeeded).toFixed(2))*100;
-		// } else {
-			data.chargeValuePerc = Math.round(100*(myClaim.chargeReceived / myClaim.chargeNeeded));
-		// }
-
+		var chargePercentage = Math.round(100*(myClaim.chargeReceived / myClaim.chargeNeeded));
+		data.chargeValuePerc = (_.isNaN(chargePercentage)) ? 0 : chargePercentage;
+	
 		data.deadlineValue = timestampToHour(myClaim.predictedClaimEnd);
 		data.deadlineReqValue = timestampToHour(myClaim.deadline);
 		data.chargeReqValue = myClaim.chargeNeeded;
 
 		lastChargeReq = myClaim.chargeNeeded;
 		lastDeadlineReq = myClaim.deadline;
-		
-		/*
-		card : 1
-		chargeNeeded : 68
-		chargeReceived : 0
-		claimStart : 0
-		claimer : 0
-		deadline : 12
-		predictedClaimEnd : 28
-		priority : 1
-		*/
+
 		render();
 		console.log("going to rerender for state ",currentState);
 		stateChange();
@@ -188,9 +171,9 @@ var ControlPanel = function(_id, _parent){
 
 	this.init = function(){
 		//create a box;
+		setDefaultData();
 		createEl();
 		stateChange();
-		setDefaultData();
 
 		//now we have a box;
 		el.click(function(){

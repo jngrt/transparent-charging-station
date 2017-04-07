@@ -6,7 +6,7 @@ var NewSwarm = function(_parent){
 
 	var dotSize = lineHeight = 44.8;
 
-	var throttle = 200, 
+	var throttle = 50, 
 		calculationTimeout;
 
 	var lines = [];
@@ -18,13 +18,10 @@ var NewSwarm = function(_parent){
 
 	this.update = function(_lines){
 
-		//we get the lines in, now lets make it work.
-		// destinations = _.map(_lines, function(line){return line.pixels});
 		lines = _lines;
 
 		clearLine = (time < lines[0].t);
 		time = lines[0].t;
-
 
 		if(calculationTimeout) clearTimeout(calculationTimeout);
 		calculationTimeout = setTimeout(calculate, throttle);
@@ -42,6 +39,22 @@ var NewSwarm = function(_parent){
 			top: parentHeight - (l+1)*lineHeight
 		}
 	}
+	var addTimeLabel = function(t, l){
+
+		var time = 12+(t/4);
+		time = (time>10) ? time : "0"+time;
+		time += ":00";
+
+		var top = {top: parentHeight - (l+1)*lineHeight};
+
+		$("<div></div>")
+			.addClass("timeLabel")
+			.html(time)
+			.css(top)
+			.appendTo(parent)
+			.hide()
+			.fadeIn();
+	}
 	var createDots = function(){
 		
 		var i = 0;
@@ -50,7 +63,7 @@ var NewSwarm = function(_parent){
 			var claims = line.claims;
 			i++;
 			if(line.t%4 == 0){
-				//add a timelabel
+				addTimeLabel(line.t, l);
 			}
 			_.each(line.pixels, function(pixel, p){
 				
@@ -82,6 +95,7 @@ var NewSwarm = function(_parent){
 	}
 	this.reset = function(callback){
 		$(".dot").css("transform","translateY(3000px)").css("transition-duration","2s");
+		$(".timeLabel").fadeOut();
 		setTimeout(function(){
 			clearDots(callback);
 		},4000);
@@ -89,6 +103,7 @@ var NewSwarm = function(_parent){
 	var clearDots = function(callback){
 		dots = [];
 		$(".dot").remove();
+		$(".timeLabel").remove();
 		$(parent).empty();
 		if(typeof callback == "function") callback();
 	}
@@ -96,6 +111,8 @@ var NewSwarm = function(_parent){
 		clearDots(createDots);
 	}
 	var animateDots = function(callback){
+		
+		$(".timeLabels").fadeOut();
 		_.each(dots,function(dot){
 			if(dot.l == 0){
 				if(dot.claimer >=0){
@@ -107,7 +124,7 @@ var NewSwarm = function(_parent){
 				dot.el.css("opacity","0");
 				
 			}
-			dot.el.css("transform","translateY(46px)");
+			dot.el.css("transform","translateY("+lineHeight+"px)");
 		});
 
 		// $(".dot")

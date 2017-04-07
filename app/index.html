@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="">
 	<head>
-		<title>test</title>
+		<title>Transparent Charging Station</title>
 		<meta charset="UTF-8">
 		<link rel="stylesheet" type="text/css" href="style/reset.css">
 		<link rel="stylesheet" type="text/css" href="style/style.css">
@@ -93,13 +93,9 @@
 	</head>
 	<body>
 		<div id="ui"> 
-			<!-- this contains the enire interface -->
 			<div id="tetris_ui">
 			</div>
 			<div id="socket-ui">
-				<!-- Panel 1 -->
-				
-				
 			</div>
 		</div>
 		<div class='debug-input debug-ui'>
@@ -206,12 +202,10 @@
 				</div>
 				<div class='ui-deadline'>
 					<div class='ui-deadline-value'><%= rc.deadlineReqValue %></div>						
-					<div class='ui-deadline-unit'>today / tomorrow</div>						
 					<div class='ui-deadline-label'>deadline</div>						
 				</div>
 				<div class='ui-charge'>
 					<div class='ui-charge-value'><%= rc.chargeReqValue %></div>
-					<div class='ui-charge-unit'>kWh</div>
 					<div class='ui-charge-label'>charge</div>
 				</div>
 			</div>
@@ -227,12 +221,10 @@
 				<% } %>
 				<div class='ui-deadline'>
 					<div class='ui-deadline-value'><%= rc.deadlineReqValue %></div>						
-					<div class='ui-deadline-unit'>today / tomorrow</div>						
 					<div class='ui-deadline-label'>deadline</div>						
 				</div>
 				<div class='ui-charge'>
 					<div class='ui-charge-value'><%= rc.chargeReqValue %></div>
-					<div class='ui-charge-unit'>kWh</div>
 					<div class='ui-charge-label'>charge</div>
 				</div>
 			</div>
@@ -247,12 +239,10 @@
 				</div>
 				<% } %>
 				<div class='ui-progress-deadline'>
-					<h1>expected finished</h1>
 					<div class='ui-progress-deadline-value'><%= rc.deadlineValue %></div>
 					<div class='ui-progress-deadline-label'><%= rc.deadlineReqValue %></div>	
 				</div>
 				<div class='ui-progress-charge'>
-					<h1>currently charged</h1>
 					<div class='ui-progress-charge-value'><%= rc.chargeValuePerc %></div>
 					<div class='ui-progress-charge-label'><%= rc.chargeReqValue %></div>				
 				</div>
@@ -262,9 +252,9 @@
 					<div class='ui-charged-box'>
 						<span>This car is fully charged</span>
 						<% if(rc.notificationChargedMsg != ""){ %> 
-						<div class='ui-notification-charged'>
+						<span class='ui-notification-charged'>
 							<%= rc.notificationChargedMsg %>
-						</div>
+						</span>
 						<% } %>
 					</div>
 				</div>

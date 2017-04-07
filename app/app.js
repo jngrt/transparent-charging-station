@@ -22,10 +22,10 @@ const tickDuration = 5000;
 const [P_LOW, P_NORMAL, P_HIGH, P_TOP] = [1, 10, 50, 1000];
 
 const cards = {
-  '65':{ name: 'Community Service', priority:P_HIGH, info:['High priority','Flexible deadline','Outside peak hours']},
-  '66':{ name: 'Optimus Platinum', priority:P_HIGH, info: ['High priority', 'Strict deadline', 'Unlimited use']},
-  '67':{ name: 'Ministry of Transport', priority:P_TOP, info:['Top priority', 'Strict deadline', 'Use with discretion']},
-  '68':{ name: 'A-Mart', priority: P_NORMAL, info:['Normal priority', 'Flexible deadline', '50% off at A-Mart charging stations']},
+  	'65':{ name: 'Community Service', priority:P_HIGH, info:['High priority','Flexible deadline','Outside peak hours']},
+  	'66':{ name: 'Optimus Platinum', priority:P_HIGH, info: ['High priority', 'Strict deadline', 'Unlimited use']},
+  	'67':{ name: 'Ministry of Transport', priority:P_TOP, info:['Top priority', 'Strict deadline', 'Use with discretion']},
+  	'68':{ name: 'A-Mart', priority: P_NORMAL, info:['Normal priority', 'Flexible deadline', '50% off at A-Mart charging stations']},
 	'69':{ name: 'Medical Priority', priority: P_HIGH, info:['High priority', 'Strict deadline', 'Medical condition: Heavily pregnant']},
 	'70':{ name: 'Probation I.D.', priority: P_LOW, info:['Low priority', 'Flexible deadline', 'Max 20 kWH per charge']},
 	'71':{ name: 'Diplomat', priority: P_TOP, info:['Top priority', 'Strict deadline', 'Use with discretion']},
@@ -108,7 +108,7 @@ jQuery(document).ready(function ($) {
 		cp.init();
 		tetris.onUpdate(() =>{
 			// if(appState == REPLAY) return;
-			cp.update( tetris.getCurrentGrid(), tetris.claims );
+			cp.update( tetris.claims );
 		
 		});
 		return cp;

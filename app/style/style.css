@@ -3,16 +3,16 @@ body{
 }
 #ui{
 	position: absolute;
-	left: 0px;
-	top: -1400px;
-	top: 0px;
+	right: 0px;
+	top: -1600px;
+	/*top: 0px;*/
 	width: 1080px;
 	height: 2560px;
 	background-color: black;
 	font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
 	overflow: hidden;
-/*	transform: scale(.45);
-	transform-origin: top right;*/
+	/*transform: scale(.4);*/
+	/*transform-origin: top right;*/
 }
 #tetris_ui{
 	position: absolute;
@@ -22,41 +22,40 @@ body{
 	height: 2150px;
 }
 
-		.lineLabel{
-			height: 22px;
-			width: 68px;
-			border-radius: 11px;
-			background-color: white;
-			color: black;
-			line-height: 22px;
-			font-size: 14px;
-			font-weight: 900;
-			text-align: center;
-			position: absolute;
-			left: -90px;
-			top: 11px;
-		}
 		.dot{
 			position: absolute;
-			width: 46px;
-			height: 46px;
-			border: 11px solid black;
+			width: 44.8px;
+			height: 44.8px;
 			background-color: white;
 			font-size: 10px;
 			transition: all 1s;
-			border: 11px solid black;
+			border: 6px solid black;
 			border-radius: 100%;
 		}
 		.dot0{ background-color: red	}
 		.dot1{ background-color: green	}
 		.dot2{ background-color: blue	}
+
+		.timeLabel { 
+			position: absolute;
+			left: -200px;
+			width: 100px;
+			height: 44.8px;
+			border: 6px solid black;
+			border-radius: 22.4px;
+			line-height: 32.8px;
+			background-color: white;
+			text-align: center;
+			font-weight: 800;
+			font-size: 12px;
+		}
 	.dead{
 		border-color: red;
 	}
 
 #socket-ui{
 	position: absolute;
-	left: 8px;
+	left: 12px;
 	bottom: 0;
 	width: 1064px;
 	height: 270px;
@@ -67,17 +66,18 @@ body{
 	overflow: hidden;
 }
 
-	.ui-panel{
-		position: absolute;
-		display: block;
-		float: left;
-		width: 360px;
-		height: 320px;
-		border-right: 1px solid rgba(255,255,255,.2);
-		text-shadow: 0px 0px 20px rgba(0,127,255,1);
-		background: linear-gradient(to bottom, rgba(255,0,0,.4) 0%,rgba(255,0,0,0) 25%);
-		text-align: center;
-	}
+	/*
+		88*4 = 352
+	+---+---+---+---+
+	|   |   |   |   |
+	+---+---+---+---+
+270	|   |   |   |   |	
+	+---+---+---+---+
+	|   |   |   |   |
+	+---+---+---+---+
+
+	*/
+
 	.state {
 		position: absolute;
 		left: 0;
@@ -86,12 +86,30 @@ body{
 		height: 100%;
 		display: none;x
 	}
+
+	.ui-panel{
+		position: absolute;
+		display: block;
+		left: 0;
+		width: 352px;
+		height: 270px;
+		border-right: 1px solid rgba(255,255,255,.2);
+		text-shadow: 0px 0px 20px rgba(0,127,255,1);
+		background: linear-gradient(to bottom, rgba(255,0,0,.4) 0%,rgba(255,0,0,0) 25%);
+		text-align: center;
+	}
+		.ui-panel h1{
+			font-weight: 600;
+			font-size: 12px;
+			margin-bottom: 20px;
+		}
+
 		.ui-panel:nth-child(2){
-			left: 360px;
+			left: 352px;
 			background: linear-gradient(to bottom, rgba(0,255,0,.4) 0%,rgba(0,255,0,0) 25%);
 		}
 		.ui-panel:last-child{
-			left: 720px;
+			left: 704px;
 			border: none;
 			background: linear-gradient(to bottom, rgba(0,0,255,.4) 0%,rgba(0,0,255,0) 25%);
 		}
@@ -127,8 +145,8 @@ body{
 		position: absolute;
 		left: 0;
 		top: 0;
-		width: 100%;
-		height: 60%;
+		width: 352px;
+		height: 180px;
 		padding: 20px;
 	}
 		.ui-tap-card-box{
@@ -142,20 +160,57 @@ body{
 			flex-direction: column;
 			text-align: center;
 		}
+		.ui-deadline, .ui-charge{
+			position: absolute;
+			right: 0;
+			top: 180px;
+			width: 176px;
+			height: 90px;
+		}
+		.ui-deadline{
+			left: 0;
+			border-right: 1px solid rgba(255,255,255,.2);
+		}
+			.ui-deadline-value, .ui-charge-value{
+				position: absolute;
+				left: 0px;
+				top: 0px;
+				width: 176px;
+				height: 60px;
+				font-size: 56px;
+				text-align: center;
+				font-weight: 100;
+			}
+				.ui-deadline-value:after{
+					content: " h";
+					font-size: 18px;
+					font-weight: 600;
+				}
+				.ui-charge-value:after{
+					content: " kWh";
+					font-size: 18px;
+					font-weight: 600;
+				}
+			
+			.ui-deadline-label, .ui-charge-label{
+				position: absolute;
+				left: 0px;
+				bottom: 0px;
+				padding: 20px;
+				width: 176px;
+				font-size: 12px;
+				line-height: 10px;
+				font-weight: 600;
+				text-align: center;
+			}
 	.ui-personal-info{
 		position: absolute;
-		left: 20px;
-		top: 20px;
-		width: 320px;
-		height: 72px;
-		/*border-bottom: 1px solid rgba(255,255,255,.2);*/
+		padding: 20px;
+		width: 352px;
+		height: 90px;
 		font-size: 36px;
 	}
-		.ui-panel h1{
-			font-weight: 600;
-			font-size: 12px;
-			margin-bottom: 20px;
-		}
+		
 		.ui-personal-meta{
 			margin-top: 5px;
 			display: block;
@@ -165,175 +220,91 @@ body{
 		}
 	.ui-notification{
 		position: absolute;
-		left: 20px;
-		top: 92px;
-		width: 320px;
-		height: 80px;
+		left: 0px;
+		top: 90px;
+		height: 90px;
+		width: 312px;
+		margin: 0 20px;
 		background-color: yellow;
 		color: rgba(6,17,46,.9);
 		box-shadow: 0px 0px 20px rgba(0,127,255,1);
 		font-weight: 900;
 		text-shadow: none;
 		border-radius: 4px;
-		line-height: 80px;
+		line-height: 50px;
 		font-size: 16px;
 		opacity: .8;
+		text-align: left;
+		z-index: 99;
 	}
 		.ui-notification:before{
 			content: "⚠";
 			vertical-align: middle;
-			font-size: 50px;
+			font-size: 32px;
+			margin: 0 20px;
 		}
 
-
-	.ui-deadline{
-		width: 50%;
-		height: 40%;
+	
+	.ui-progress-deadline, .ui-progress-charge{
+		width: 176px;
+		height: 90px;
 		position: absolute;
 		left: 0;
-		bottom: 0;
-		padding: 20px;
+		top: 135px;
 		border-right: 1px solid rgba(255,255,255,.2);
 	}
-
-		.ui-deadline-value{
-			position: absolute;
-			left: 20px;
-			top: 0px;
-			width: 140px;
-			height: 64px;
-			font-size: 56px;
-			text-align: center;
-			font-weight: 100;
-		}
-		
-		.ui-deadline-unit{
-			position: absolute;
-			left: 20px;
-			top: 64px;
-			width: 140px;
-			font-weight: 600;
-			text-align: center;
-			font-size: 12px;
-		}
-		.ui-deadline-label{
-			position: absolute;
-			left: 20px;
-			width: 140px;
-			height: 24px;
-			line-height: 24px;
-			font-size: 12px;
-			bottom: 10px;
-			font-weight: 600;
-			text-align: center;
-		}
-	.ui-charge{
-		width: 50%;
-		height: 40%;
-		position: absolute;
-		right: 0;
-		bottom: 0;
-		padding: 20px;
+	.ui-progress-charge{
+		left: 176px;
 	}
-		.ui-charge-value{
+		.ui-progress-deadline-value, .ui-progress-charge-value{
 			position: absolute;
-			left: 20px;
+			left: 0px;
 			top: 0px;
-			width: 140px;
-			height: 64px;
-			font-size: 56px;
-			text-align: center;
+			width: 176px;
+			font-size: 50px;
+			line-height: 60px;
+			height: 135px;
 			font-weight: 100;
 		}
-		.ui-charge-unit{
-			position: absolute;
-			left: 20px;
-			top: 64px;
-			width: 140px;
-			font-weight: 600;
-			text-align: center;
-			font-size: 12px;
-		}
-			.ui-charge-value sup{
-				font-size: 50%;
-				font-weight: 200;
+			.ui-progress-deadline-value:before, .ui-progress-charge-value:before{
+				font-size: 12px;
+				line-height: 12px;
+				font-weight: 600;
+				width: 178px;
+				display: block;
+			}.ui-progress-deadline-value:before{
+				content: "expected finish";
 			}
-		.ui-charge-label{
+			.ui-progress-charge-value:before{
+				content: "currently charged";
+			}
+			.ui-progress-charge-value:after{
+				content: " %";
+				font-size: 18px;
+				font-weight: 600;
+			}
+		.ui-progress-deadline-label, .ui-progress-charge-label{
 			position: absolute;
-			left: 20px;
-			width: 140px;
-			height: 24px;
-			line-height: 24px;
-			font-size: 12px;
-			bottom: 10px;
+			left: 0px;
+			top: 90px;
+			width: 176px;
+			font-size: 18px;
 			font-weight: 600;
 			text-align: center;
-		}
 
-	.ui-progress-deadline{
-		width: 50%;
-		height: 40%;
-		position: absolute;
-		left: 0;
-		bottom: 0;
-		border-right: 1px solid rgba(255,255,255,.2);
-	}
-		.ui-progress-deadline-value{
-			position: absolute;
-			left: 20px;
-			top: 30px;
-			width: 140px;
-			font-size: 50px;
-			height: 60px;
-			font-weight: 100;
-		}
-		.ui-progress-deadline-label{
-			position: absolute;
-			left: 20px;
-			top: 95px;
-			width: 140px;
-			font-size: 18px;
-			font-weight: 200;
-			text-align: center;
 		}
 			.ui-progress-deadline-label:before{
+				font-weight: 200;
 				content: "requested ";
 			}
-	.ui-progress-charge{
-		width: 50%;
-		height: 40%;
-		position: absolute;
-		right: 0;
-		bottom: 0;
-	}
-		.ui-progress-charge-value{
-			position: absolute;
-			left: 20px;
-			top: 30px;
-			width: 140px;
-			font-size: 50px;
-			height: 60px;
-			font-weight: 100;
-		}
-		.ui-progress-charge-value:after{
-			content: " %";
-			font-size: 32px;
-		}
-		.ui-progress-charge-label{
-			position: absolute;
-			left: 20px;
-			top: 95px;
-			width: 140px;
-			font-size: 18px;
-			font-weight: 200;
-			text-align: center;
-		}
-		.ui-progress-charge-label:before{
-			content: "of ";
-		}
-		.ui-progress-charge-label:after{
-			content: " kWh";
-		}
+			.ui-progress-charge-label:before{
+				font-weight: 200;
+				content: "of ";
+			}
+			.ui-progress-charge-label:after{
+				font-weight: 200;
+				content: " kWh";
+			}
 	.ui-charged{
 		position: absolute;
 		left: 0;
@@ -354,20 +325,18 @@ body{
 			text-align: center;
 		}
 		.ui-notification-charged{
-			position: absolute;
-			left: 40px;
-			bottom: 40px;
-			width: 280px;
-			height: 80px;
+			width: 272px;
+			height: 60px;
 			background-color: yellow;
 			color: rgba(6,17,46,.9);
 			box-shadow: 0px 0px 20px rgba(0,127,255,1);
 			font-weight: 900;
 			text-shadow: none;
 			border-radius: 4px;
-			line-height: 80px;
+			line-height: 60px;
 			font-size: 16px;
 			opacity: .8;
+			margin: 45px 20px 0;
 		}
 			.ui-notification-charged:before{
 				content: "⚠";

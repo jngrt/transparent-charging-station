@@ -20,10 +20,10 @@ function createWindow () {
   mainWindow = new BrowserWindow({
     width: 800, 
     height: 1000, 
-    //kiosk:true,
+    // kiosk:true,
     autoHideMenuBar:true
   });
-  // mainWindow.setFullScreen(true);
+  mainWindow.setFullScreen(true);
 
   // and load the index.html of the app.
   mainWindow.loadURL(url.format({
