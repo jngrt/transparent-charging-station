@@ -17,6 +17,18 @@ const [NORMAL,REPLAY] = _.times(2,n=>n);
 let appState = NORMAL;
 
 const greenThreshold = 6; //6 gray energy, 6 green energy
+const tickDuration = 5000;
+
+const cards = {
+  '1':{ priority:1, name: 'DiscountCharge'},
+  '2':{ priority:10, name: 'Gift-A-Charge' },
+  '3':{ priority:50, name: 'Optimus Platinum'},
+  '4':{ priority:1000, name: 'Medical Doctor'},
+  '65':{ priority:1, name: 'DiscountCharge'},
+  '66':{ priority:10, name: 'Gift-A-Charge' },
+  '67':{ priority:50, name: 'Optimus Platinum'},
+  '68':{ priority:1000, name: 'Medical Doctor'}
+};
 
 jQuery(document).ready(function ($) {
 
@@ -34,7 +46,6 @@ jQuery(document).ready(function ($) {
 	tetris.onUpdate(() => swarm.update( tetris.getCurrentGrid() ));
 	tetris.onUnplug( doReplay );
 
-	
 	/*
 	INPUT
 	*/
@@ -62,18 +73,20 @@ jQuery(document).ready(function ($) {
 
 	function onCardScan( obj ) {
 		tetris.updateCard( obj.claimer, obj.card );
-		//tetris.updateClaim( obj.claimer,  )
 	}
 
 	/*
 	CONTROL PANEL
 	*/
-
 	var controlPanels = _.times(3, function(i){
 		var cp = new ControlPanel(i, "#socket-ui");
-		cp.init(); 
+		cp.init();
+		tetris.onUpdate(() => cp.update( tetris.getCurrentGrid(), tetris.claims ));
 		return cp;
-	})
+	});
+
+
+
 
 
 	/*
@@ -102,10 +115,13 @@ jQuery(document).ready(function ($) {
 		}
 	});
 	function stopTimer(){
+		console.log("timer stopped");
 		window.clearInterval(timer);
 	}
 	function startTimer(){
-		timer = window.setInterval(updateTime,2000);
+		console.log("timer started");
+		stopTimer();
+		timer = window.setInterval(updateTime,tickDuration);
 	}
 	function updateTime(){
 		$('.time-display').html( tetris.increaseTime() );
@@ -114,8 +130,17 @@ jQuery(document).ready(function ($) {
 	$(".debug-ui").hide();
 
 	$(window).on('keypress', function(event) {
+		// console.log(event.charCode);
 		if(event.charCode == 120){
 			$(".debug-ui").toggle();
+		};
+		if(event.charCode == 32){
+			if(timer) {
+				window.clearInterval(timer);
+				timer = null;
+			} else {
+				startTimer();
+			}
 		};
 	});
 	

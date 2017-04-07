@@ -16,16 +16,7 @@ const PRIORITY = 'priority';
 const STRESS = 'stress';
 const COMBINED = 'combined';
 const claimers = ['A', 'B', 'C'];
-const cards = {
-  '1':{ priority:1, name: 'DiscountCharge'},
-  '2':{ priority:10, name: 'Gift-A-Charge' },
-  '3':{ priority:50, name: 'Optimus Platinum'},
-  '4':{ priority:1000, name: 'Medical Doctor'},
-  '65':{ priority:1, name: 'DiscountCharge'},
-  '66':{ priority:10, name: 'Gift-A-Charge' },
-  '67':{ priority:50, name: 'Optimus Platinum'},
-  '68':{ priority:1000, name: 'Medical Doctor'}
-};
+
 const _maxStress = 50;
 
 
