@@ -78,8 +78,11 @@ jQuery(document).ready(function ($) {
 	*/
 
 	var controlPanels = _.times(3, function(i){
-		return new ControlPanel(i, "#socket-ui");
+		var cp = new ControlPanel(i, "#socket-ui");
+		cp.init(); 
+		return cp;
 	})
+
 
 	/*
 	PLAYBACK HISTORY
