@@ -294,7 +294,8 @@ class Tetris {
 
     _.each( _line.claims, (claim, index, claims ) => {
       let prevClaim = prevLine? _.find(prevLine.claims, plc => plc.claimer === claim.claimer): null;
-      let cName = this.cards[claim.card].name;
+      let card = this.cards[claim.card];
+      let cName = card? card.name : 'Unknown';
       if( claim.claimStart === _line.t) {
         claim.message = cName + ' started charging';
       }
