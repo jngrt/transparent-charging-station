@@ -47,16 +47,13 @@ jQuery(document).ready(function ($) {
 
 	ArduinoManager.init();
 	ArduinoManager.setReadersCallback( (reader, value) => {
-		console.log(reader, value);
 		tetris.updateCard(reader, value)
 	});
 	ArduinoManager.setPlugsCallback( (plug, value) => {
-		console.log(plug, value);
 		tetris.updatePlugs(plug, !!value);
 
 	});
 	ArduinoManager.setEncodersCallback( (encoder, value) => {
-		console.log(encoder, value);
 		tetris.updateParameters(encoder, value);
 	});
 	const tetris = new Tetris( cards );
@@ -128,7 +125,7 @@ jQuery(document).ready(function ($) {
 
 		let leds = new Array(36).fill(0);
 		_.each(line.claims, c => {
-			if( c.pixels ) {
+			if( c.pixels && c.pixels > 0 ) {
 				let cIndex = c.claimer * 12;
 				leds.fill(c.claimer + 1, cIndex, cIndex + c.pixels);
 			}
