@@ -4,7 +4,7 @@ var NewSwarm = function(_parent){
 	var parent = _parent;
 	var parentHeight = $(parent).height();
 
-	var dotSize = lineHeight = 46;
+	var dotSize = lineHeight = 44.8;
 
 	var throttle = 200, 
 		calculationTimeout;
