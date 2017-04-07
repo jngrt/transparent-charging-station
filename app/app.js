@@ -67,7 +67,7 @@ jQuery(document).ready(function ($) {
 	swarm = new NewSwarm("#tetris_ui");
 	tetris.onUpdate(() => {
 		
-		if(appState == REPLAY) return;
+		// if(appState == REPLAY) return;
 		
 		swarm.update(tetris.getCurrentGrid());
 
