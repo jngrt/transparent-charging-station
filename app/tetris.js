@@ -40,7 +40,7 @@ class Tetris {
     this.maxWidth = _maxWidth || Math.round(this.width * 2);
     this.now = this.start;
     this.lines = [];
-    this.onUpdateCallback = null;
+    this.onUpdateCallbacks = [];
     this.onUnplugCallback = null;
     this.algorithm = COMBINED;
 
@@ -507,14 +507,17 @@ class Tetris {
   //visualization
   onUpdate (_callback) {
     //only one accomidates for one callback... shoddy solution... sorry for this.
-    this.onUpdateCallback = _callback;
+    this.onUpdateCallbacks.push(_callback);
   }
 
   update () {
     //do things
-    if (typeof this.onUpdateCallback === "function") {
-      this.onUpdateCallback();
-    }
+    _.each(this.onUpdateCallbacks, function(onUpdateCallback){
+      if (typeof onUpdateCallback === "function") {
+        onUpdateCallback();
+      }
+    })
+    
 
     //render function of tetris might be obsolete if swarm does this trick.
     this.debugRender();
