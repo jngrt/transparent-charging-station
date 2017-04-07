@@ -20,13 +20,23 @@ var Line = function(_line, _parent, _delegate){
 
 	const bgColors = ["red","green","blue"];
 	const bgColorAvailable = "#eee";
-	const bgColorNotAvailable = "white";
+	const bgColorNotAvailable = "black";
 
 	var createLine = function(){
 		return $("<div data-index='"+_this.t+"'></div>").addClass("line").appendTo(parent);
 	}
 	var createDot = function(){
 		return $("<div></div>").addClass("dot").appendTo(el);
+	}
+	var addTimeLabel = function(){
+		if((_this.t % 4) == 0){
+			var now = new Date().getHours();
+			var timeLabel = (now + (_this.t / 4))%24;	
+			$("<div></div>").html(timeLabel+":00").addClass("lineLabel").appendTo(el);
+		}
+	}
+	var addDeadline = function(){
+		
 	}
 	var claimDots = function(){
 		
@@ -46,6 +56,15 @@ var Line = function(_line, _parent, _delegate){
 
 			if(i < offset) dot.css("background-color",bgColorNotAvailable);
 			if(i+offset < 12) dots[i+offset].css("background-color",bgColor);
+
+			var lineClaim = line.claims[line.pixels[i]];
+			if(lineClaim){
+				dots[i+offset].removeClass("overdue");	
+				if(lineClaim.overdue){
+					dots[i+offset].addClass("overdue");	
+				}
+			}				
+
 		});
 	}
 	this.touch = function(){
@@ -58,13 +77,16 @@ var Line = function(_line, _parent, _delegate){
 	}
 	var moveLine = function(){
 		var _offset = Math.round(parentHeight - ((getIndex()+1)*lineHeight));
-		el.css("top",_offset);
+		_.delay(function(){
+			el.css("top",_offset);
+		}, _this.t*50);
 
 	}
 	this.clearLine = function(){
-		el.css("top",parentHeight + 320 + lineHeight).one("transitionend",kill);
+		el.children(".lineLabel").fadeOut("fast");
+		el.css("top",parentHeight + 320 + lineHeight).one("transitionend",_this.kill);
 	}
-	var kill = function(){
+	this.kill = function(){
 		el.remove();
 		_this.cleared = true;
 	}
@@ -77,6 +99,7 @@ var Line = function(_line, _parent, _delegate){
 			dots.push(createDot());
 		});
 		claimDots();
+		addTimeLabel();
 	
 	}
 }

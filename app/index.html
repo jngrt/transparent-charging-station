@@ -3,6 +3,8 @@
 	<head>
 		<title>test</title>
 		<meta charset="UTF-8">
+		<link rel="stylesheet" type="text/css" href="style/reset.css">
+		<link rel="stylesheet" type="text/css" href="style/style.css">
 		<style type="text/css">
 			*{
 				box-sizing: border-box;
@@ -27,6 +29,22 @@
 				text-align:left;
 				border-bottom:solid 1px #eee;
 			}
+			input, select {
+				width:200px;
+				display:block;
+				padding:5px;
+				margin-bottom:10px;
+			}
+			input[type="checkbox"] {
+				display:inline;
+				width: 20px;
+			}
+			form{
+				padding: 10px;
+				display: inline-block;
+				border: 5px solid #eee;
+				margin: 5px;
+			}
 		
 			.pixel{
 				display: inline-block;
@@ -44,22 +62,7 @@
 
 				@keyframes pulse {0% {  opacity: 0; } 100% { opacity: 1; } }
 
-			input, select {
-				width:200px;
-				display:block;
-				padding:5px;
-				margin-bottom:10px;
-			}
-			input[type="checkbox"] {
-				display:inline;
-				width: 20px;
-			}
-			form{
-				padding: 10px;
-				display: inline-block;
-				border: 5px solid #eee;
-				margin: 5px;
-			}
+			
 			.debug {
 				width: 200px;
 				word-wrap: break-word; 
@@ -86,62 +89,6 @@
 				width:600px;
 				z-index: 999;
 			}
-			#ui{
-				position: absolute;
-				right: 10px;
-				top: 10px;
-				width: 1080px;
-				height: 2560px;
-				transform-origin: top right;
-				transform: scale(.4);
-				border: 3px solid black;
-
-			}
-				#tetris_ui{
-					position: absolute;
-					left: 264px;
-					top: 0px;
-					width: 552px;
-					height: 2208px;
-					border: 3px solid blue;
-					/*background-color: #fee;*/
-				}
-				#socket-ui{
-					position: absolute;
-					left: 0;
-					bottom: 0;
-					width: 1080px;
-					height: 320px;
-					border: 3px solid red;
-				}
-			.line{
-				position: absolute;
-				left: 0;
-				top: -100px;
-				height: 46px;
-				width: 552px;
-				transition: all 1s;
-
-			}
-			.dot{
-				/*position: absolute;
-				left: 50%;
-				bottom: 0;*/
-				display: inline-block;
-				width: 46px;
-				height: 46px;
-				border: 11px solid white;
-				background-color: black;
-				border-radius: 100%;
-				color: white;
-				line-height: 24px;
-				text-align: center;
-				font-size: 18px;
-				transition: all 1s;
-			}
-			.dead{
-				border-color: red;
-			}
 		</style>
 	</head>
 	<body>
@@ -150,10 +97,59 @@
 			<div id="tetris_ui">
 			</div>
 			<div id="socket-ui">
+				<!-- Panel 1 -->
+				<div class='ui-panel'>
+					<div class='ui-plug-in'>
+						<div class='ui-plug-in-box'>
+							<span>Plug-in your charging cable</span>
+						</div>
+					</div>
+				</div>
+				<!-- Panel 2 -->
+				<div class='ui-panel'>
+					<div class='ui-tap-card'>
+						<div class='ui-tap-card-box'>
+							<span>Tap your card to start</span>
+						</div>
+					</div>
+					<div class='ui-deadline'>
+						<div class='ui-deadline-value'>12:00</div>						
+						<div class='ui-deadline-unit'>today / tomorrow</div>						
+						<div class='ui-deadline-label'>deadline</div>						
+					</div>
+					<div class='ui-charge'>
+						<div class='ui-charge-value'>23</div>
+						<div class='ui-charge-unit'>kWh</div>
+						<div class='ui-charge-label'>charge</div>
+					</div>
+				</div>
+				<!-- Panel 3 -->
+				<div class='ui-panel'>
+					<div class='ui-personal-info'>
+						<span class='ui-personal-plan'>Optimus Platinum</span>
+						<span class='ui-personal-meta'>Top priority • Fixed Deadline • Conditions apply</small>
+					</div>
+					<div class='ui-notification'>
+						You can't make your deadline.
+					</div>
+					<div class='ui-progress-deadline'>
+						<h1>expected finished</h1>
+						<div class='ui-progress-deadline-value'>11:30</div>
+						<div class='ui-progress-deadline-label'>original deadline<br>12:00</div>	
+					</div>
+					<div class='ui-progress-charge'>
+						<h1>currently charged</h1>
+						<div class='ui-progress-charge-value'>99</div>
+						<div class='ui-progress-charge-label'>%</div>
+						<div class='ui-progress-charge-meta'>of 23.5 kWh</div>				
+					</div>
+				</div>
+				
 			</div>
 		</div>
 		<div class='debug-input debug-ui'>
-			<button class="toggle-timer">Timer</button><div class="time-display">0</div>
+			<button class="toggle-timer">Timer</button>
+			<div class="time-display">0</div>
 			<form class='addClaims formA'>
 				<!-- <h2>Socket 1</h2> -->
 				<input type="hidden" name="claimer" value='0'>
@@ -173,17 +169,6 @@
 						<option value="4">Medical Doctor - Top priority</option>
 					</select>
 				</label>
-				<!--
-				<label>Priority
-					<select name='priority'>
-						<option disabled>Priority</option>
-						<option value='1'>1 - Philantropist</option>
-						<option selected value='10'>10 - Normal</option>
-						<option value='50'>50 - CEO</option>
-						<option value='1000'>1000 - Doctor</option>
-					</select>
-				</label>
-				-->
 				<div class="debug"></div>
 			</form>
 			<form class='addClaims formB'>
@@ -206,17 +191,6 @@
 						<option value="4">Medical Doctor - Top priority</option>
 					</select>
 				</label>
-				<!--
-				<label>Priority
-					<select name='priority'>
-						<option disabled>Priority</option>
-						<option value='1'>1 - Philantropist</option>
-						<option selected value='10'>10 - Normal</option>
-						<option value='50'>50 - CEO</option>
-						<option value='1000'>1000 - Doctor</option>
-					</select>
-				</label>
-				-->
 				<div class="debug"></div>
 			</form>
 			<form class='addClaims formC'>
@@ -238,17 +212,6 @@
 						<option value="4">Medical Doctor - Top priority</option>
 					</select>
 				</label>
-				<!--
-				<label>Priority
-					<select name='priority'>
-						<option disabled>Priority</option>
-						<option value='1'>1 - Philantropist</option>
-						<option selected value='10'>10 - Normal</option>
-						<option value='50'>50 - CEO</option>
-						<option value='1000'>1000 - Doctor</option>
-					</select>
-				</label>
-				-->
 				<div class="debug">
 			</form>
 		</div>
@@ -262,10 +225,6 @@
 						<th class="claimer-info">C1</th>
 						<th class="claimer-info">C2</th>
 						<th class="claimer-info">C3</th>
-						<!--<th>Charge received</th>
-						<th>Available until deadline</th>
-						<th>Stress</th>
-						<th>Deadline</th>-->
 						<th>Pixels</th>
 					</tr>
 				</thead>
@@ -277,7 +236,7 @@
 		<script src="tetris.js"></script>
 		<script src="line.js"></script>
 		<script src="swarm2.js"></script>
-		<!-- // <script src="serialStuff.js"></script> -->
+		<script src="controlpanel.js"></script>
 		<script src="app.js"></script>
  	</body>
 </html>

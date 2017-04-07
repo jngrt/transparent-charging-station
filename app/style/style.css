@@ -1,0 +1,303 @@
+body{
+	background-color: #222;
+}
+#ui{
+	position: absolute;
+	left: 0px;
+	top: -1600px;
+	/*top: 0px;*/
+	width: 1080px;
+	height: 2560px;
+	background-color: black;
+	font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+#tetris_ui{
+	position: absolute;
+	left: 264px;
+	top: 0px;
+	width: 552px;
+	height: 2208px;
+}
+	.line{
+		position: absolute;
+		left: 0;
+		top: -100px;
+		height: 46px;
+		width: 552px;
+		transition: all .5s;
+	}
+		.lineLabel{
+			height: 22px;
+			width: 68px;
+			border-radius: 11px;
+			background-color: white;
+			color: black;
+			line-height: 22px;
+			font-size: 14px;
+			font-weight: 900;
+			text-align: center;
+			position: absolute;
+			left: -90px;
+			top: 11px;
+		}
+	.dot{
+		display: inline-block;
+		width: 46px;
+		height: 46px;
+		border: 11px solid black;
+		background-color: yellow;
+		border-radius: 100%;
+		color: white;
+		line-height: 24px;
+		text-align: center;
+		font-size: 18px;
+		transition: all 1s;
+	}
+	.dead{
+		border-color: red;
+	}
+
+#socket-ui{
+	position: absolute;
+	left: 0;
+	bottom: 0;
+	width: 1080px;
+	height: 320px;
+	background-color: rgba(6,17,46,.9);
+	font-size: 20px;
+	font-weight: 200;
+	color: white;
+	overflow: hidden;
+}
+
+	.ui-panel{
+		position: absolute;
+		display: block;
+		float: left;
+		width: 360px;
+		height: 320px;
+		border-right: 1px solid rgba(255,255,255,.2);
+		text-shadow: 0px 0px 20px rgba(0,127,255,1);
+	}
+		.ui-panel:nth-child(2){
+			left: 360px;
+		}
+		.ui-panel:last-child{
+			left: 720px;
+			border: none;
+		}
+
+	.ui-plug-in{
+		position: absolute;
+		left: 0;
+		top: 0;
+		width: 100%;
+		height: 100%;
+		padding: 20px;
+	}
+	.ui-plug-in-box{
+		height: 100%;
+		width: 100%;
+		border-radius: 5px;
+		text-align: center;
+		border: 1px solid rgba(255,255,255,.2);
+		display: flex;
+		justify-content: center;
+		flex-direction: column;
+		text-align: center;
+	}
+
+	.ui-tap-card{
+		position: absolute;
+		left: 0;
+		top: 0;
+		width: 100%;
+		height: 60%;
+		padding: 20px;
+	}
+		.ui-tap-card-box{
+			height: 100%;
+			width: 100%;
+			border-radius: 5px;
+			text-align: center;
+			border: 1px solid rgba(255,255,255,.2);
+			display: flex;
+			justify-content: center;
+			flex-direction: column;
+			text-align: center;
+		}
+	.ui-personal-info{
+		position: absolute;
+		left: 20px;
+		top: 20px;
+		width: 320px;
+		height: 72px;
+		/*border-bottom: 1px solid rgba(255,255,255,.2);*/
+		font-size: 36px;
+	}
+		.ui-panel h1{
+			font-weight: 600;
+			font-size: 12px;
+			margin-bottom: 20px;
+		}
+		.ui-personal-meta{
+			margin-top: 5px;
+			display: block;
+			font-weight: 600;
+			font-size: 12px;
+
+		}
+	.ui-notification{
+		position: absolute;
+		left: 20px;
+		top: 92px;
+		width: 320px;
+		background-color: white;
+		color: rgba(6,17,46,.9);
+		box-shadow: 0px 0px 20px rgba(0,127,255,1);
+		font-weight: 900;
+		text-shadow: none;
+		padding: 10px;
+		border-radius: 4px;
+		line-height: 24px;
+		font-size: 16px;
+		opacity: .8;
+	}
+	.ui-deadline{
+		width: 50%;
+		height: 40%;
+		position: absolute;
+		left: 0;
+		bottom: 0;
+		padding: 20px;
+		border-right: 1px solid rgba(255,255,255,.2);
+	}
+
+		.ui-deadline-value{
+			position: absolute;
+			left: 20px;
+			top: 0px;
+			width: 140px;
+			height: 64px;
+			font-size: 56px;
+			text-align: center;
+			font-weight: 100;
+		}
+		
+		.ui-deadline-unit{
+			position: absolute;
+			left: 20px;
+			top: 64px;
+			width: 140px;
+			font-weight: 600;
+			text-align: right;
+			font-size: 12px;
+		}
+		.ui-deadline-label{
+			position: absolute;
+			left: 20px;
+			width: 140px;
+			height: 24px;
+			line-height: 24px;
+			font-size: 12px;
+			bottom: 10px;
+			font-weight: 600;
+			text-align: center;
+		}
+	.ui-charge{
+		width: 50%;
+		height: 40%;
+		position: absolute;
+		right: 0;
+		bottom: 0;
+		padding: 20px;
+	}
+		.ui-charge-value{
+			position: absolute;
+			left: 20px;
+			top: 0px;
+			width: 140px;
+			height: 64px;
+			font-size: 56px;
+			text-align: center;
+			font-weight: 100;
+		}
+		.ui-charge-unit{
+			position: absolute;
+			left: 20px;
+			top: 64px;
+			width: 140px;
+			font-weight: 600;
+			text-align: right;
+			font-size: 12px;
+		}
+			.ui-charge-value sup{
+				font-size: 50%;
+				font-weight: 200;
+			}
+		.ui-charge-label{
+			position: absolute;
+			left: 20px;
+			width: 140px;
+			height: 24px;
+			line-height: 24px;
+			font-size: 12px;
+			bottom: 10px;
+			font-weight: 600;
+			text-align: center;
+		}
+
+	.ui-progress-deadline{
+		width: 50%;
+		height: 40%;
+		position: absolute;
+		left: 0;
+		bottom: 0;
+		border-right: 1px solid rgba(255,255,255,.2);
+	}
+		.ui-progress-deadline-value{
+			position: absolute;
+			left: 0;
+			top: 20px;
+			width: 140px;
+			font-size: 50px;
+			height: 60px;
+			font-weight: 100;
+		}
+		.ui-progress-deadline-label{
+			position: absolute;
+			left: 0;
+			top: 80px;
+			width: 140px;
+			font-size: 12px;
+			font-weight: 400;
+			text-align: center;
+		}
+	.ui-progress-charge{
+		width: 50%;
+		height: 40%;
+		position: absolute;
+		right: 0;
+		bottom: 0;
+		padding: 20px;
+	}
+		.ui-progress-charge-value{
+			position: absolute;
+			left: 0;
+			top: 20px;
+			width: 160px;
+			font-size: 100px;
+			line-height: 80px;
+			height: 80px;
+			font-weight: 100;
+		}
+		.ui-progress-charge-label{
+			position: absolute;
+			left: 0;
+			top: 90px;
+			width: 140px;
+			font-size: 24px;
+			font-weight: 400;
+			text-align: right;
+		}
+

@@ -27,12 +27,17 @@ jQuery(document).ready(function ($) {
 	//for debug
 	document.tetris = tetris;
 
+	/*
+	VISUALIZATION
+	*/
 	swarm = new NewSwarm("#tetris_ui");
 	tetris.onUpdate(() => swarm.update( tetris.getCurrentGrid() ));
 	tetris.onUnplug( doReplay );
 
 	
-
+	/*
+	INPUT
+	*/
 	$('form.addClaims input:checkbox').change( function(evt){
 		let form = $(evt.target).parents("form");
 		getDataFromForm(form, tetris);
@@ -61,6 +66,14 @@ jQuery(document).ready(function ($) {
 	}
 
 	/*
+	CONTROL PANEL
+	*/
+
+	var controlPanels = _.times(3, function(i){
+		return new ControlPanel(i, "#socket-ui");
+	})
+
+	/*
 	PLAYBACK HISTORY
 	*/
 	function doReplay( claimer, lines ){
@@ -84,18 +97,19 @@ jQuery(document).ready(function ($) {
 		} else {
 			startTimer();
 		}
-		
-
 	});
 	function stopTimer(){
 		window.clearInterval(timer);
 	}
 	function startTimer(){
-		timer = window.setInterval(updateTime,500);
+		timer = window.setInterval(updateTime,2000);
 	}
 	function updateTime(){
 		$('.time-display').html( tetris.increaseTime() );
 	}
+
+	$(".debug-ui").hide();
+
 	$(window).on('keypress', function(event) {
 		if(event.charCode == 120){
 			$(".debug-ui").toggle();

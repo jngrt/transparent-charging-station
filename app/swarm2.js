@@ -18,7 +18,6 @@ var NewSwarm = function(_parent){
 
 	var clearLine = false;
 
-
 	this.update = function(_lines){
 
 		//we get the lines in, now lets make it work.
@@ -89,10 +88,6 @@ var NewSwarm = function(_parent){
 				// delete lines[i];
 			}
 		})
-
-		// lines = _.compact(lines);
-
-		// console.log(lines);
 
 		console.log("report: emptyLineObjects "+emptyLineObjects+" destinations",destinations.length, "lines",lines.length, "elements",$(".line").length);
 		
