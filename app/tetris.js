@@ -22,13 +22,14 @@ const _maxStress = 50;
 
 class Tetris {
 
-  constructor (_start, _element, _height, _width, _minWidth, _maxWidth) {
-    this.start = _start || 0;
-    this.element = _element || '#tetris';
-    this.height = _height || GRID_HEIGHT;
-    this.width = _width || 6;
-    this.minWidth = _minWidth || Math.round(this.width / 2);
-    this.maxWidth = _maxWidth || Math.round(this.width * 2);
+  constructor ( cards ) {
+    this.cards = cards;
+    this.start = 0;
+    this.element = '#tetris';
+    this.height = GRID_HEIGHT;
+    this.width = 6;
+    this.minWidth = Math.round(this.width / 2);
+    this.maxWidth = Math.round(this.width * 2);
     this.now = this.start;
     this.lines = [];
     this.onUpdateCallbacks = [];
@@ -51,6 +52,12 @@ class Tetris {
 
     console.log(this.lines);
     this.update();
+  }
+  getLastLine(){
+    let index = _.findIndex(this.lines, line => line.t === this.now, this);
+    if( !~index ) return;
+
+    return this.lines[index];
   }
   getCurrentGrid() {
     let lowIndex = _.findIndex(this.lines, line => line.t === this.now, this);
@@ -127,9 +134,12 @@ class Tetris {
   }
 
   updateCard(claimer, card){
-    if( !cards[card] ) return console.error('Undefined card: ', card);
+    if( !this.cards[card] ) return console.error('Undefined card: ', card);
   
-    let priority = cards[card].priority;
+    if( !this.cards[card] )
+      return console.error('Unknown card: ', card);
+
+    let priority = this.cards[card].priority;
     let c = this.claims[claimer];
     if(!c) return console.error('Not a valid claimer:' + claimer);
     
@@ -145,10 +155,10 @@ class Tetris {
 
     let c = this.claims[claimer];
     if(!c)
-      return console.error('Invalid claimer: ', claimer, pluggedIn);
+      return console.log('Invalid claimer: ', claimer, pluggedIn);
     
     if( !!~c.claimStart === pluggedIn )
-      return console.error('State did not change: ', claimer, pluggedIn, c);
+      return console.log('State did not change: ', claimer, pluggedIn, c);
     
     if( !pluggedIn && ~c.claimStart ) {
       let replayLines = this.getReplayLines( claimer );
@@ -190,7 +200,10 @@ class Tetris {
      //TODO check events: plug in / plug out...
       //TODO update the last line because of plug out.
       // And trigger the animation.
-    let priority = cards[card].priority;
+    if( !this.cards[card] )
+      return console.error('Unknown card: ', card);
+
+    let priority = this.cards[card].priority;
     let c = this.claims[claimer];
     if(!c) {
       throw new Error('Not a valid claimer:' + claimer);
@@ -281,7 +294,7 @@ class Tetris {
 
     _.each( _line.claims, (claim, index, claims ) => {
       let prevClaim = prevLine? _.find(prevLine.claims, plc => plc.claimer === claim.claimer): null;
-      let cName = cards[claim.card].name;
+      let cName = this.cards[claim.card].name;
       if( claim.claimStart === _line.t) {
         claim.message = cName + ' started charging';
       }
@@ -303,7 +316,7 @@ class Tetris {
         claim.message = cName + ' missed deadline but continues charging';
       }
       else if ( claim.claimStart !== _line.t && prevClaim && prevClaim.card !== claim.card ) {
-        claim.message = cards[prevClaim.card].name + ' switched cards to ' + cName;
+        claim.message = this.cards[prevClaim.card].name + ' switched cards to ' + cName;
       }
     }, this);
   }
