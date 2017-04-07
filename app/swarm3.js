@@ -26,11 +26,6 @@ var NewSwarm = function(_parent){
 		time = lines[0].t;
 
 
-		// if(xclearLine || lines.length == 0){
-		// 	calculate();
-		// 	return;
-		// }
-
 		if(calculationTimeout) clearTimeout(calculationTimeout);
 		calculationTimeout = setTimeout(calculate, throttle);
 
@@ -66,7 +61,7 @@ var NewSwarm = function(_parent){
 				var classes = ["dot"];
 
 				if(isOverdue) classes.push("overdue");
-				if(pixel>=0) classes.push("dot"+pixel);
+				if(pixel>=0)  classes.push("dot"+pixel);
 
 				var delay = (i/48).toFixed(2);
 				var dot = {};
@@ -120,7 +115,7 @@ var NewSwarm = function(_parent){
  	}
 
 	var calculate = function(){
-		
+		console.log("redraw triggered");
 		if(clearLine){
 			animateDots(clearAndCreateDots);
 		} else{

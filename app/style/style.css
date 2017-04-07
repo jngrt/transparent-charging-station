@@ -11,6 +11,8 @@ body{
 	background-color: black;
 	font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
 	overflow: hidden;
+	transform: scale(.45);
+	transform-origin: top right;
 }
 #tetris_ui{
 	position: absolute;

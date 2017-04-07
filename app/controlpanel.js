@@ -110,7 +110,7 @@ var ControlPanel = function(_id, _parent){
 	}
 	var calculate = function(){
 		//find in the tetris my
-		console.log("CP UPDATE",lines, claims);
+		// console.log("CP UPDATE",lines, claims);
 
 		//first we extract all variables from the tetris and claims.
 
