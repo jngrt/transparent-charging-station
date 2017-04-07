@@ -127,15 +127,12 @@ class Tetris {
   }
 
   updateCard(claimer, card){
-    if( !cards[card] ){
-      console.error('Undefined card: '+card);
-      return;
-    }
+    if( !cards[card] ) return console.error('Undefined card: ', card);
+  
     let priority = cards[card].priority;
     let c = this.claims[claimer];
-    if(!c) {
-      throw new Error('Not a valid claimer:' + claimer);
-    }
+    if(!c) return console.error('Not a valid claimer:' + claimer);
+    
     
     _.extend( c, {
       priority: priority,
@@ -144,9 +141,48 @@ class Tetris {
 
     this.processClaims();
   }
+  updatePlugs(claimer, pluggedIn){
 
-  updateParameters(claimer, deadline, chargeNeeded){
+    let c = this.claims[claimer];
+    if(!c)
+      return console.error('Invalid claimer: ', claimer, pluggedIn);
     
+    if( !!~c.claimStart === pluggedIn )
+      return console.error('State did not change: ', claimer, pluggedIn, c);
+    
+    if( !pluggedIn && ~c.claimStart ) {
+      let replayLines = this.getReplayLines( claimer );
+      _.extend( c, {
+         priority:0, chargeNeeded:0, deadline:0, chargeReceived: 0, claimStart: -1, card: -1
+      });
+      this.onUnplugCallback( claimer, replayLines );
+    } else if( pluggedIn ) {
+      c.claimStart = this.now;
+    }
+    this.processClaims();
+  }
+  updateParameters( encoder, value ){
+    console.log(encoder,value);
+    let claimer = ~~(encoder / 2);
+
+    let c = this.claims[claimer];
+    if(!c)
+      return console.error('Invalid claimer: ', claimer, pluggedIn);
+    
+    if(!~c.claimStart)
+      return console.log('Claimer not plugged in', claimer);
+    
+    let changeValue = value === 1 ? 1 : -1;
+
+    if( encoder % 2 ) {
+      // Charge needed should be between 0 and 100
+      c.chargeNeeded = Math.max( 0, Math.min( 100, c.chargeNeeded + changeValue ));
+    } else {
+      // deadline should be between NOW and NOW + 48
+      c.deadline = Math.max( this.now, Math.min( this.now + GRID_HEIGHT, c.deadline + changeValue));
+    }
+
+    this.processClaims();
   }
 
 
