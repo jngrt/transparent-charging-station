@@ -45,7 +45,10 @@ jQuery(document).ready(function ($) {
 	VISUALIZATION
 	*/
 	swarm = new NewSwarm("#tetris_ui");
-	tetris.onUpdate(() => swarm.update( tetris.getCurrentGrid() ));
+	tetris.onUpdate(() => {
+		if(appState == REPLAY) return;
+		swarm.update(tetris.getCurrentGrid());
+	});
 	tetris.onUnplug( doReplay );
 
 	/*
@@ -89,7 +92,10 @@ jQuery(document).ready(function ($) {
 	var controlPanels = _.times(3, function(i){
 		var cp = new ControlPanel(i, "#socket-ui");
 		cp.init();
-		tetris.onUpdate(() => cp.update( tetris.getCurrentGrid(), tetris.claims ));
+		tetris.onUpdate(() =>{
+			// if(appState == REPLAY) return;
+			cp.update( tetris.getCurrentGrid(), tetris.claims );	
+		});
 		return cp;
 	});
 
