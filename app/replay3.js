@@ -61,19 +61,20 @@ var Replay = function(_claimer, _myRecorder, _replaySwarmParent, _replayParent, 
 			update();
 		}		
 	}
+	this.kill = function(){
+		
+		clearTimeout(progressTimeout);
 
-	this.kill = function(_forceKillCallback){
 		console.log(">> replay3: this.kill");
 		if(killCalled) return;
-		console.log(">> replay3: this.kill: GO!");
 
 		killCalled = true;
 		clearTimeout(killTimer);
 		clearTimeout(progressTimeout);
 		
-		hideEl(_forceKillCallback);
+		hideEl();
 		
-		if(typeof killCallback == 'function') killCallback();
+		if(typeof killCallback == 'function') killCallback(claimer);
 	}
 	var createEl = function(){
 		el = $("<div id='replay-ui'></div>").css(hideState).appendTo(replayParent);
@@ -83,10 +84,12 @@ var Replay = function(_claimer, _myRecorder, _replaySwarmParent, _replayParent, 
 	var hideEl = function(callback){
 		replaySwarm.reset();
 		el.css(hideState).one("transitionend",function(){
-			if(typeof callback == "function") callback();
-			$(replayParent).empty();
-			$(replaySwarmParent).empty();
+			// $(replayParent).empty();
+			// $(replaySwarmParent).empty();
+			replaySwarm = void(0);
 			el.remove();
+			if(typeof callback == "function") callback();
+
 		});
 	}
 	var render = function(){
@@ -115,12 +118,13 @@ var Replay = function(_claimer, _myRecorder, _replaySwarmParent, _replayParent, 
 	}
 
 	var update = function(){
+
+		console.log("\n\n>>> replay 3: update-loop",currentState, countdown);
 		
 		data.claimer = claimer;
 		data.msg_intro = "intro";
 		data.msg_replay = "replay";
 		data.msg_outro = "outro";
-		render();
 
 		clearTimeout(progressTimeout);
 		progressTimeout = void(0);
@@ -133,13 +137,14 @@ var Replay = function(_claimer, _myRecorder, _replaySwarmParent, _replayParent, 
 			replaySwarm.update(track[index]);
 			countdown--;
 
-			if(countdown <= 0) _this.kill();
-
 			render();
+			if(countdown <= 0) return _this.kill();
+
 
 			progressTimeout = setTimeout(update,1000);
 
 		} else if(currentState == 1) {
+			
 			currentState = 1;
 			countdown = 10;
 			data.msg_replay = " ••• ";
@@ -176,13 +181,11 @@ var Replay = function(_claimer, _myRecorder, _replaySwarmParent, _replayParent, 
 			index = 0;
 			data.msg_outro = "Done! "+countdown;
 			
-			
 			replaySwarm.update(track[track.length-1]);
 			countdown--;
 
-			if(countdown <= 0) _this.kill();
-
 			render();
+			if(countdown <= 0) return _this.kill();
 
 			progressTimeout = setTimeout(update,1000);
 
@@ -195,6 +198,7 @@ var Replay = function(_claimer, _myRecorder, _replaySwarmParent, _replayParent, 
 	}
 	this.init = function(){
 		track = myRecorder.getTrack();
+		if(track.length <= 0) return killCallback();
 		console.log(">> replay 3: init replay",track);
 		createEl();
 		createReplaySwarm();

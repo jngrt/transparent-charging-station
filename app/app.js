@@ -126,6 +126,7 @@ jQuery(document).ready(function ($) {
 	tetris.onUpdate(update);
 	
 	tetris.onPlugin(function(_claimer){
+		recorders[_claimer].clearTrack();
 		recorders[_claimer].startRecording();
 	});
 	
@@ -209,7 +210,7 @@ jQuery(document).ready(function ($) {
 	/*
 	PLAYBACK HISTORY
 	*/
-	
+
 	var replay;
 	function doReplay( claimer, lines ){
 
@@ -219,13 +220,16 @@ jQuery(document).ready(function ($) {
 		appState = REPLAY;
 		stopTimer();
 
-		var onKillCallback = function(){
+		var onKillCallback = function(claimer){
 
 			console.warn("onKillCallback called");
 			appState = NORMAL;
 
 			startTimer();
 			update();
+			
+			recorders[claimer].clearTrack();
+
 			if(!replay) return;
 			replay = void(0);
 		}

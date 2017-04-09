@@ -39,8 +39,6 @@ var Recorder = function(_claimer){
 	}
 	this.startRecording = function(){
 		console.log(">> recorder - start "+claimer);
-		this.clearTrack();
-		playHead = 0;
 		this.recordingStatus = RECORDING;
 	}
 	this.stopRecording = function(){
