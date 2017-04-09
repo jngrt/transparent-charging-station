@@ -70,14 +70,14 @@ var NewSwarm = function(_parent, _fadeLabels){
 			
 		// if (fadeLabels) timeLabel.hide().fadeIn();
 	}
-	var addDeadline = function(l, t, p, isOverdue){
+	var addDeadline = function(l, t, p, label, isOverdue){
 		var top = { top: parentHeight - (l+1)*lineHeight };
 		
 		var time = timestampToHour(t);
 
 		var deadlineLabel = $("<div></div>")
 			.addClass("deadlineLabel")
-			.html("deadline: "+time)
+			.html(label+time)
 			.css(top)
 			.appendTo(parent);
 
@@ -98,7 +98,6 @@ var NewSwarm = function(_parent, _fadeLabels){
 			if(line.t%4 == 0) addTimeLabel(line.t, l);
 
 			_.each(line.pixels, function(pixel, p){
-
 							
 				var isOverdue = false;
 				
@@ -107,8 +106,11 @@ var NewSwarm = function(_parent, _fadeLabels){
 				}
 				if(line.claims[pixel]){
 					console.log(line.t, "found line claim",line.claims[pixel]);
+					if(line.claims[pixel].chargeNeeded <= line.claims[pixel].chargeReceived){
+						addDeadline(l, line.t, pixel, "finished: ", false);
+					}
 					if(line.claims[pixel].deadline == line.t){
-						addDeadline(l, line.t, pixel, isOverdue);
+						addDeadline(l, line.t, pixel, "deadline: ", isOverdue);
 					}
 				}
 				
