@@ -7,6 +7,8 @@ var NewSwarm = function(_parent, _fadeTimeLabels){
 
 	var dotSize = lineHeight = 44.8;
 
+	this.hasBeenReset = true;
+
 	var throttle = 50, 
 		calculationTimeout;
 
@@ -18,6 +20,7 @@ var NewSwarm = function(_parent, _fadeTimeLabels){
 	var clearLine = false;
 
 	this.update = function(_lines){
+		_this.hasBeenReset = false;
 
 		$(parent).fadeIn();
 
@@ -97,6 +100,9 @@ var NewSwarm = function(_parent, _fadeTimeLabels){
 		})
 	}
 	this.reset = function(callback){
+
+		_this.hasBeenReset = true;
+
 		$(parent).children(".dot").css("transform","translateY(3000px)").css("transition-duration","2s");
 		$(parent).children(".timeLabel").fadeOut();
 		$(parent).fadeOut("slow");
@@ -134,7 +140,6 @@ var NewSwarm = function(_parent, _fadeTimeLabels){
  	}
 
 	var calculate = function(){
-		console.log("redraw triggered");
 		if(clearLine){
 			animateDots(clearAndCreateDots);
 		} else{

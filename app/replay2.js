@@ -14,10 +14,13 @@
 	- Have a nice day, stop
 	--> 
 */
-var Replay = function(_claimer, _lines, _replaySwarmParent, _replayParent, _killCallback){
+var Replay = function(_claimer, _recorder, _replaySwarmParent, _replayParent, _killCallback){
 	
 	var claimer = _claimer;
-	var lines = _lines;
+	// var lines = _lines;
+
+	var recorder = _recorder;
+
 
 	var killCallback = _killCallback;
 	var replaySwarmParent = _replaySwarmParent;
@@ -50,7 +53,7 @@ var Replay = function(_claimer, _lines, _replaySwarmParent, _replayParent, _kill
 	var index = 0;
 
 	this.checkIn = function(){
-		console.log("replay checked in!");
+		console.log(">> replay2: replay checked in!");
 
 		if(currentState != 1){
 			index = 0;
@@ -111,13 +114,13 @@ var Replay = function(_claimer, _lines, _replaySwarmParent, _replayParent, _kill
 			data.msg_intro = "Do you want to see "+countdown;
 			progressTimeout = setTimeout(update,1000);
 			if(countdown <= 0) _this.kill();
-			replaySwarm.update(lines);
-
-			console.log("going to replay "+lines.length+" lines");
+			replaySwarm.update(recorder.getLines(index));
 			countdown--;
 		} else if(currentState == 1) {
 
 			data.msg_replay = "";
+
+			var lines = recorder.getLines(index);
 
 			if((lines.length -1) >= index){
 
@@ -131,7 +134,7 @@ var Replay = function(_claimer, _lines, _replaySwarmParent, _replayParent, _kill
 					return;
 				}
 				if(lines[index].claims.length > 0){
-					console.log("finding messages for this line");
+					console.log(">> replay2: finding messages for this line");
 					_.each(lines[index].claims,function(claim, i){
 						if(claim.message) msgs.push(i + ": "+ claim.message);
 					})
@@ -186,7 +189,7 @@ var Replay = function(_claimer, _lines, _replaySwarmParent, _replayParent, _kill
 
 	}
 	this.init = function(){
-		console.log("init replay");
+		console.log(">> replay2: init replay");
 		createEl();
 		createReplaySwarm();
 		update();

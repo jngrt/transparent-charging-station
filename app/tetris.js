@@ -166,7 +166,7 @@ class Tetris {
       });
       this.onUnplugCallback( claimer, replayLines );
     } else if( pluggedIn ) {
-      c.claimStart = this.now;
+       c.claimStart = this.now;
     }
     this.processClaims();
   }
@@ -215,6 +215,10 @@ class Tetris {
       });
       this.onUnplugCallback( claimer, replayLines );
     } else if( pluggedIn ) {
+
+      console.log(">>> DETECTED PLUGIN EVENT", claimer, pluggedIn);
+      this.onPlugInCallback( claimer );
+     
       _.extend( c, { 
         priority: priority, 
         chargeNeeded: chargeNeeded, 
@@ -565,6 +569,9 @@ class Tetris {
 
   onUnplug( _cb ) {
     this.onUnplugCallback = _cb;
+  }
+  onPlugin (_cb) {
+    this.onPlugInCallback = _cb;
   }
   printClaims() {
     //print the current claims
