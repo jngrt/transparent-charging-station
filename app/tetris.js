@@ -54,7 +54,8 @@ class Tetris {
     this.update();
   }
   getLastLine(_offset){
-    let index = _.findIndex(this.lines, line => line.t === (this.now+_offset), this);
+    let offset = _offset || 0;
+    let index = _.findIndex(this.lines, line => line.t === (this.now+offset), this);
     if( !~index ) return;
 
     return this.lines[index];
