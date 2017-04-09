@@ -17,6 +17,7 @@ const [NORMAL,REPLAY] = _.times(2,n=>n);
 let appState = NORMAL;
 
 const greenThreshold = 6; //6 gray energy, 6 green energy
+
 const tickDuration = 3000;
 
 const [P_LOW, P_NORMAL, P_HIGH, P_TOP] = [1, 10, 100, 1000];
