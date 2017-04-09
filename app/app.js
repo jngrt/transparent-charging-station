@@ -104,6 +104,8 @@ jQuery(document).ready(function ($) {
 	UPDATE VISUALIZATIONS
 	*/
 	var update = function(){
+
+		console.log("\n\n\n-------------- CYCLE --------------");
 		
 		if(appState == REPLAY) return;
 		
@@ -166,9 +168,13 @@ jQuery(document).ready(function ($) {
 	PLUG LEDS
 	*/
 	function updatePlugLights( line ) {
+
+		//we animate for tickDuration...
+		//first step:
+			// 
+
 		console.log('updatePlugLights ', line);
-		if(!line || !line.claims || !line.claims.length )
-			return console.log('no claims');
+		if(!line || !line.claims || !line.claims.length ) return console.log('no claims');
 
 		let leds = new Array(36).fill(0);
 		_.each(line.claims, c => {
@@ -177,8 +183,13 @@ jQuery(document).ready(function ($) {
 				leds.fill(c.claimer + 1, cIndex, cIndex + c.pixels);
 			}
 		});
+		_.each(line.claims, function(claim){
+			var px = claim.pixels;
+		})
 		console.log(leds);
-		ArduinoManager.setLights(leds);
+		setTimeout(function(){
+			ArduinoManager.setLights(leds);
+		},500)
 	}
 
 

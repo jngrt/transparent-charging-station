@@ -77,11 +77,12 @@ var NewSwarm = function(_parent, _fadeLabels){
 
 		var deadlineLabel = $("<div></div>")
 			.addClass("deadlineLabel")
-			.html(label+time)
+			.html(label+": "+time)
 			.css(top)
 			.appendTo(parent);
 
 		deadlineLabel.addClass("deadlineLabel"+p);
+		if (label == "deadline") deadlineLabel.addClass("deadlineLabel_deadline deadlineLabel_deadline"+p)
 
 		if (isOverdue) deadlineLabel.addClass("overdue");
 		// if (fadeLabels) deadlineLabel.hide().fadeIn();
@@ -92,29 +93,29 @@ var NewSwarm = function(_parent, _fadeLabels){
 		var i = 0;
 		
 		_.each(lines, function(line, l) {
+			
 			var claims = line.claims;
+			var overdue = [];
+			
 			i++;
 			
 			if(line.t%4 == 0) addTimeLabel(line.t, l);
+			
+			if(line.claims){
+				_.each(line.claims, function(claim){
+					if(claim.chargeNeeded <= claim.chargeReceived){
+						addDeadline(l, line.t, claim.claimer, "finished", claim.overdue);
+					}
+					if(claim.deadline == line.t){
+						addDeadline(l, line.t, claim.claimer, "deadline", claim.overdue);
+					}
+					if(claim.overdue) overdue[claim.claimer] = true;
+				})
+			}
 
 			_.each(line.pixels, function(pixel, p){
 							
-				var isOverdue = false;
-				
-				if(_.has(claims[pixel],"overdue")){
-					isOverdue = claims[pixel].overdue
-				}
-				if(line.claims[pixel]){
-					console.log(line.t, "found line claim",line.claims[pixel]);
-					if(line.claims[pixel].chargeNeeded <= line.claims[pixel].chargeReceived){
-						addDeadline(l, line.t, pixel, "finished: ", false);
-					}
-					if(line.claims[pixel].deadline == line.t){
-						addDeadline(l, line.t, pixel, "deadline: ", isOverdue);
-					}
-				}
-				
-
+				var isOverdue = overdue[pixel] ? overdue[pixel] : false;
 				var classes = ["dot"];
 
 				if(isOverdue) classes.push("overdue");

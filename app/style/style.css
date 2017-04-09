@@ -11,8 +11,8 @@ body{
 	background-color: black;
 	font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
 	overflow: hidden;
-	/*transform: scale(.4);*/
-	/*transform-origin: top right;*/
+	transform: scale(.45);
+	transform-origin: top right;
 }
 
 .state {
@@ -32,7 +32,7 @@ body{
 	height: 2150px;
 }
 	#replay_tetris_ui .timeLabel{
-		background-color: blue;
+		/*background-color: blue;*/
 	}
 
 		.dot{
@@ -78,14 +78,22 @@ body{
 			.deadlineLabel0{ background-color: red; color: black;}
 			.deadlineLabel1{ background-color: green; color: black;}
 			.deadlineLabel2{ background-color: blue; color: white;}
+
+			.deadlineLabel_deadline0{ color: red; 	border-color: red;    background-color: black;}
+			.deadlineLabel_deadline1{ color: green; border-color: green;  background-color: black;}
+			.deadlineLabel_deadline2{ color: blue;  border-color: blue;   background-color: black;}
+
+		.deadlineLabel_deadline{
+
+		}
+
 	.dead{
 		border-color: red;
 	}
 #replay-ui{
 	position: absolute;
 	left: 0px;
-	padding: 20px;
-	width: 1064px;
+	width: 1080px;
 	height: 270px;
 	background-color: rgba(6,17,46,1);
 	transition: all .5s;
@@ -98,7 +106,7 @@ body{
 		position: absolute;
 		left: 20px;
 		top: 20px;
-		width: 1024px;
+		width: 1040px;
 		height: 230px;
 		border: 1px solid rgba(255,255,255,.2);
 		text-shadow: 0px 0px 20px rgba(0,127,255,1);
@@ -116,8 +124,8 @@ body{
 #socket-ui{
 	position: absolute;
 	left: 0px;
-	bottom: 10px;
-	width: 1064px;
+	bottom: 0px;
+	width: 1080px;
 	height: 270px;
 	background-color: rgba(6,17,46,.9);
 	font-size: 20px;
@@ -142,13 +150,25 @@ body{
 		position: absolute;
 		display: block;
 		left: 0;
-		width: 352px;
+		/*width: 352px;*/
+		width: 33.3%;
 		height: 270px;
 		border-right: 1px solid rgba(255,255,255,.2);
 		text-shadow: 0px 0px 20px rgba(0,127,255,1);
 		background: linear-gradient(to bottom, rgba(255,0,0,.4) 0%,rgba(255,0,0,0) 25%);
 		text-align: center;
 	}
+		.ui-panel:nth-child(2){
+			/*left: 352px;*/
+			left: 33.33%;
+			background: linear-gradient(to bottom, rgba(0,255,0,.4) 0%,rgba(0,255,0,0) 25%);
+		}
+		.ui-panel:last-child{
+			/*left: 704px;*/
+			left: 66.6%;
+			border: none;
+			background: linear-gradient(to bottom, rgba(0,0,255,.4) 0%,rgba(0,0,255,0) 25%);
+		}
 		.ui-panel div{
 			/*border: 1px solid red;*/
 		}
@@ -156,16 +176,6 @@ body{
 			font-weight: 600;
 			font-size: 12px;
 			margin-bottom: 20px;
-		}
-
-		.ui-panel:nth-child(2){
-			left: 352px;
-			background: linear-gradient(to bottom, rgba(0,255,0,.4) 0%,rgba(0,255,0,0) 25%);
-		}
-		.ui-panel:last-child{
-			left: 704px;
-			border: none;
-			background: linear-gradient(to bottom, rgba(0,0,255,.4) 0%,rgba(0,0,255,0) 25%);
 		}
 		.bleep0{ animation: beepRed .2s;	}
 		.bleep1{ animation: beepGreen .2s;	}
