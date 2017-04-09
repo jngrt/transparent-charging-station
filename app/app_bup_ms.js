@@ -233,6 +233,7 @@ jQuery(document).ready(function ($) {
 	 */
 
 	$(".debug-ui").hide();
+	var left = 0;
 
 	$(window).on('keypress', function(event) {
 		console.log(event.charCode);
@@ -250,6 +251,18 @@ jQuery(document).ready(function ($) {
 			} else {
 				startTimer();
 			}
+		};
+		if(event.charCode == 111){
+			console.log("nudge left",left);
+			left--;
+			$("#tetris_ui").css("transform","translateX("+left+"px)");
+			$("#replay_tetris_ui").css("transform","translateX("+left+"px)");
+		};
+		if(event.charCode == 112){
+			console.log("nudge right",left);
+			left++;
+			$("#tetris_ui").css("transform","translateX("+left+"px)");
+			$("#replay_tetris_ui").css("transform","translateX("+left+"px)");
 		};
 	});
 	
