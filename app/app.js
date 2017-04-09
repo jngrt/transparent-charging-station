@@ -17,9 +17,9 @@ const [NORMAL,REPLAY] = _.times(2,n=>n);
 let appState = NORMAL;
 
 const greenThreshold = 6; //6 gray energy, 6 green energy
-const tickDuration = 5000;
+const tickDuration = 2000;
 
-const [P_LOW, P_NORMAL, P_HIGH, P_TOP] = [1, 10, 50, 1000];
+const [P_LOW, P_NORMAL, P_HIGH, P_TOP] = [1, 10, 100, 1000];
 
 const cards = {
   	'65':{ name: 'Community Service', priority:P_HIGH, info:['High priority','Flexible deadline','Outside peak hours']},
@@ -47,7 +47,8 @@ jQuery(document).ready(function ($) {
 
 	ArduinoManager.init();
 	ArduinoManager.setReadersCallback( (reader, value) => {
-		tetris.updateCard(reader, value)
+		if(appState == NORMAL) tetris.updateCard(reader, value);
+		if(appState == REPLAY && replay) replay.checkIn();
 	});
 	ArduinoManager.setPlugsCallback( (plug, value) => {
 		tetris.updatePlugs(plug, !!value);
@@ -56,22 +57,49 @@ jQuery(document).ready(function ($) {
 	ArduinoManager.setEncodersCallback( (encoder, value) => {
 		tetris.updateParameters(encoder, value);
 	});
+
+
+	/*
+	TETRIS
+	*/
 	const tetris = new Tetris( cards );
 	
 	//for debug
 	document.tetris = tetris;
 
 	/*
-	VISUALIZATION
+	CONTROL PANEL
 	*/
-	swarm = new NewSwarm("#tetris_ui");
+	var controlPanels = _.times(3, function(i){
+		var cp = new ControlPanel(i, "#socket-ui");
+		cp.init();
+		return cp;
+	});
+
+	/*
+	SWARM
+	*/
+	swarm = new NewSwarm("#tetris_ui", true);
+	
+	/*
+	UPDATE VISUALIZATIONS
+	*/
 	tetris.onUpdate(() => {
 		
-		// if(appState == REPLAY) return;
+		if(appState == REPLAY) return;
 		
+		//update Swarm
 		swarm.update(tetris.getCurrentGrid());
 
+		//make those lights to cool stuff.
 		updatePlugLights( tetris.getLastLine() );
+
+		//make the controlpanels bleep
+		_.each(controlPanels, function(cp){
+			cp.bleep(tetris.getLastLine());
+			cp.update( tetris.claims );
+		})
+
 	});
 	tetris.onUnplug( doReplay );
 
@@ -100,19 +128,7 @@ jQuery(document).ready(function ($) {
 		tetris.updateClaim(+data.claimer, !!data.pluggedIn, +data.card, +data.chargeNeeded, +data.deadline);
 	}
 	
-	/*
-	CONTROL PANEL
-	*/
-	var controlPanels = _.times(3, function(i){
-		var cp = new ControlPanel(i, "#socket-ui");
-		cp.init();
-		tetris.onUpdate(() =>{
-			// if(appState == REPLAY) return;
-			cp.update( tetris.claims );
-		
-		});
-		return cp;
-	});
+
 
 
 	/*
@@ -134,33 +150,39 @@ jQuery(document).ready(function ($) {
 		ArduinoManager.setLights(leds);
 	}
 
-
-
 	/*
 	PLAYBACK HISTORY
 	*/
+	var replay;
 	function doReplay( claimer, lines ){
-		
+
+		if(replay) return //we check if there is a replay going on: then ignore
+
+		//first we set the appstate to Replay.
 		appState = REPLAY;
 		stopTimer();
-		
-		console.log(lines);
-	}
 
+		var onKillCallback = function(){
+			console.log("onKillCallback called");
+			appState = NORMAL;
+			startTimer();
+			
+			if(!replay) return;
+			replay = void(0);
+		}
+		
+		replay = new Replay(claimer, lines, "#replay_tetris_ui", "#ui", onKillCallback);
+		replay.init();
+		swarm.reset();	
+		
+	}
 
 	/*
 	TIMER RELATED THINGS
 	 */
 	let timer;
+	startTimer();
 	
-	$('.toggle-timer').click( e => {
-		if(timer) {
-			window.clearInterval(timer);
-			timer = null;
-		} else {
-			startTimer();
-		}
-	});
 	function stopTimer(){
 		if( timer ) {
 			console.log("timer stopped");
@@ -169,19 +191,37 @@ jQuery(document).ready(function ($) {
 	}
 	function startTimer(){
 		console.log("timer started");
-		stopTimer();
 		timer = window.setInterval(updateTime,tickDuration);
 	}
+	
 	function updateTime(){
 		$('.time-display').html( tetris.increaseTime() );
 	}
 
+		$('.toggle-timer').click( e => {
+		if(timer) {
+			window.clearInterval(timer);
+			timer = null;
+		} else {
+			startTimer();
+		}
+
+	});
+
+	/*
+	DEBUG RELATED THINGS
+	 */
+
 	$(".debug-ui").hide();
 
 	$(window).on('keypress', function(event) {
-		// console.log(event.charCode);
+		console.log(event.charCode);
 		if(event.charCode == 120){
 			$(".debug-ui").toggle();
+		};
+		if([114,99].indexOf(event.charCode)>=0){
+			console.log('triggered replay check-in', replay);
+			if(replay) replay.checkIn();
 		};
 		if(event.charCode == 32){
 			if(timer) {

@@ -1,8 +1,9 @@
-var NewSwarm = function(_parent){
+var NewSwarm = function(_parent, _fadeTimeLabels){
 
 	var _this = this;
 	var parent = _parent;
 	var parentHeight = $(parent).height();
+	var fadeTimeLabels = _fadeTimeLabels || false;
 
 	var dotSize = lineHeight = 44.8;
 
@@ -17,6 +18,8 @@ var NewSwarm = function(_parent){
 	var clearLine = false;
 
 	this.update = function(_lines){
+
+		$(parent).fadeIn();
 
 		lines = _lines;
 
@@ -41,19 +44,19 @@ var NewSwarm = function(_parent){
 	}
 	var addTimeLabel = function(t, l){
 
-		var time = 12+(t/4);
-		time = (time>10) ? time : "0"+time;
-		time += ":00";
+		var time = (12+(t/4))%24;
+			time = (time>9) ? time : "0"+time;
+			time += ":00";
 
-		var top = {top: parentHeight - (l+1)*lineHeight};
+		var top = { top: parentHeight - (l+1)*lineHeight };
 
-		$("<div></div>")
+		var timeLabel = $("<div></div>")
 			.addClass("timeLabel")
 			.html(time)
 			.css(top)
-			.appendTo(parent)
-			.hide()
-			.fadeIn();
+			.appendTo(parent);
+			
+		if (fadeTimeLabels) timeLabel.hide().fadeIn();
 	}
 	var createDots = function(){
 		
@@ -62,9 +65,9 @@ var NewSwarm = function(_parent){
 		_.each(lines, function(line, l) {
 			var claims = line.claims;
 			i++;
-			if(line.t%4 == 0){
-				addTimeLabel(line.t, l);
-			}
+			
+			if(line.t%4 == 0) addTimeLabel(line.t, l);
+
 			_.each(line.pixels, function(pixel, p){
 				
 				var isOverdue = false;
@@ -94,16 +97,17 @@ var NewSwarm = function(_parent){
 		})
 	}
 	this.reset = function(callback){
-		$(".dot").css("transform","translateY(3000px)").css("transition-duration","2s");
-		$(".timeLabel").fadeOut();
+		$(parent).children(".dot").css("transform","translateY(3000px)").css("transition-duration","2s");
+		$(parent).children(".timeLabel").fadeOut();
+		$(parent).fadeOut("slow");
 		setTimeout(function(){
 			clearDots(callback);
 		},4000);
 	}
 	var clearDots = function(callback){
 		dots = [];
-		$(".dot").remove();
-		$(".timeLabel").remove();
+		$(parent).children(".dot").remove();
+		$(parent).children(".timeLabel").remove();
 		$(parent).empty();
 		if(typeof callback == "function") callback();
 	}
@@ -111,8 +115,7 @@ var NewSwarm = function(_parent){
 		clearDots(createDots);
 	}
 	var animateDots = function(callback){
-		
-		$(".timeLabels").fadeOut();
+		if(fadeTimeLabels) $(parent).children(".timeLabel").fadeOut();
 		_.each(dots,function(dot){
 			if(dot.l == 0){
 				if(dot.claimer >=0){
@@ -127,7 +130,6 @@ var NewSwarm = function(_parent){
 			dot.el.css("transform","translateY("+lineHeight+"px)");
 		});
 
-		// $(".dot")
 		setTimeout(callback,1400);
  	}
 

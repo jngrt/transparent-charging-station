@@ -43,20 +43,25 @@ var ControlPanel = function(_id, _parent){
 	}
 	var clearLine = function(){
 		//clear Line
-		
-		if(lastLines.length > 0){		
+		return;
+
+		if(lastLines.length > 0){	
 			if(lines[0].t > lastLines[0].t){
 				var px = _.filter(lastLines[0].pixels, function(pixel){ return(pixel == id) });
-				if(px.length>0) bleep(px.length);
+				if(px.length>0) _this.bleep(px.length);
 			}
+		} else {
 		};
 
 		lastLines = lines;
+
 	}
 
-	var bleep = function(_times){
-		var times = _times + 1; 
+	this.bleep = function(line){
+		// var times = _times + 1; 
+		var times = _.filter(line.pixels, function(px){ return (px == id)}).length; 
 		el.addClass(bleepClass)
+			.css("animation-delay",".5s")
 			.css("animation-iteration-count",times)
 			.one("animationend",function(){ 
 				el.removeClass(bleepClass);
@@ -160,7 +165,6 @@ var ControlPanel = function(_id, _parent){
 		lastDeadlineReq = myClaim.deadline;
 
 		render();
-		console.log("going to rerender for state ",currentState);
 		stateChange();
 		clearLine();
 

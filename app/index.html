@@ -95,6 +95,8 @@
 		<div id="ui"> 
 			<div id="tetris_ui">
 			</div>
+			<div id="replay_tetris_ui">
+			</div>
 			<div id="socket-ui">
 			</div>
 		</div>
@@ -261,10 +263,29 @@
 			</div>
 		</script>
 
+		<script type="text/template" charset="utf-8" id="ui-replay-template">
+			<div class='state state0'>
+				<div class='replay-ui-box'>
+					<%= rc.msg_intro %>
+				</div>
+			</div>
+			<div class='state state1'>
+				<div class='replay-ui-box'>
+					<%= rc.msg_replay %>
+				</div>
+			</div>
+			<div class='state state2'>
+				<div class='replay-ui-box'>
+					<%= rc.msg_outro %>
+				</div>
+			</div>
+		</script>
+
 		<script src="tetris.js"></script>
 		<script src="line.js"></script>
 		<script src="swarm3.js"></script>
 		<script src="controlpanel.js"></script>
+		<script src="replay.js"></script>
 		<script src="app.js"></script>
  	</body>
 </html>

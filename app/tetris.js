@@ -136,8 +136,7 @@ class Tetris {
   updateCard(claimer, card){
     if( !this.cards[card] ) return console.error('Undefined card: ', card);
   
-    if( !this.cards[card] )
-      return console.error('Unknown card: ', card);
+    if( !this.cards[card] ) return console.error('Unknown card: ', card);
 
     let priority = this.cards[card].priority;
     let c = this.claims[claimer];

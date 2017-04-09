@@ -14,13 +14,26 @@ body{
 	/*transform: scale(.4);*/
 	/*transform-origin: top right;*/
 }
-#tetris_ui{
+
+.state {
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	display: none;
+}
+
+#tetris_ui, #replay_tetris_ui{
 	position: absolute;
 	left: 258px;
 	top: 80px;
 	width: 552px;
 	height: 2150px;
 }
+	#replay_tetris_ui .timeLabel{
+		background-color: blue;
+	}
 
 		.dot{
 			position: absolute;
@@ -38,8 +51,8 @@ body{
 
 		.timeLabel { 
 			position: absolute;
-			left: -200px;
-			width: 100px;
+			left: -179.2px;
+			width: 112px;
 			height: 44.8px;
 			border: 6px solid black;
 			border-radius: 22.4px;
@@ -51,6 +64,37 @@ body{
 		}
 	.dead{
 		border-color: red;
+	}
+#replay-ui{
+	position: absolute;
+	left: 12px;
+	padding: 20px;
+	width: 1064px;
+	height: 270px;
+	background-color: rgba(6,17,46,1);
+	transition: all .5s;
+}
+	.replay-ui-0 { background: linear-gradient(to bottom, rgba(255,0,0,.4) 0%,rgba(255,0,0,0) 25%);}
+	.replay-ui-1 { background: linear-gradient(to bottom, rgba(0,255,0,.4) 0%,rgba(0,255,0,0) 25%);}
+	.replay-ui-2 { background: linear-gradient(to bottom, rgba(0,0,255,.4) 0%,rgba(0,0,255,0) 25%);}
+
+	.replay-ui-box{
+		position: absolute;
+		left: 20px;
+		top: 20px;
+		width: 1024px;
+		height: 230px;
+		border: 1px solid rgba(255,255,255,.2);
+		text-shadow: 0px 0px 20px rgba(0,127,255,1);
+		padding: 20px;
+		border-radius: 5px;
+		font-size: 32px;
+		color: white;
+		text-align: center;
+		display: flex;
+		justify-content: center;
+		flex-direction: column;
+		text-align: center;
 	}
 
 #socket-ui{
@@ -69,23 +113,14 @@ body{
 	/*
 		88*4 = 352
 	+---+---+---+---+
-	|   |   |   |   |
+	| • | • | • | • |
 	+---+---+---+---+
-270	|   |   |   |   |	
+270	| • | • | • | • |	
 	+---+---+---+---+
-	|   |   |   |   |
+	| • | • | • | • |
 	+---+---+---+---+
 
 	*/
-
-	.state {
-		position: absolute;
-		left: 0;
-		top: 0;
-		width: 100%;
-		height: 100%;
-		display: none;x
-	}
 
 	.ui-panel{
 		position: absolute;
@@ -98,6 +133,9 @@ body{
 		background: linear-gradient(to bottom, rgba(255,0,0,.4) 0%,rgba(255,0,0,0) 25%);
 		text-align: center;
 	}
+		.ui-panel div{
+			/*border: 1px solid red;*/
+		}
 		.ui-panel h1{
 			font-weight: 600;
 			font-size: 12px;
@@ -222,7 +260,8 @@ body{
 		position: absolute;
 		left: 0px;
 		top: 90px;
-		height: 90px;
+		height: 60px;
+		line-height: 60px;
 		width: 312px;
 		margin: 0 20px;
 		background-color: yellow;
@@ -231,31 +270,31 @@ body{
 		font-weight: 900;
 		text-shadow: none;
 		border-radius: 4px;
-		line-height: 50px;
-		font-size: 16px;
+		font-size: 14px;
 		opacity: .8;
 		text-align: left;
-		z-index: 99;
 	}
 		.ui-notification:before{
 			content: "⚠";
 			vertical-align: middle;
 			font-size: 32px;
-			margin: 0 20px;
+			margin: 0 10px;
 		}
 
 	
 	.ui-progress-deadline, .ui-progress-charge{
 		width: 176px;
-		height: 90px;
+		height: 120px;
 		position: absolute;
 		left: 0;
-		top: 135px;
+		top: 150px;
 		border-right: 1px solid rgba(255,255,255,.2);
 	}
-	.ui-progress-charge{
-		left: 176px;
-	}
+		.ui-progress-charge{
+			right: 0;
+			left: 176px;
+			border-right: none;
+		}
 		.ui-progress-deadline-value, .ui-progress-charge-value{
 			position: absolute;
 			left: 0px;
@@ -272,7 +311,9 @@ body{
 				font-weight: 600;
 				width: 178px;
 				display: block;
-			}.ui-progress-deadline-value:before{
+				padding: 10px 0 5px;
+			}
+			.ui-progress-deadline-value:before{
 				content: "expected finish";
 			}
 			.ui-progress-charge-value:before{
@@ -286,7 +327,7 @@ body{
 		.ui-progress-deadline-label, .ui-progress-charge-label{
 			position: absolute;
 			left: 0px;
-			top: 90px;
+			bottom: 10px;
 			width: 176px;
 			font-size: 18px;
 			font-weight: 600;
@@ -334,7 +375,7 @@ body{
 			text-shadow: none;
 			border-radius: 4px;
 			line-height: 60px;
-			font-size: 16px;
+			font-size: 14px;
 			opacity: .8;
 			margin: 45px 20px 0;
 		}
