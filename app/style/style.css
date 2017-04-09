@@ -11,8 +11,8 @@ body{
 	background-color: black;
 	font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
 	overflow: hidden;
-/*	transform: scale(.4/*5);
-	transform-origin: top right;*/*/
+	transform: scale(.4);
+	transform-origin: top right;
 }
 
 .state {
@@ -285,9 +285,9 @@ body{
 	.ui-notification{
 		position: absolute;
 		left: 0px;
-		top: 90px;
-		height: 60px;
-		line-height: 60px;
+		top: 100px;
+		height: 45px;
+		line-height: 45px;
 		width: 312px;
 		margin: 0 20px;
 		background-color: yellow;

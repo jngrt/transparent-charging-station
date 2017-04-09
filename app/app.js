@@ -206,11 +206,10 @@ jQuery(document).ready(function ($) {
 		},500)
 	}
 
-
-
 	/*
 	PLAYBACK HISTORY
 	*/
+	
 	var replay;
 	function doReplay( claimer, lines ){
 
@@ -221,6 +220,7 @@ jQuery(document).ready(function ($) {
 		stopTimer();
 
 		var onKillCallback = function(){
+
 			console.warn("onKillCallback called");
 			appState = NORMAL;
 

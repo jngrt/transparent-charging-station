@@ -37,6 +37,7 @@ var Replay = function(_claimer, _myRecorder, _replaySwarmParent, _replayParent, 
 
 	var currentState = 0;
 	var lastState = -1;
+	
 	var progressTimeout = 0;
 	var countdown = 10;
 
@@ -62,11 +63,16 @@ var Replay = function(_claimer, _myRecorder, _replaySwarmParent, _replayParent, 
 	}
 
 	this.kill = function(_forceKillCallback){
+		console.log(">> replay3: this.kill");
 		if(killCalled) return;
+		console.log(">> replay3: this.kill: GO!");
+
 		killCalled = true;
 		clearTimeout(killTimer);
 		clearTimeout(progressTimeout);
+		
 		hideEl(_forceKillCallback);
+		
 		if(typeof killCallback == 'function') killCallback();
 	}
 	var createEl = function(){
@@ -84,6 +90,7 @@ var Replay = function(_claimer, _myRecorder, _replaySwarmParent, _replayParent, 
 		});
 	}
 	var render = function(){
+		console.log("render checked");
 		var tmp = _.template(uiTemplate);
 		el.html(tmp(data));	
 	}
@@ -92,12 +99,14 @@ var Replay = function(_claimer, _myRecorder, _replaySwarmParent, _replayParent, 
 	}
 	var stateChange = function(){
 		if(currentState != lastState){
+			
 			//elegant transition
 			el.children('.state').fadeOut();
 			el.children('.state'+currentState).fadeIn();
 			lastState = currentState;
 			return;
 		};
+		
 		//cut to state
 		el.children('.state'+currentState).show();
 	}
@@ -108,24 +117,35 @@ var Replay = function(_claimer, _myRecorder, _replaySwarmParent, _replayParent, 
 	var update = function(){
 		
 		data.claimer = claimer;
-		
+		data.msg_intro = "intro";
+		data.msg_replay = "replay";
+		data.msg_outro = "outro";
+		render();
+
 		clearTimeout(progressTimeout);
 		progressTimeout = void(0);
 
 		if(currentState == 0){
+			
 			index = 0;
 			data.msg_intro = "Do you want to see the replay? "+countdown;
-			progressTimeout = setTimeout(update,1000);
-			if(countdown <= 0) _this.kill();
+
 			replaySwarm.update(track[index]);
 			countdown--;
+
+			if(countdown <= 0) _this.kill();
+
+			render();
+
+			progressTimeout = setTimeout(update,1000);
+
 		} else if(currentState == 1) {
 			currentState = 1;
 			countdown = 10;
 			data.msg_replay = " ••• ";
 
 			if (!track[index]){
-				console.log(">> replay: next track is dead == 0 ")
+				data.msg_replay = "Unplugged car...";
 				currentState = 2;
 			} else {
 				var lines = track[index];
@@ -144,29 +164,41 @@ var Replay = function(_claimer, _myRecorder, _replaySwarmParent, _replayParent, 
 					replaySwarm.update(lines);
 				}
 			}
+			
 			index++;
-						
+
+			render();
+
 			setTimeout(update, updateInterval);
+
 		} else {
-			console.log(">> replay OUTROOOO");
+			
 			index = 0;
-			data.msg_intro = "Done! "+countdown;
-			progressTimeout = setTimeout(update,1000);
-			if(countdown <= 0) _this.kill();
+			data.msg_outro = "Done! "+countdown;
+			
+			
 			replaySwarm.update(track[track.length-1]);
 			countdown--;
+
+			if(countdown <= 0) _this.kill();
+
+			render();
+
+			progressTimeout = setTimeout(update,1000);
+
+
 		}
 		
-		stateChange();		
-		render();
+		stateChange();	
 		lastState = currentState;
 
 	}
 	this.init = function(){
-		console.log(">> replay 3: init replay");
-		track = myRecorder.track;
+		track = myRecorder.getTrack();
+		console.log(">> replay 3: init replay",track);
 		createEl();
 		createReplaySwarm();
 		update();
+		
 	}
 }

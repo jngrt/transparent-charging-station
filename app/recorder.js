@@ -13,22 +13,22 @@ var Recorder = function(_claimer){
 	console.log(">>> RECORDER CREATED FOR "+claimer);
 
 	
-	this.record = function(lines){
+	this.record = function(_lines){
 		console.log(">> recorder is recording for track "+claimer);
 		if(this.recordingStatus != RECORDING) return;
-		if(lines.length < 1){
-			console.log("this line has an error",lines);
+		if(_lines.length < 1){
+			console.log("this line has an error",_lines);
 			return;
 		}
 		
-		var _lines = (lines.length > 48) ? _.last(lines,48) : lines;
+		var lines = (_lines.length > 48) ? _.last(_lines,48) : _lines;
 
 		if(!_.isUndefined(_lines[0].claims[claimer])){	
-			console.log(">> recorder: This line looks relevantx");
-			this.track.push(_lines);
+			console.log(">> recorder: This line looks relevant");
+
+			this.track.push(clone(lines));
 		} else {
 			console.log("still recording, but this line looks irrelevant to me.");
-			// this.stopRecording();
 		}
 	}
 	this.isRecording = function(){
@@ -56,6 +56,10 @@ var Recorder = function(_claimer){
 		var index = _index || playHead;
 		playHead++;
 		return this.track[index];
+	}
+	this.getTrack = function(){
+		if(this.track.length == 0) return [];
+		return this.track;
 	}
 
 }
