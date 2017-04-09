@@ -26,7 +26,7 @@ body{
 
 #tetris_ui, #replay_tetris_ui{
 	position: absolute;
-	left: 268px;
+	left: 263px;
 	top: 80px;
 	width: 552px;
 	height: 2150px;
