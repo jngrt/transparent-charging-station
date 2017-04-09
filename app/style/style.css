@@ -51,7 +51,7 @@ body{
 
 		.timeLabel { 
 			position: absolute;
-			left: -176px;
+			left: -180px;
 			width: 138px;
 			height: 44.8px;
 			border: 6px solid black;
@@ -64,7 +64,7 @@ body{
 		}
 		.deadlineLabel { 
 			position: absolute;
-			right: -182px;
+			right: -180px;
 			width: 138px;
 			height: 44.8px;
 			border: 6px solid black;
