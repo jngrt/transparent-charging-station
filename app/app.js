@@ -17,8 +17,8 @@ const [NORMAL,REPLAY] = _.times(2,n=>n);
 let appState = NORMAL;
 
 const greenThreshold = 6; //6 gray energy, 6 green energy
-const tickDuration = 15000;
-//const tickDuration = 500;
+
+const tickDuration = 3000;
 
 const [P_LOW, P_NORMAL, P_HIGH, P_TOP] = [1, 10, 100, 1000];
 
@@ -118,25 +118,35 @@ jQuery(document).ready(function ($) {
 
 		//make the controlpanels bleep
 		_.each(controlPanels, function(cp){
-			cp.bleep(tetris.getLastLine());
 			cp.update( tetris.claims );
 		})
 
-		// _.each(recorders, function(recorder, i){
-		// 	if(recorder.isRecording()) recorder.record(tetris.getCurrentGrid());
-		// })
 	}
 
 	tetris.onUpdate(update);
 	
 	tetris.onPlugin(function(_claimer){
-		// recorders[_claimer].startRecording();
+		recorders[_claimer].startRecording();
 	});
 	
 	tetris.onUnplug(function(_claimer, _replayLines){
 		recorders[_claimer].stopRecording();
 		doReplay(_claimer, _replayLines);
 	});
+
+	function updateTime(){
+		
+		_.each(recorders, function(recorder, i){
+			if(recorder.isRecording()) recorder.record(tetris.getCurrentGrid());
+		});
+		_.each(controlPanels, function(cp){
+			cp.bleep(tetris.getLastLine());
+		})
+
+		
+		$('.time-display').html( tetris.increaseTime() );
+	}
+
 
 	/*
 	INPUT
@@ -172,7 +182,7 @@ jQuery(document).ready(function ($) {
 
 		//we animate for tickDuration...
 		//first step:
-			// 
+		// 
 
 		console.log('updatePlugLights ', line);
 		if(!line || !line.claims || !line.claims.length ) return console.log('no claims');
@@ -184,9 +194,7 @@ jQuery(document).ready(function ($) {
 				leds.fill(c.claimer + 1, cIndex, cIndex + c.pixels);
 			}
 		});
-		_.each(line.claims, function(claim){
-			var px = claim.pixels;
-		})
+
 		console.log(leds);
 		setTimeout(function(){
 			ArduinoManager.setLights(leds);
@@ -217,8 +225,8 @@ jQuery(document).ready(function ($) {
 			replay = void(0);
 		}
 
-		// replay = new Replay(claimer, recorders[claimer], "#replay_tetris_ui", "#ui", onKillCallback);
-		replay = new Replay(claimer, lines, "#replay_tetris_ui", "#ui", onKillCallback);
+		replay = new Replay(claimer, recorders[claimer], "#replay_tetris_ui", "#ui", onKillCallback);
+		// replay = new Replay(claimer, lines, "#replay_tetris_ui", "#ui", onKillCallback);
 		
 		replay.init();
 		swarm.reset();	
@@ -242,10 +250,6 @@ jQuery(document).ready(function ($) {
 		console.log("triggered timer start", timer);
 		if(timer) return;
 		timer = window.setInterval(updateTime,tickDuration);
-	}
-	
-	function updateTime(){
-		$('.time-display').html( tetris.increaseTime() );
 	}
 
 	$('.toggle-timer').click( e => {
