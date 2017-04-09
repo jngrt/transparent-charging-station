@@ -110,8 +110,8 @@ jQuery(document).ready(function ($) {
 		//update Swarm
 		swarm.update(tetris.getCurrentGrid());
 
-		//make those lights to cool stuff.
-		updatePlugLights( tetris.getLastLine() );
+		//make those lights do cool stuff.
+		updatePlugLights( tetris.getLastLine(-1) );
 
 		//make the controlpanels bleep
 		_.each(controlPanels, function(cp){

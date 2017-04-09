@@ -33,7 +33,7 @@ var Replay = function(_claimer, _recorder, _replaySwarmParent, _replayParent, _k
 	var killCalled = false;
 
 	var hideState = {"top":$(replayParent).height()};
-	var showState = {"top":$(replayParent).height()-270}
+	var showState = {"top":$(replayParent).height()-260}
 
 	var onCheckInCallback = null;
 

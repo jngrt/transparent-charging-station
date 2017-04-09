@@ -116,7 +116,7 @@ body{
 #socket-ui{
 	position: absolute;
 	left: 0px;
-	bottom: 0;
+	bottom: 10px;
 	width: 1064px;
 	height: 270px;
 	background-color: rgba(6,17,46,.9);
