@@ -83,7 +83,7 @@ body{
 	}
 #replay-ui{
 	position: absolute;
-	left: 12px;
+	left: 0px;
 	padding: 20px;
 	width: 1064px;
 	height: 270px;
@@ -115,7 +115,7 @@ body{
 
 #socket-ui{
 	position: absolute;
-	left: 12px;
+	left: 0px;
 	bottom: 0;
 	width: 1064px;
 	height: 270px;
@@ -330,7 +330,7 @@ body{
 				padding: 10px 0 5px;
 			}
 			.ui-progress-deadline-value:before{
-				content: "expected finish";
+				content: "finished";
 			}
 			.ui-progress-charge-value:before{
 				content: "currently charged";
@@ -352,7 +352,7 @@ body{
 		}
 			.ui-progress-deadline-label:before{
 				font-weight: 200;
-				content: "requested ";
+				content: "deadline ";
 			}
 			.ui-progress-charge-label:before{
 				font-weight: 200;
