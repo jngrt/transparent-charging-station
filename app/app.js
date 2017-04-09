@@ -227,7 +227,7 @@ jQuery(document).ready(function ($) {
 		}
 	}
 	function startTimer(){
-		console.log("triggered timer start", timer);
+		console.log("triggered timer start", timer, tickDuration);
 		if(timer) return;
 		timer = window.setInterval(updateTime,tickDuration);
 	}

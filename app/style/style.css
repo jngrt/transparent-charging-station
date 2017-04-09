@@ -26,7 +26,7 @@ body{
 
 #tetris_ui, #replay_tetris_ui{
 	position: absolute;
-	left: 258px;
+	left: 261px;
 	top: 80px;
 	width: 552px;
 	height: 2150px;
@@ -52,7 +52,7 @@ body{
 		.timeLabel { 
 			position: absolute;
 			left: -179.2px;
-			width: 112px;
+			width: 150px;
 			height: 44.8px;
 			border: 6px solid black;
 			border-radius: 22.4px;
