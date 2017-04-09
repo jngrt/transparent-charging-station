@@ -168,6 +168,8 @@ class Tetris {
       this.onUnplugCallback( claimer, replayLines );
     } else if( pluggedIn ) {
        c.claimStart = this.now;
+       //fix overdue bug, by setting default deadline to now
+       c.deadline = this.now;
     }
     this.processClaims();
   }
