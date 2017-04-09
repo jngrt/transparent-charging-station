@@ -183,10 +183,15 @@ jQuery(document).ready(function ($) {
 		//first step:
 		// 
 
-		console.log('updatePlugLights ', line);
-		if(!line || !line.claims || !line.claims.length ) return console.log('no claims');
-
 		let leds = new Array(36).fill(0);
+
+
+		console.log('updatePlugLights ', line);
+		if(!line || !line.claims || !line.claims.length ){
+			ArduinoManager.setLights(leds);
+			return console.log('no claims');
+		}
+
 		_.each(line.claims, c => {
 			if( c.pixels && c.pixels > 0 ) {
 				let cIndex = c.claimer * 12;
@@ -215,7 +220,7 @@ jQuery(document).ready(function ($) {
 		stopTimer();
 
 		var onKillCallback = function(){
-			console.log("onKillCallback called");
+			console.warn("onKillCallback called");
 			appState = NORMAL;
 
 			startTimer();

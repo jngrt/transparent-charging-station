@@ -16,10 +16,8 @@
 */
 var Replay = function(_claimer, _myRecorder, _replaySwarmParent, _replayParent, _killCallback){
 	
-	var claimer = _claimer;
-	// var lines = _lines;
-
 	var myRecorder = _myRecorder;
+	var claimer = _claimer;
 
 
 	var killCallback = _killCallback;
@@ -51,6 +49,7 @@ var Replay = function(_claimer, _myRecorder, _replaySwarmParent, _replayParent, 
 	var data = {};
 	var replaySwarm;
 	var index = 0;
+	var track = [];
 
 	this.checkIn = function(){
 		console.log(">> replay 3: replay checked in!");
@@ -111,119 +110,61 @@ var Replay = function(_claimer, _myRecorder, _replaySwarmParent, _replayParent, 
 		data.claimer = claimer;
 		
 		clearTimeout(progressTimeout);
+		progressTimeout = void(0);
 
 		if(currentState == 0){
 			index = 0;
-			data.msg_intro = "Do you want to see "+countdown;
+			data.msg_intro = "Do you want to see the replay? "+countdown;
 			progressTimeout = setTimeout(update,1000);
 			if(countdown <= 0) _this.kill();
-			replaySwarm.update(myRecorder.getLines(index));
+			replaySwarm.update(track[index]);
 			countdown--;
 		} else if(currentState == 1) {
+			currentState = 1;
+			countdown = 10;
+			data.msg_replay = " ••• ";
 
-			data.msg_replay = "TEST TEST";
-
-			var lines = myRecorder.getLines(index);
-
-			if(lines.length <= 0){
-				currentState = 2; 
+			if (!track[index]){
+				console.log(">> replay: next track is dead == 0 ")
+				currentState = 2;
 			} else {
-			
-				//get all messages from lines[0].
+				var lines = track[index];
 
-				//this is a complete tetris
-				console.log("about to send this set of lines",lines);
-				replaySwarm.update(lines);
-				
-				if(myRecorder.isLastLines(index)) currentState = 2; 
-
-				index++;
-
+				if(lines.length <= 0){
+					console.log(">> replay: lines.length == 0 ")
+					currentState = 2; 
+				} else {
+					//get all messages from lines[0].
+					var msgs = [];
+					_.each(lines[0].claims,function(claim, i){
+						if(claim.message) msgs.push(i + ": "+ claim.message);
+					})
+					data.msg_replay = msgs.join("<br>");
+					console.log("about to send this set of lines",lines);
+					replaySwarm.update(lines);
+				}
 			}
-			
-			render();
-			stateChange();
-			lastState = currentState;
-			
+			index++;
+						
 			setTimeout(update, updateInterval);
 		} else {
+			console.log(">> replay OUTROOOO");
 			index = 0;
 			data.msg_intro = "Done! "+countdown;
 			progressTimeout = setTimeout(update,1000);
 			if(countdown <= 0) _this.kill();
-			// replaySwarm.update(myRecorder.gxetLines(index));
+			replaySwarm.update(track[track.length-1]);
 			countdown--;
 		}
-
-		// 	if(){
-
-		// 		currentState = 1;
-		// 		var msgs = [];
-
-		// 		if(!lines[index]){
-		// 			alert("an incorrect line was addressed");
-		// 			currentState = 2;
-		// 			setTimeout(update,4000);
-		// 			return;
-		// 		}
-		// 		if(lines[index].claims.length > 0){
-		// 			console.log(">> replay 3: finding messages for this line");
-		// 			_.each(lines[index].claims,function(claim, i){
-		// 				if(claim.message) msgs.push(i + ": "+ claim.message);
-		// 			})
-		// 			data.msg_replay = msgs.join("<br>");
-		// 		}
-		// 		if(index == 0 && msgs.length == 0){
-		// 			data.msg_replay = "User started charging";
-		// 		}
-		// 		if(_.isUndefined(lines[index].claims[claimer])){
-		// 			data.msg_replay = "User plugged out before charging was done";
-		// 			currentState = 2;
-		// 		}
-
-		// 	} else {
-		// 		currentState = 2;
-		// 	}
-
-		// 	//render the lines after index;
-		// 	var _index = (lines.length - index) || 1;
-		// 	replaySwarm.update(_.last(lines, _index));
-			
-		// 	var _updateInterval = (data.msg_replay != "") ? 4000 : updateInterval;
-		// 	data.msg_replay = (data.msg_replay == "") ? "•••" :  data.msg_replay;
-			
-		// 	setTimeout(update,_updateInterval);
-			
-		// 	index++;
-		// 	countdown = 10;
-
-		// } else if(currentState == 2) {
-		// 	data.msg_outro = "Finished replay, want to see it again? " +countdown;
-			
-		// 	if(countdown <= 0){
-		// 		_this.kill();
-		// 	}
-		// 	if(!replaySwarm.hasBeenReset){
-		// 		replaySwarm.reset(function(){
-		// 			update();
-		// 			return;
-		// 		});
-		// 	} else {
-		// 		progressTimeout = setTimeout(update,1000);
-		// 	}
-
-		// 	index = 0;
-		// 	countdown--;
-
-		// } 
-		// render();
-		// stateChange();
-		// lastState = currentState;
+		
+		stateChange();		
+		render();
+		lastState = currentState;
 
 	}
 	this.init = function(){
 		console.log(">> replay 3: init replay");
-		console.log(myRecorder.getLines(index));
+		track = myRecorder.track;
 		createEl();
 		createReplaySwarm();
 		update();

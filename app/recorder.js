@@ -24,8 +24,11 @@ var Recorder = function(_claimer){
 		var _lines = (lines.length > 48) ? _.last(lines,48) : lines;
 
 		if(!_.isUndefined(_lines[0].claims[claimer])){	
-			console.log(">> recorder: This line looks irrelevant");
+			console.log(">> recorder: This line looks relevantx");
 			this.track.push(_lines);
+		} else {
+			console.log("still recording, but this line looks irrelevant to me.");
+			// this.stopRecording();
 		}
 	}
 	this.isRecording = function(){
