@@ -10,7 +10,8 @@ STRESS -> Only looks at stress regarding total available charge until deadline.
 */
 const GRID_HEIGHT = 48;
 const GRID_WIDTH = 12;
-const HISTORY_LINES = 10;
+//Maximum history length of 48 lines
+const HISTORY_LINES = 48;
 
 const PRIORITY = 'priority';
 const STRESS = 'stress';
@@ -222,10 +223,11 @@ class Tetris {
       console.log(">>> DETECTED PLUGIN EVENT", claimer, pluggedIn);
       this.onPlugInCallback( claimer );
      
+
       _.extend( c, { 
         priority: priority, 
         chargeNeeded: chargeNeeded, 
-        deadline: deadline,
+        deadline: Math.min(this.now + 48, Math.max(this.now, this.now + deadline)),
         claimStart: ( ~c.claimStart ? c.claimStart : this.now ),
         card: card
       });
