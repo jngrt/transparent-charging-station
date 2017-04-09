@@ -26,6 +26,10 @@ var NewSwarm = function(_parent, _fadeLabels){
 
 		lines = _lines;
 
+		if(!lines[0]){
+			console.log("lines error",lines);
+			return;
+		}
 		clearLine = (time < lines[0].t);
 		time = lines[0].t;
 
