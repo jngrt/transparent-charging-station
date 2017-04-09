@@ -59,6 +59,7 @@ var ControlPanel = function(_id, _parent){
 
 	this.bleep = function(line){
 		// var times = _times + 1; 
+		if(_.isUndefined(line)) return;
 		var times = _.filter(line.pixels, function(px){ return (px == id)}).length; 
 		el.addClass(bleepClass)
 			.css("animation-delay",".5s")
