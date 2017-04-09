@@ -83,7 +83,15 @@ jQuery(document).ready(function ($) {
 		return cp;
 	});
 
-	
+
+
+	/*
+	RECORDERS
+	*/
+	var recorders = _.times(3, function(i){
+		var recorder = new Recorder(i);
+		return recorder;
+	});	
 
 	/*
 	SWARM
@@ -111,14 +119,22 @@ jQuery(document).ready(function ($) {
 			cp.update( tetris.claims );
 		})
 
+		_.each(recorders, function(recorder, i){
+			if(recorder.isRecording()) recorder.record(tetris.getCurrentGrid());
+		})
+
+
+
 	});
-	tetris.onUnplug( doReplay );
+	tetris.onPlugin(function(_claimer){
+		recorders[_claimer].startRecording();
+	});
+	tetris.onUnplug(function(_claimer, _replayLines){
+		recorders[_claimer].stopRecording();
+		doReplay(_claimer, _replayLines);
+	});
 
 	
-	tetris.onPlugin(function(_claimer){
-		// recorders[_claimer].stopRecording();
-		// doReplay(_claimer, _replayLines);
-	});
 
 	/*
 	INPUT
@@ -151,7 +167,7 @@ jQuery(document).ready(function ($) {
 	PLUG LEDS
 	*/
 	function updatePlugLights( line ) {
-		console.log('updatePlugLights ', line);
+		// console.log('updatePlugLights ', line);
 		if(!line || !line.claims || !line.claims.length )
 			return console.log('no claims');
 
@@ -162,7 +178,7 @@ jQuery(document).ready(function ($) {
 				leds.fill(c.claimer + 1, cIndex, cIndex + c.pixels);
 			}
 		});
-		console.log(leds);
+		// console.log(leds);
 		ArduinoManager.setLights(leds);
 	}
 
@@ -190,7 +206,8 @@ jQuery(document).ready(function ($) {
 			replay = void(0);
 		}
 		
-		replay = new Replay(claimer, lines, "#replay_tetris_ui", "#ui", onKillCallback);
+		// replay = new Replay(claimer, lines, "#replay_tetris_ui", "#ui", onKillCallback);
+		replay = new Replay(claimer, recorders[claimer], "#replay_tetris_ui", "#ui", onKillCallback);
 		replay.init();
 		swarm.reset();	
 		
@@ -210,7 +227,7 @@ jQuery(document).ready(function ($) {
 		}
 	}
 	function startTimer(){
-		console.log("triggered timer start", timer);
+		console.log("triggered timer start", timer, tickDuration);
 		if(timer) return;
 		timer = window.setInterval(updateTime,tickDuration);
 	}
@@ -234,6 +251,7 @@ jQuery(document).ready(function ($) {
 
 	$(".debug-ui").hide();
 	var left = 0;
+
 
 	$(window).on('keypress', function(event) {
 		console.log(event.charCode);

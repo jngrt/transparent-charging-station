@@ -1,9 +1,9 @@
-var NewSwarm = function(_parent, _fadeTimeLabels){
+var NewSwarm = function(_parent, _fadeLabels){
 
 	var _this = this;
 	var parent = _parent;
 	var parentHeight = $(parent).height();
-	var fadeTimeLabels = _fadeTimeLabels || false;
+	var fadeLabels = _fadeLabels || false;
 
 	var dotSize = lineHeight = 44.8;
 
@@ -45,11 +45,20 @@ var NewSwarm = function(_parent, _fadeTimeLabels){
 			top: parentHeight - (l+1)*lineHeight
 		}
 	}
-	var addTimeLabel = function(t, l){
+	var timestampToHour = function(timestamp){
 
-		var time = (12+(t/4))%24;
-			time = (time>9) ? time : "0"+time;
-			time += ":00";
+		var hour = (Math.floor(timestamp/4)+12)%24;
+		var min = Math.abs((timestamp%4)*15);
+
+		hour = (hour < 10) ? "0"+hour : hour;
+		min = (min < 10) ? "0"+min : min;
+
+		return hour +":"+min;
+
+	}
+	var addTimeLabel = function(t, l){
+		
+		var time = timestampToHour(t);
 
 		var top = { top: parentHeight - (l+1)*lineHeight };
 
@@ -59,7 +68,24 @@ var NewSwarm = function(_parent, _fadeTimeLabels){
 			.css(top)
 			.appendTo(parent);
 			
-		if (fadeTimeLabels) timeLabel.hide().fadeIn();
+		if (fadeLabels) timeLabel.hide().fadeIn();
+	}
+	var addDeadline = function(l, t, p, isOverdue){
+		var top = { top: parentHeight - (l+1)*lineHeight };
+		
+		var time = timestampToHour(t);
+
+		var deadlineLabel = $("<div></div>")
+			.addClass("deadlineLabel")
+			.html("deadline: "+time)
+			.css(top)
+			.appendTo(parent);
+
+		deadlineLabel.addClass("deadlineLabel"+p);
+
+		if (isOverdue) deadlineLabel.addClass("overdue");
+		if (fadeLabels) deadlineLabel.hide().fadeIn();
+
 	}
 	var createDots = function(){
 		
@@ -72,11 +98,21 @@ var NewSwarm = function(_parent, _fadeTimeLabels){
 			if(line.t%4 == 0) addTimeLabel(line.t, l);
 
 			_.each(line.pixels, function(pixel, p){
-				
+
+							
 				var isOverdue = false;
+				
 				if(_.has(claims[pixel],"overdue")){
 					isOverdue = claims[pixel].overdue
 				}
+				if(line.claims[pixel]){
+					console.log(line.t, "found line claim",line.claims[pixel]);
+					if(line.claims[pixel].deadline == line.t){
+						addDeadline(l, line.t, pixel, isOverdue);
+					}
+				}
+				
+
 				var classes = ["dot"];
 
 				if(isOverdue) classes.push("overdue");
@@ -105,6 +141,7 @@ var NewSwarm = function(_parent, _fadeTimeLabels){
 
 		$(parent).children(".dot").css("transform","translateY(3000px)").css("transition-duration","2s");
 		$(parent).children(".timeLabel").fadeOut();
+		$(parent).children(".deadlineLabel").fadeOut();
 		$(parent).fadeOut("slow");
 		setTimeout(function(){
 			clearDots(callback);
@@ -114,6 +151,7 @@ var NewSwarm = function(_parent, _fadeTimeLabels){
 		dots = [];
 		$(parent).children(".dot").remove();
 		$(parent).children(".timeLabel").remove();
+		$(parent).children(".deadlineLabel").remove();
 		$(parent).empty();
 		if(typeof callback == "function") callback();
 	}
@@ -121,7 +159,8 @@ var NewSwarm = function(_parent, _fadeTimeLabels){
 		clearDots(createDots);
 	}
 	var animateDots = function(callback){
-		if(fadeTimeLabels) $(parent).children(".timeLabel").fadeOut();
+		if(fadeLabels) $(parent).children(".timeLabel").fadeOut();
+		if(fadeLabels) $(parent).children(".deadlineLabel").fadeOut();
 		_.each(dots,function(dot){
 			if(dot.l == 0){
 				if(dot.claimer >=0){
