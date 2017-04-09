@@ -571,6 +571,7 @@ class Tetris {
     this.onUnplugCallback = _cb;
   }
   onPlugin (_cb) {
+    console.log(">> tetris: set callback for onPlugin")
     this.onPlugInCallback = _cb;
   }
   printClaims() {

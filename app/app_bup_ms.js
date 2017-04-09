@@ -115,6 +115,10 @@ jQuery(document).ready(function ($) {
 	tetris.onUnplug( doReplay );
 
 	
+	tetris.onPlugin(function(_claimer){
+		// recorders[_claimer].stopRecording();
+		// doReplay(_claimer, _replayLines);
+	});
 
 	/*
 	INPUT
