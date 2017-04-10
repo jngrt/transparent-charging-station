@@ -52,6 +52,18 @@ var Replay = function(_claimer, _myRecorder, _replaySwarmParent, _replayParent, 
 	var index = 0;
 	var track = [];
 
+	var timestampToHour = function(timestamp){
+
+		var hour = (Math.floor(timestamp/4)+12)%24;
+		var min = Math.abs((timestamp%4)*15);
+
+		hour = (hour < 10) ? "0"+hour : hour;
+		min = (min < 10) ? "0"+min : min;
+
+		return hour +":"+min;
+
+	}
+
 	this.checkIn = function(){
 		console.log(">> replay 3: replay checked in!");
 
@@ -151,7 +163,7 @@ var Replay = function(_claimer, _myRecorder, _replaySwarmParent, _replayParent, 
 			currentState = 1;
 			countdown = 15;
 			
-			data.msg_replay = " Your charge action... ";
+			data.msg_replay = " ••• ";
 
 			if (!track[index]){
 				data.msg_replay = "Unplugged car...";
@@ -161,8 +173,14 @@ var Replay = function(_claimer, _myRecorder, _replaySwarmParent, _replayParent, 
 
 				if(lines.length <= 0){
 					console.log(">> replay: lines.length == 0 ")
+
+					data.msg_replay = " You plugged out. ";
+
 					currentState = 2; 
 				} else {
+					
+					data.msg_replay = timestampToHour(lines[0].t);
+
 
 					data.msg_notification_one = "";
 					data.msg_notification_two = "";

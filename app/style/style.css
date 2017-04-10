@@ -225,7 +225,9 @@ body{
 			100% {	opacity: 0; transform: translateX(100px);} 
 		}
 
-
+	.replay-ui-timestamp{
+		font-size: 80px;
+	}
 	.replay-ui-notification{
 		width: 306px;
 		height: 190px;
