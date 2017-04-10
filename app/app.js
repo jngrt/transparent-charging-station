@@ -18,7 +18,7 @@ let appState = NORMAL;
 
 const greenThreshold = 6; //6 gray energy, 6 green energy
 
-const tickDuration = 2000;
+const tickDuration = 6000;
 
 const [P_LOW, P_NORMAL, P_HIGH, P_TOP] = [1, 10, 100, 1000];
 
@@ -310,6 +310,9 @@ jQuery(document).ready(function ($) {
 			left++;
 			$("#tetris_ui").css("transform","translateX("+left+"px)");
 			$("#replay_tetris_ui").css("transform","translateX("+left+"px)");
+		};
+		if(event.charCode == 105){
+			$("#tetris_ui").toggle();
 		};
 	});
 	
