@@ -50,8 +50,6 @@ jQuery(document).ready(function ($) {
 	ARDUINO
 	*/
 
-	var pauseTimeout = 0;
-	var interval = 5000;
 
 	ArduinoManager.init();
 	ArduinoManager.setReadersCallback( (reader, value) => {
@@ -68,11 +66,7 @@ jQuery(document).ready(function ($) {
 
 		tetris.updateParameters(encoder, value);
 
-		stopTimer();
-		clearTimeout(pauseTimeout);
-		pauseTimeout(function(){
-			startTimer();
-		},interval);
+
 	});
 
 
