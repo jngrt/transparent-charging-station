@@ -62,15 +62,17 @@ jQuery(document).ready(function ($) {
 		
 		tetris.updatePlugs(plug, !!value);
 		
+	
+	});
+	ArduinoManager.setEncodersCallback( (encoder, value) => {
+
+		tetris.updateParameters(encoder, value);
+
 		stopTimer();
 		clearTimeout(pauseTimeout);
 		pauseTimeout(function(){
 			startTimer();
 		},interval);
-	});
-	ArduinoManager.setEncodersCallback( (encoder, value) => {
-
-		tetris.updateParameters(encoder, value);
 	});
 
 
