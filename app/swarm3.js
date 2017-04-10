@@ -20,13 +20,14 @@ var NewSwarm = function(_parent, _fadeLabels){
 	var time = 0;
 
 	var clearLine = false;
-	var isShown = true;
+	var isShown = false;
 
 	this.update = function(_lines){
 		_this.hasBeenReset = false;
 
-		// if(isShown){
+		if(isShown){
 			$(parent).fadeIn();
+		}
 		// } else {
 		// 	$(parent).fadeOut();
 		// }
@@ -49,11 +50,18 @@ var NewSwarm = function(_parent, _fadeLabels){
 	}
 
 	this.hide = function(){
-		isShown = false;
+		console.log("TRIGGERED!", isShown);
+		
+		if(isShown){
+			$(parent).fadeOut();
+			isShown = false;
+		} else {
+			$(parent).fadeIn();
+			isShown = true;
+		}
+
 	}
-	this.show = function(){
-		isShown = true;
-	}
+	
 	var makeCoordinates = function(l,p, lineLength){
 
 		var offset = Math.round((12 - lineLength)/2);

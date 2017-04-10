@@ -312,7 +312,8 @@ jQuery(document).ready(function ($) {
 			$("#replay_tetris_ui").css("transform","translateX("+left+"px)");
 		};
 		if(event.charCode == 105){
-			$("#tetris_ui").toggle();
+			// $("#tetris_ui").toggle();
+			swarm.hide();
 		};
 	});
 	
