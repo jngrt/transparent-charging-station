@@ -8,8 +8,8 @@ STRESS -> Only looks at stress regarding total available charge until deadline.
 
 
 */
-const GRID_HEIGHT = 48;
-const GRID_WIDTH = 12;
+const GRID_HEIGHT = 24;
+const GRID_WIDTH = 6;
 //Maximum history length of 48 lines
 const HISTORY_LINES = 48;
 
@@ -28,7 +28,7 @@ class Tetris {
     this.start = 0;
     this.element = '#tetris';
     this.height = GRID_HEIGHT;
-    this.width = 6;
+    this.width = GRID_WIDTH;
     this.minWidth = Math.round(this.width / 2);
     this.maxWidth = Math.round(this.width * 2);
     this.now = this.start;

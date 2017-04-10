@@ -5,7 +5,9 @@ var NewSwarm = function(_parent, _fadeLabels){
 	var parentHeight = $(parent).height();
 	var fadeLabels = _fadeLabels || false;
 
-	var dotSize = lineHeight = 44.8;
+	// var dotSize = lineHeight = 44.8;
+	var lineHeight = 44.8*2;
+	var dotSize = 44.8;
 
 	this.hasBeenReset = true;
 

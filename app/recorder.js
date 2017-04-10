@@ -21,7 +21,7 @@ var Recorder = function(_claimer){
 			return;
 		}
 		
-		var lines = (_lines.length > 48) ? _.last(_lines,48) : _lines;
+		var lines = (_lines.length > GRID_HEIGHT) ? _.last(_lines,GRID_HEIGHT) : _lines;
 
 		var findClaim = _.find(lines[0].claims, c => c.claimer == claimer);
 

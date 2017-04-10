@@ -11,8 +11,8 @@ body{
 	/*background-color: black;*/
 	font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
 	overflow: hidden;
-/*	transform: scale(.45);
-	transform-origin: top right; */
+	transform: scale(.40);
+	transform-origin: top right; 
 }
 
 .state {
@@ -21,7 +21,6 @@ body{
 	top: 0;
 	width: 100%;
 	height: 100%;
-	display: none;
 }
 
 #tetris_ui, #replay_tetris_ui{
@@ -30,21 +29,23 @@ body{
 	top: 80px;
 	width: 552px;
 	height: 2150px;
+	/*overflow: hidden;*/
 }
 	#replay_tetris_ui .timeLabel{
 		/*background-color: blue;*/
 	}
-
 		.dot{
 			position: absolute;
 			width: 44.8px;
 			height: 44.8px;
+			height: 89.6px;
 			background-color: white;
 			font-size: 10px;
 			transition: all 1s;
 			border: 6px solid #999;
-			border-radius: 100%;
+			border-radius: 22.4px;
 		}
+
 		.dot0{ background-color: red	}
 		.dot1{ background-color: green	}
 		.dot2{ background-color: blue	}
