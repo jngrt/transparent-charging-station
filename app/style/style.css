@@ -1,5 +1,5 @@
 body{
-	background-color: #666;
+	background-color: #999;
 }
 #ui{
 	position: absolute;
@@ -42,7 +42,7 @@ body{
 			background-color: white;
 			font-size: 10px;
 			transition: all 1s;
-			border: 6px solid #666;
+			border: 6px solid #999;
 			border-radius: 100%;
 		}
 		.dot0{ background-color: red	}
@@ -54,7 +54,7 @@ body{
 			left: -183px;
 			width: 138px;
 			height: 44.8px;
-			border: 6px solid #666;
+			border: 6px solid #999;
 			border-radius: 22.4px;
 			line-height: 32.8px;
 			background-color: white;
@@ -67,7 +67,7 @@ body{
 			right: -174px;
 			width: 138px;
 			height: 44.8px;
-			border: 6px solid #666;
+			border: 6px solid #999;
 			border-radius: 22.4px;
 			line-height: 32.8px;
 			background-color: white;
