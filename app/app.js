@@ -18,7 +18,7 @@ let appState = NORMAL;
 
 const greenThreshold = 6; //6 gray energy, 6 green energy
 
-const tickDuration = 8000;
+const tickDuration = 2000;
 
 const [P_LOW, P_NORMAL, P_HIGH, P_TOP] = [1, 10, 100, 1000];
 
@@ -116,6 +116,7 @@ jQuery(document).ready(function ($) {
 		
 		//make the controlpanels bleep
 		_.each(controlPanels, function(cp){
+			console.log("PUSHING THESE CLAIMS",tetris.claims);
 			cp.update( tetris.claims );
 		})
 

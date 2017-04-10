@@ -82,16 +82,18 @@ var ControlPanel = function(_id, _parent){
 		el.children('.state').hide();		
 	}
 	var stateChange = function(){
+		console.log("statechange triggered",id, lastState, currentState);
+
+		el.children('.state').hide();
+
 		if(currentState != lastState){
+			console.log("i did change state!");
 			//elegant transition
-			el.children('.state').fadeOut();
 			el.children('.state'+currentState).fadeIn();
 			lastState = currentState;
-			return;
-		};
-		//cut to state
-		el.children('.state'+currentState).show();
-		
+		} else {
+			el.children('.state'+currentState).show();
+		}		
 	}
 
 	var timestampToHour = function(timestamp){
@@ -115,11 +117,15 @@ var ControlPanel = function(_id, _parent){
 	}
 	var calculate = function(){
 		//find in the tetris my
-		// console.log("CP UPDATE",lines, claims);
+		console.log("CP UPDATE",lines, claims);
 
 		//first we extract all variables from the tetris and claims.
 
-		var myClaim = claims[id];
+		var myClaim = _.find(claims, function(claim){
+			return claim.claimer == id;
+		})
+
+		console.log("\n\n\n",myClaim,"\n\n\n")
 		currentState = 1;
 		
 		//if ClaimStart == -1, nothing is happening

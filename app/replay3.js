@@ -113,10 +113,11 @@ var Replay = function(_claimer, _myRecorder, _replaySwarmParent, _replayParent, 
 		el.children('.state').hide();		
 	}
 	var stateChange = function(){
+		hideStates();
 		if(currentState != lastState){
 			
 			//elegant transition
-			el.children('.state').fadeOut();
+			// el.children('.state').fadeOut();
 			el.children('.state'+currentState).fadeIn();
 			lastState = currentState;
 			return;
