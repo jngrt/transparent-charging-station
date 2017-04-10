@@ -11,6 +11,7 @@ const jQuery = require('jquery')
 
 require('electron-reload')(__dirname);
 
+
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow
@@ -43,6 +44,8 @@ function createWindow () {
     mainWindow = null
   })
 }
+
+
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
