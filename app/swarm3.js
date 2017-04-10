@@ -18,11 +18,16 @@ var NewSwarm = function(_parent, _fadeLabels){
 	var time = 0;
 
 	var clearLine = false;
+	var isShown = true;
 
 	this.update = function(_lines){
 		_this.hasBeenReset = false;
 
-		$(parent).fadeIn();
+		// if(isShown){
+			$(parent).fadeIn();
+		// } else {
+		// 	$(parent).fadeOut();
+		// }
 
 		lines = _lines;
 
@@ -39,6 +44,13 @@ var NewSwarm = function(_parent, _fadeLabels){
 	}
 	this.getNow = function(){
 		return time;
+	}
+
+	this.hide = function(){
+		isShown = false;
+	}
+	this.show = function(){
+		isShown = true;
 	}
 	var makeCoordinates = function(l,p, lineLength){
 
@@ -150,6 +162,8 @@ var NewSwarm = function(_parent, _fadeLabels){
 		$(parent).children(".timeLabel").fadeOut();
 		$(parent).children(".deadlineLabel").fadeOut();
 		$(parent).fadeOut("slow");
+		// this.hide();
+		
 		setTimeout(function(){
 			clearDots(callback);
 		},4000);
@@ -166,8 +180,6 @@ var NewSwarm = function(_parent, _fadeLabels){
 		clearDots(createDots);
 	}
 	var animateDots = function(callback){
-		// if(fadeLabels) $(parent).children(".timeLabel").fadeOut();
-		// if(fadeLabels) $(parent).children(".deadlineLabel").fadeOut();
 		_.each(dots,function(dot){
 			if(dot.l == 0){
 				if(dot.claimer >=0){

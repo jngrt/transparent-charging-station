@@ -133,7 +133,6 @@ jQuery(document).ready(function ($) {
 	
 	tetris.onUnplug(function(_claimer, _replayLines){
 		console.log(">> app.js : unPlug event at socket "+_claimer)
-
 		recorders[_claimer].stopRecording();
 		doReplay(_claimer, _replayLines);
 	});
@@ -231,7 +230,7 @@ jQuery(document).ready(function ($) {
 			startTimer();
 			update();
 
-			recorders[claimer].clearTrack();
+			if(claimer) recorders[claimer].clearTrack();
 
 			if(!replay) return;
 			replay = void(0);

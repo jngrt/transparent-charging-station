@@ -164,7 +164,7 @@ var Replay = function(_claimer, _myRecorder, _replaySwarmParent, _replayParent, 
 					_.each(lines[0].claims,function(claim, i){
 						if(claim.message) msgs.push(i + ": "+ claim.message);
 					})
-					data.msg_replay = msgs.join("<br>");
+					data.msg_replay = msgs.length > 0 ? msgs.join("<br>") : " ••• ";
 					console.log("about to send this set of lines",lines);
 					replaySwarm.update(lines);
 				}
