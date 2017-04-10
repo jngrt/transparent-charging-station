@@ -18,7 +18,7 @@ let appState = NORMAL;
 
 const greenThreshold = 6; //6 gray energy, 6 green energy
 
-const tickDuration = 6000;
+const tickDuration = 10000;
 
 const [P_LOW, P_NORMAL, P_HIGH, P_TOP] = [1, 10, 100, 1000];
 
@@ -50,16 +50,26 @@ jQuery(document).ready(function ($) {
 	ARDUINO
 	*/
 
+	var pauseTimeout = 0;
+	var interval = 5000;
+
 	ArduinoManager.init();
 	ArduinoManager.setReadersCallback( (reader, value) => {
 		if(appState == NORMAL) tetris.updateCard(reader, value);
 		if(appState == REPLAY && replay) replay.checkIn();
 	});
 	ArduinoManager.setPlugsCallback( (plug, value) => {
+		
 		tetris.updatePlugs(plug, !!value);
-
+		
+		stopTimer();
+		clearTimeout(pauseTimeout);
+		pauseTimeout(function(){
+			startTimer();
+		},interval);
 	});
 	ArduinoManager.setEncodersCallback( (encoder, value) => {
+
 		tetris.updateParameters(encoder, value);
 	});
 
