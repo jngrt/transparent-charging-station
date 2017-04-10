@@ -23,7 +23,7 @@ var Recorder = function(_claimer){
 		
 		var lines = (_lines.length > 48) ? _.last(_lines,48) : _lines;
 
-		if(!_.isUndefined(_lines[0].claims[claimer])){	
+		if(!_.isUndefined(lines[0].claims[claimer])){	
 			console.log(">> recorder: This line looks relevant");
 
 			this.track.push(clone(lines));
