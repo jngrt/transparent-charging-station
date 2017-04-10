@@ -23,9 +23,10 @@ var Recorder = function(_claimer){
 		
 		var lines = (_lines.length > 48) ? _.last(_lines,48) : _lines;
 
-		if(!_.isUndefined(lines[0].claims[claimer])){	
-			console.log(">> recorder: This line looks relevant");
+		var findClaim = _.find(lines[0].claims, c => c.claimer == claimer);
 
+		if(findClaim){	
+			console.log(">> recorder: This line looks relevant");
 			this.track.push(clone(lines));
 		} else {
 			console.log("still recording, but this line looks irrelevant to me.");
