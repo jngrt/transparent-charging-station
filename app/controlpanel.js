@@ -135,7 +135,7 @@ var ControlPanel = function(_id, _parent){
 			if(myClaim.chargeReceived > 0 && myClaim.chargeReceived >= myClaim.chargeNeeded){
 				currentState = STATE_CHARGE_FULL;
 				if(myClaim.predictedClaimEnd > myClaim.deadline){
-					data.notificationChargedMsg = "Not charged within deadline";
+					data.notificationChargedMsg = "Not charged before deadline";
 				} else {
 					data.notificationChargedMsg = "";
 				}
@@ -150,7 +150,7 @@ var ControlPanel = function(_id, _parent){
 		}
 
 		if(myClaim.predictedClaimEnd > myClaim.deadline){
-			data.notificationMsg = "You won't make your deadline";
+			data.notificationMsg = "Cannot charge before deadline";
 		} else {
 			data.notificationMsg = "";
 		}
@@ -165,7 +165,7 @@ var ControlPanel = function(_id, _parent){
 		lastChargeReq = myClaim.chargeNeeded;
 		lastDeadlineReq = myClaim.deadline;
 
-		render();
+		render();		
 		stateChange();
 		clearLine();
 

@@ -39,7 +39,7 @@ var Replay = function(_claimer, _myRecorder, _replaySwarmParent, _replayParent, 
 	var lastState = -1;
 	
 	var progressTimeout = 0;
-	var countdown = 10;
+	var countdown = 30;
 
 
 	_.templateSettings.variable = "rc";
@@ -126,18 +126,21 @@ var Replay = function(_claimer, _myRecorder, _replaySwarmParent, _replayParent, 
 		data.msg_replay = "replay";
 		data.msg_outro = "outro";
 
+		var extraTimeToRead = 0;
+
+
 		clearTimeout(progressTimeout);
 		progressTimeout = void(0);
 
 		if(currentState == 0){
 			
 			index = 0;
-			data.msg_intro = "Do you want to see the replay? "+countdown;
+			// data.msg_intro = "Do you want to see the replay? "+countdown;
+			data.msg_replay_countdown = countdown;
 
 			replaySwarm.update(track[index]);
 			countdown--;
 
-			render();
 			if(countdown <= 0) return _this.kill();
 
 
@@ -146,8 +149,9 @@ var Replay = function(_claimer, _myRecorder, _replaySwarmParent, _replayParent, 
 		} else if(currentState == 1) {
 			
 			currentState = 1;
-			countdown = 10;
-			data.msg_replay = " ••• ";
+			countdown = 15;
+			
+			data.msg_replay = " Your charge action... ";
 
 			if (!track[index]){
 				data.msg_replay = "Unplugged car...";
@@ -159,32 +163,38 @@ var Replay = function(_claimer, _myRecorder, _replaySwarmParent, _replayParent, 
 					console.log(">> replay: lines.length == 0 ")
 					currentState = 2; 
 				} else {
+
+					data.msg_notification_one = "";
+					data.msg_notification_two = "";
+					data.msg_notification_three = "";
+
 					//get all messages from lines[0].
-					var msgs = [];
-					_.each(lines[0].claims,function(claim, i){
-						if(claim.message) msgs.push(i + ": "+ claim.message);
+					_.each(lines[0].claims,function(claim){
+						if(claim.message){
+							if(claim.claimer == 0) data.msg_notification_one = claim.message;
+							if(claim.claimer == 1) data.msg_notification_two = claim.message;
+							if(claim.claimer == 2) data.msg_notification_three = claim.message;
+							extraTimeToRead = 2500;
+						}
 					})
-					data.msg_replay = msgs.length > 0 ? msgs.join("<br>") : " ••• ";
-					console.log("about to send this set of lines",lines);
+					
 					replaySwarm.update(lines);
 				}
 			}
 			
 			index++;
 
-			render();
-
-			setTimeout(update, updateInterval);
+			setTimeout(update, updateInterval+extraTimeToRead);
 
 		} else {
 			
 			index = 0;
 			data.msg_outro = "Done! "+countdown;
-			
+			data.msg_replay_countdown = countdown;
+
 			replaySwarm.update(track[track.length-1]);
 			countdown--;
 
-			render();
 			if(countdown <= 0) return _this.kill();
 
 			progressTimeout = setTimeout(update,1000);
@@ -192,7 +202,10 @@ var Replay = function(_claimer, _myRecorder, _replaySwarmParent, _replayParent, 
 
 		}
 		
+		render();
+		
 		stateChange();	
+
 		lastState = currentState;
 
 	}

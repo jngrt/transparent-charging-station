@@ -101,7 +101,6 @@ var NewSwarm = function(_parent, _fadeLabels){
 		if (label == "deadline") deadlineLabel.addClass("deadlineLabel_deadline deadlineLabel_deadline"+p)
 
 		if (isOverdue) deadlineLabel.addClass("overdue");
-		// if (fadeLabels) deadlineLabel.hide().fadeIn();
 
 	}
 	var createDots = function(){

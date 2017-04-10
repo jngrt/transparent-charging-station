@@ -266,17 +266,57 @@
 		<script type="text/template" charset="utf-8" id="ui-replay-template">
 			<div class='state state0'>
 				<div class='replay-ui-box'>
-					<%= rc.msg_intro %>
+					<div class='replay-ui-intro-img'>
+						<div class='replay-ui-intro-img-dot'></div>
+					</div>
+					<div class='replay-ui-intro-msg'>
+						<h1>Was your charge action fair?</h1>
+						Do you agree with the way you were charged?<br>
+						Use your phone to record a receipt.
+						<span>Dismiss in <%= rc.msg_replay_countdown %> sec.</span>
+					</div>
+					<div class='replay-ui-intro-countdown'>
+						<div class='replay-ui-intro-countdown-card'></div>
+						<div class='replay-ui-intro-countdown-c'>
+							Swipe card to proceed<br>
+						</div>
+					</div>
 				</div>
 			</div>
 			<div class='state state1'>
 				<div class='replay-ui-box'>
 					<%= rc.msg_replay %>
+					<% if(rc.msg_notification_one && rc.msg_notification_one != "") {%>
+						<div class='replay-ui-notification replay-ui-notification1'>
+							<%= rc.msg_notification_one %>
+						</div>
+					<% } %>
+					<% if(rc.msg_notification_two && rc.msg_notification_two != "") {%>
+						<div class='replay-ui-notification replay-ui-notification2'>
+							<%= rc.msg_notification_two %>
+						</div>
+					<% } %>
+					<% if(rc.msg_notification_three && rc.msg_notification_three !="") {%>
+						<div class='replay-ui-notification replay-ui-notification3'>
+							<%= rc.msg_notification_three %>
+						</div>
+					<% } %>
 				</div>
 			</div>
 			<div class='state state2'>
 				<div class='replay-ui-box'>
-					<%= rc.msg_outro  %>
+					<div class='replay-ui-outro-msg'>
+						<h1>Thank you for using a Transparent Charging Station</h1>
+						We hope we empowered you today.<br>
+						Make sure to save your recording for future proof
+						<span>Dismiss in <%= rc.msg_replay_countdown %> sec.</span>
+					</div>
+					<div class='replay-ui-outro-countdown'>
+						<div class='replay-ui-outro-countdown-card'></div>
+						<div class='replay-ui-outro-countdown-c'>
+							Swipe card to see again<br>
+						</div>
+					</div>
 				</div>
 			</div>
 		</script>
