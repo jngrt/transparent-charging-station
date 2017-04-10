@@ -1,5 +1,5 @@
 body{
-	background-color: #222;
+	background-color: #ccc;
 }
 #ui{
 	position: absolute;
@@ -8,7 +8,7 @@ body{
 	top: 0px;
 	width: 1080px;
 	height: 2560px;
-	background-color: black;
+	/*background-color: black;*/
 	font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
 	overflow: hidden;
 /*	transform: scale(.45);
@@ -42,7 +42,7 @@ body{
 			background-color: white;
 			font-size: 10px;
 			transition: all 1s;
-			border: 6px solid black;
+			border: 6px solid #ccc;
 			border-radius: 100%;
 		}
 		.dot0{ background-color: red	}
@@ -54,7 +54,7 @@ body{
 			left: -183px;
 			width: 138px;
 			height: 44.8px;
-			border: 6px solid black;
+			border: 6px solid #ccc;
 			border-radius: 22.4px;
 			line-height: 32.8px;
 			background-color: white;
@@ -67,7 +67,7 @@ body{
 			right: -174px;
 			width: 138px;
 			height: 44.8px;
-			border: 6px solid black;
+			border: 6px solid #ccc;
 			border-radius: 22.4px;
 			line-height: 32.8px;
 			background-color: white;
@@ -79,9 +79,9 @@ body{
 			.deadlineLabel1{ background-color: green; color: black;}
 			.deadlineLabel2{ background-color: blue; color: white;}
 
-			.deadlineLabel_deadline0{ color: red; 	border-color: red;    background-color: black;}
-			.deadlineLabel_deadline1{ color: green; border-color: green;  background-color: black;}
-			.deadlineLabel_deadline2{ color: blue;  border-color: blue;   background-color: black;}
+			.deadlineLabel_deadline0{ color: red; 	border-color: red;    background-color: white;}
+			.deadlineLabel_deadline1{ color: green; border-color: green;  background-color: white;}
+			.deadlineLabel_deadline2{ color: blue;  border-color: blue;   background-color: white;}
 
 		.deadlineLabel_deadline{
 
