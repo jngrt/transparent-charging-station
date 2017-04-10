@@ -32,7 +32,7 @@ exports.setLights = function( leds ) {
 
 	lightsDev.write(leds.join(''),err=>{
 		if(err) return console.log('Lights error: ', err);
-		console.log('Leds data sent succesfully');
+		console.log('Leds data sent succesfully: '. leds);
 	});
 }
 
