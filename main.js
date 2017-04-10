@@ -11,18 +11,6 @@ const jQuery = require('jquery')
 
 require('electron-reload')(__dirname);
 
-let AutoLaunch = require('auto-launch');
- 
-let appLauncher = new AutoLaunch({
-    name: 'My NW.js or Electron app'
-});
- 
-appLauncher.isEnabled().then(function(enabled){
-    if(enabled) return;
-    return appLauncher.enable()
-}).then(function(err){
-    console.log('auto-launch error: ', err);
-});
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
