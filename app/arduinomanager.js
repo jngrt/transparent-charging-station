@@ -47,7 +47,11 @@ function startListening( portInfo ) {
 	let buffer = '';
 	
 	sp.on('data', (data) => {
-	
+		if( sp == lightsDev ){
+			console.log(data.toString('utf8'));
+		}
+
+
 		buffer += data.toString('utf8');
 
 		//console.log(buffer);
