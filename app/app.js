@@ -113,9 +113,7 @@ jQuery(document).ready(function ($) {
 		//update Swarm
 		swarm.update(tetris.getCurrentGrid());
 
-		//make those lights do cool stuff.
-		updatePlugLights( tetris.getLastLine(-1) );
-
+		
 		//make the controlpanels bleep
 		_.each(controlPanels, function(cp){
 			cp.update( tetris.claims );
@@ -145,6 +143,10 @@ jQuery(document).ready(function ($) {
 		_.each(controlPanels, function(cp){
 			cp.bleep(tetris.getLastLine());
 		})
+
+		//make those lights do cool stuff.
+		updatePlugLights( tetris.getLastLine(-1) );
+
 
 		
 		$('.time-display').html( tetris.increaseTime() );
