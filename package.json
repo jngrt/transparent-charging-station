@@ -26,6 +26,7 @@
     "electron-rebuild": "^1.4.0"
   },
   "dependencies": {
+    "auto-launch": "^5.0.1",
     "data-table": "^2.0.0",
     "electron-debug": "^1.1.0",
     "electron-reload": "^1.1.0",
