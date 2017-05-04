@@ -181,7 +181,7 @@ class Tetris {
     this.processClaims();
   }
   updateParameters( encoder, value ){
-    console.log(encoder,value);
+    //console.log(encoder,value);
     let claimer = ~~(encoder / 2);
 
     let c = this.claims[claimer];
