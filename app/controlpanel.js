@@ -26,9 +26,7 @@ var ControlPanel = function(_id, _parent){
 
 	var data = {};
 	
-	// throttle was 20, I don't see any reason to call calculate() 50 times per second...
-	// changed to 200
-	var throttle = 200;
+	var throttle = 50;
 	var calculationTimeout;
 		
 	var setDefaultData = function(){

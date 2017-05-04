@@ -210,9 +210,9 @@ jQuery(document).ready(function ($) {
 			return; // console.log('no claims');
 		}
 
-		_.each(line.claims, (c,i) => {
+		_.each(line.claims, c => {
 
-			if( currentChargers[i] && c.pixels && c.pixels > 0 ) {
+			if( currentChargers[c.claimer] && c.pixels && c.pixels > 0 ) {
 				let cIndex = c.claimer * 12;
 				leds.fill(c.claimer + 1, cIndex, cIndex + c.pixels);
 			}
