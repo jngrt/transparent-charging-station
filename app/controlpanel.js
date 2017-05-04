@@ -26,8 +26,10 @@ var ControlPanel = function(_id, _parent){
 
 	var data = {};
 	
-	var throttle = 20, 
-		calculationTimeout;
+	// throttle was 20, I don't see any reason to call calculate() 50 times per second...
+	// changed to 200
+	var throttle = 200;
+	var calculationTimeout;
 		
 	var setDefaultData = function(){
 		data = {
@@ -116,16 +118,13 @@ var ControlPanel = function(_id, _parent){
 		calculationTimeout = setTimeout(calculate, throttle);
 	}
 	var calculate = function(){
-		//find in the tetris my
-		console.log("CP UPDATE",lines, claims);
-
-		//first we extract all variables from the tetris and claims.
-
+		
 		var myClaim = _.find(claims, function(claim){
 			return claim.claimer == id;
 		})
+		
+		console.log("CP UPDATE", _id, lines, myClaim);
 
-		console.log("\n\n\n",myClaim,"\n\n\n")
 		currentState = 1;
 		
 		//if ClaimStart == -1, nothing is happening

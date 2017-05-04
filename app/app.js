@@ -123,7 +123,7 @@ jQuery(document).ready(function ($) {
 		
 		//make the controlpanels bleep
 		_.each(controlPanels, function(cp){
-			console.log("PUSHING THESE CLAIMS",tetris.claims);
+			//console.log("PUSHING THESE CLAIMS",tetris.claims);
 			cp.update( tetris.claims );
 		})
 
