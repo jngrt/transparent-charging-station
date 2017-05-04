@@ -157,7 +157,7 @@ jQuery(document).ready(function ($) {
 		})
 
 		//make those lights do cool stuff.
-		updatePlugLights( tetris.getLastLine(-1) );
+		updatePlugLights( tetris.getLastLine(-1), tetris.getCurrentChargers() );
 
 
 		var curTime = tetris.increaseTime();
@@ -195,7 +195,7 @@ jQuery(document).ready(function ($) {
 	/*
 	PLUG LEDS
 	*/
-	function updatePlugLights( line ) {
+	function updatePlugLights( line, currentChargers ) {
 
 		//we animate for tickDuration...
 		//first step:
@@ -204,14 +204,15 @@ jQuery(document).ready(function ($) {
 		let leds = new Array(36).fill(0);
 
 
-		console.log('updatePlugLights ', line);
+		console.log('updatePlugLights ', line, currentChargers);
 		if(!line || !line.claims || !line.claims.length ){
 			ArduinoManager.setLights(leds);
 			return; // console.log('no claims');
 		}
 
-		_.each(line.claims, c => {
-			if( c.pixels && c.pixels > 0 ) {
+		_.each(line.claims, (c,i) => {
+
+			if( currentChargers[i] && c.pixels && c.pixels > 0 ) {
 				let cIndex = c.claimer * 12;
 				leds.fill(c.claimer + 1, cIndex, cIndex + c.pixels);
 			}
@@ -229,7 +230,7 @@ jQuery(document).ready(function ($) {
 	function clearLights() {
 		if(lightsTimer)
 			clearTimeout(lightsTimer);
-			
+
 		let leds = new Array(36).fill(0);
 		ArduinoManager.setLights(leds);
 	}

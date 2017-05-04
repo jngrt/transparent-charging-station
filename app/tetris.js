@@ -54,6 +54,10 @@ class Tetris {
     console.log(this.lines);
     this.update();
   }
+  getCurrentChargers(){
+    //let line = _.find(this.lines, line => line.t === this.now, this);
+    return _.map( this.claims, c => { return c.claimStart > -1 });
+  }
   getLastLine(_offset){
     let offset = _offset || 0;
     let index = _.findIndex(this.lines, line => line.t === (this.now+offset), this);
