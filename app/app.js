@@ -203,7 +203,7 @@ jQuery(document).ready(function ($) {
 		console.log('updatePlugLights ', line);
 		if(!line || !line.claims || !line.claims.length ){
 			ArduinoManager.setLights(leds);
-			return console.log('no claims');
+			return; // console.log('no claims');
 		}
 
 		_.each(line.claims, c => {

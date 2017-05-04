@@ -89,7 +89,9 @@ var ControlPanel = function(_id, _parent){
 		el.children('.state').hide();
 
 		if(currentState != lastState){
-			console.log("i did change state!");
+		
+			console.log("statechange ",id, lastState, currentState);
+
 			//elegant transition
 			el.children('.state'+currentState).fadeIn();
 			lastState = currentState;
@@ -123,8 +125,6 @@ var ControlPanel = function(_id, _parent){
 			return claim.claimer == id;
 		})
 		
-		console.log("CP UPDATE", id, myClaim);
-
 		currentState = 1;
 		
 		//if ClaimStart == -1, nothing is happening
@@ -133,6 +133,9 @@ var ControlPanel = function(_id, _parent){
 			stateChange();
 			return; //no need to change the data.
 		}
+
+		console.log("CP UPDATE", id, myClaim);
+
 		if(myClaim.card < 1){ //still need to swipe card.
 			currentState = STATE_TAP_TO_START;
 		} else {
