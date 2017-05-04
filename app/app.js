@@ -21,6 +21,9 @@ const greenThreshold = 6; //6 gray energy, 6 green energy
 //const tickDuration = 10000;
 const tickDuration = 2000;
 
+let lightsTimer;
+
+
 const [P_LOW, P_NORMAL, P_HIGH, P_TOP] = [1, 10, 100, 1000];
 
 const cards = {
@@ -215,11 +218,18 @@ jQuery(document).ready(function ($) {
 		});
 
 		console.log(leds);
-		setTimeout(function(){
+		
+		if(lightsTimer)
+			clearTimeout(lightsTimer);
+
+		lightsTimer = setTimeout(function(){
 			ArduinoManager.setLights(leds);
 		},500)
 	}
 	function clearLights() {
+		if(lightsTimer)
+			clearTimeout(lightsTimer);
+			
 		let leds = new Array(36).fill(0);
 		ArduinoManager.setLights(leds);
 	}
