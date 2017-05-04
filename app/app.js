@@ -218,6 +218,10 @@ jQuery(document).ready(function ($) {
 			ArduinoManager.setLights(leds);
 		},500)
 	}
+	function clearLights() {
+		let leds = new Array(36).fill(0);
+		ArduinoManager.setLights(leds);
+	}
 
 	/*
 	PLAYBACK HISTORY
@@ -231,6 +235,8 @@ jQuery(document).ready(function ($) {
 		//first we set the appstate to Replay.
 		appState = REPLAY;
 		stopTimer();
+		clearLights();
+
 
 		var onKillCallback = function(claimer){
 
