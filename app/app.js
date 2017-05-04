@@ -113,7 +113,7 @@ jQuery(document).ready(function ($) {
 	*/
 	var update = function(){
 
-		console.log("\n\n\n-------------- CYCLE --------------");
+		console.log("\n\n\n-------------- CYCLE ", appState);
 		
 		if(appState == REPLAY) return;
 		
@@ -240,10 +240,11 @@ jQuery(document).ready(function ($) {
 			startTimer();
 			update();
 
-			if(claimer) recorders[claimer].clearTrack();
+			if(claimer) 
+				recorders[claimer].clearTrack();
 
-			if(!replay) return;
-			replay = void(0);
+			if(replay)
+				replay = void(0);
 		}
 
 		replay = new Replay(claimer, recorders[claimer], "#replay_tetris_ui", "#ui", onKillCallback);
