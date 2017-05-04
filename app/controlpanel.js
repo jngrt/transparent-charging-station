@@ -84,7 +84,7 @@ var ControlPanel = function(_id, _parent){
 		el.children('.state').hide();		
 	}
 	var stateChange = function(){
-		console.log("statechange triggered",id, lastState, currentState);
+		//console.log("statechange triggered",id, lastState, currentState);
 
 		el.children('.state').hide();
 
@@ -123,7 +123,7 @@ var ControlPanel = function(_id, _parent){
 			return claim.claimer == id;
 		})
 		
-		console.log("CP UPDATE", _id, lines, myClaim);
+		console.log("CP UPDATE", id, myClaim);
 
 		currentState = 1;
 		
