@@ -113,7 +113,7 @@ jQuery(document).ready(function ($) {
 	*/
 	var update = function(){
 
-		console.log("\n\n\n-------------- CYCLE ", appState);
+	
 		
 		if(appState == REPLAY) return;
 		
@@ -144,7 +144,8 @@ jQuery(document).ready(function ($) {
 	});
 
 	function updateTime(){
-		
+		console.log("\n\n\n-------------- update time, state: ", appState);
+
 		_.each(recorders, function(recorder, i){
 			if(recorder.isRecording()) recorder.record(tetris.getCurrentGrid());
 		});
@@ -156,8 +157,8 @@ jQuery(document).ready(function ($) {
 		updatePlugLights( tetris.getLastLine(-1) );
 
 
-		
-		$('.time-display').html( tetris.increaseTime() );
+		var curTime = tetris.increaseTime();
+		$('.time-display').html( curTime );
 	}
 
 
@@ -277,7 +278,7 @@ jQuery(document).ready(function ($) {
 	function startTimer(){
 		console.log("triggered timer start", timer);
 		if(timer) return;
-		timer = window.setInterval(updateTime,tickDuration);
+		timer = window.setInterval(updateTime, tickDuration);
 	}
 
 	$('.toggle-timer').click( e => {
