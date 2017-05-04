@@ -598,7 +598,8 @@ class Tetris {
     //lowIndex = ~lowIndex ? lowIndex : 0;
     let lowIndex = 0;
 
-    let highIndex = Math.min( lowIndex + GRID_HEIGHT, this.lines.length - 1);
+    //let highIndex = Math.min( lowIndex + GRID_HEIGHT, this.lines.length - 1);
+    let highIndex = this.lines.length - 1;
 
     for (let i = highIndex; i >= lowIndex; i--) { //render lines
       let line = this.lines[i];
