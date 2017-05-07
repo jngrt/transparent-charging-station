@@ -18,8 +18,10 @@ let appState = NORMAL;
 
 const greenThreshold = 6; //6 gray energy, 6 green energy
 
-const tickDuration = 3000;
-let timer;
+//const tickDuration = 10000;
+const tickDuration = 2000;
+
+let lightsTimer;
 
 
 const [P_LOW, P_NORMAL, P_HIGH, P_TOP] = [1, 10, 100, 1000];
@@ -45,31 +47,6 @@ const cards = {
 	'82':{ name: 'Green Charge', priority: P_NORMAL, info:['Normal priority', 'Flexible deadline', 'Renewable energy only']},
 	'83':{ name: 'Gift-A-Charge', priority: P_NORMAL, info:['Normal priority', 'Flexible deadline', 'Charge 100 kWh free']}
 };
-
-
-/*
-UTILITY
-*/
-const linesPerHour = 8;
-
-function timestampToHour(timestamp){
-
-
-	var hour = (Math.floor(timestamp/8)+12)%24;
-	var min = Math.round(Math.abs((timestamp%8)*(60/linesPerHour)));
-
-	/*
-		1 - 2   - 3    - 4   - 5    - 6   - 7    - 8
-	  7,5 - 15  - 22,5 - 30  - 37,5 - 45  - 52,5 - 8
-
-	*/
-
-	hour = (hour < 10) ? "0"+hour : hour;
-	min = (min < 10) ? "0"+min : min;
-
-	return hour +":"+min;
-
-}
 
 jQuery(document).ready(function ($) {
 
@@ -137,18 +114,9 @@ jQuery(document).ready(function ($) {
 	/*
 	UPDATE VISUALIZATIONS
 	*/
-	var justDidTimeUpdate = false;
-	var resumeTetrisTimeout = void(0);
-	var revealSwarmTimeout = void(0);
-	var hideSwarmAgainTimeout = void(0);
-	var readyToShowSwarm = true;
-
-
-	// swarm.hide(); 
-
 	var update = function(){
 
-		console.log("\n\n\n-------------- CYCLE --------------");
+	
 		
 		if(appState == REPLAY) return;
 		
@@ -162,45 +130,6 @@ jQuery(document).ready(function ($) {
 			cp.update( tetris.claims );
 		})
 
-		/*
-			Here we would need to detect the a line clear or the result of a parameter update
-
-		*/
-
-
-		if(justDidTimeUpdate == true){
-			console.log(">> app.js: update result of time update");
-
-		} else {
-			console.log(">> app.js: update result of parameter update");
-	
-			console.log(">> app.js: timer is paused");
-			stopTimer();
-
-			clearTimeout(resumeTetrisTimeout);
-			resumeTetrisTimeout = setTimeout(function(){
-				console.log(">> app.js: timer resumed (15s elapsed)");
-				readyToShowSwarm = true;
-				startTimer();
-			}, 5000);
-
-			clearTimeout(hideSwarmAgainTimeout);
-			hideSwarmAgainTimeout = setTimeout(function(){
-				console.log(">> app.js: time to hide the swarm again");
-				swarm.hide();
-			},30000);	
-
-			if(readyToShowSwarm){
-				console.log(">> app.js: hide swarm.");
-				readyToShowSwarm = false;
-				setTimeout(function(){
-					console.log(">> app.js: we can show swarm again");
-					swarm.show();
-				}, 10000);
-			}
-		}
-
-		justDidTimeUpdate = false;
 	}
 
 	tetris.onUpdate(update);
@@ -218,9 +147,8 @@ jQuery(document).ready(function ($) {
 	});
 
 	function updateTime(){
+		console.log("\n\n\n-------------- update time, state: ", appState);
 
-		justDidTimeUpdate = true;
-		
 		_.each(recorders, function(recorder, i){
 			if(recorder.isRecording()) recorder.record(tetris.getCurrentGrid());
 		});
@@ -229,11 +157,11 @@ jQuery(document).ready(function ($) {
 		})
 
 		//make those lights do cool stuff.
-		updatePlugLights( tetris.getLastLine(-1) );
+		updatePlugLights( tetris.getLastLine(-1), tetris.getCurrentChargers() );
 
 
-		
-		$('.time-display').html( tetris.increaseTime() );
+		var curTime = tetris.increaseTime();
+		$('.time-display').html( curTime );
 	}
 
 
@@ -267,7 +195,7 @@ jQuery(document).ready(function ($) {
 	/*
 	PLUG LEDS
 	*/
-	function updatePlugLights( line ) {
+	function updatePlugLights( line, currentChargers ) {
 
 		//we animate for tickDuration...
 		//first step:
@@ -276,23 +204,35 @@ jQuery(document).ready(function ($) {
 		let leds = new Array(36).fill(0);
 
 
-		// console.log('updatePlugLights ', line);
+		console.log('updatePlugLights ', line, currentChargers);
 		if(!line || !line.claims || !line.claims.length ){
 			ArduinoManager.setLights(leds);
-			return console.log('no claims');
+			return; // console.log('no claims');
 		}
 
 		_.each(line.claims, c => {
-			if( c.pixels && c.pixels > 0 ) {
+
+			if( currentChargers[c.claimer] && c.pixels && c.pixels > 0 ) {
 				let cIndex = c.claimer * 12;
 				leds.fill(c.claimer + 1, cIndex, cIndex + c.pixels);
 			}
 		});
 
 		console.log(leds);
-		setTimeout(function(){
+		
+		if(lightsTimer)
+			clearTimeout(lightsTimer);
+
+		lightsTimer = setTimeout(function(){
 			ArduinoManager.setLights(leds);
 		},500)
+	}
+	function clearLights() {
+		if(lightsTimer)
+			clearTimeout(lightsTimer);
+
+		let leds = new Array(36).fill(0);
+		ArduinoManager.setLights(leds);
 	}
 
 	/*
@@ -307,6 +247,8 @@ jQuery(document).ready(function ($) {
 		//first we set the appstate to Replay.
 		appState = REPLAY;
 		stopTimer();
+		clearLights();
+
 
 		var onKillCallback = function(claimer){
 
@@ -316,10 +258,11 @@ jQuery(document).ready(function ($) {
 			startTimer();
 			update();
 
-			if(claimer) recorders[claimer].clearTrack();
+			if(claimer) 
+				recorders[claimer].clearTrack();
 
-			if(!replay) return;
-			replay = void(0);
+			if(replay)
+				replay = void(0);
 		}
 
 		replay = new Replay(claimer, recorders[claimer], "#replay_tetris_ui", "#ui", onKillCallback);
@@ -333,6 +276,7 @@ jQuery(document).ready(function ($) {
 	/*
 	TIMER RELATED THINGS
 	 */
+	let timer;
 	startTimer();
 	
 	function stopTimer(){
@@ -345,7 +289,7 @@ jQuery(document).ready(function ($) {
 	function startTimer(){
 		console.log("triggered timer start", timer);
 		if(timer) return;
-		timer = window.setInterval(updateTime,tickDuration);
+		timer = window.setInterval(updateTime, tickDuration);
 	}
 
 	$('.toggle-timer').click( e => {

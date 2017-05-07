@@ -54,6 +54,10 @@ class Tetris {
     console.log(this.lines);
     this.update();
   }
+  getCurrentChargers(){
+    //let line = _.find(this.lines, line => line.t === this.now, this);
+    return _.map( this.claims, c => { return c.claimStart > -1 });
+  }
   getLastLine(_offset){
     let offset = _offset || 0;
     let index = _.findIndex(this.lines, line => line.t === (this.now+offset), this);
@@ -177,7 +181,7 @@ class Tetris {
     this.processClaims();
   }
   updateParameters( encoder, value ){
-    console.log(encoder,value);
+    //console.log(encoder,value);
     let claimer = ~~(encoder / 2);
 
     let c = this.claims[claimer];
@@ -598,7 +602,8 @@ class Tetris {
     //lowIndex = ~lowIndex ? lowIndex : 0;
     let lowIndex = 0;
 
-    let highIndex = Math.min( lowIndex + GRID_HEIGHT, this.lines.length - 1);
+    //let highIndex = Math.min( lowIndex + GRID_HEIGHT, this.lines.length - 1);
+    let highIndex = this.lines.length - 1;
 
     for (let i = highIndex; i >= lowIndex; i--) { //render lines
       let line = this.lines[i];

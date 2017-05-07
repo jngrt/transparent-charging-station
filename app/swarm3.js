@@ -11,8 +11,8 @@ var NewSwarm = function(_parent, _fadeLabels){
 
 	this.hasBeenReset = true;
 
-	var throttle = 50, 
-		calculationTimeout;
+	var throttle = 50;
+	var calculationTimeout;
 
 	var lines = [];
 	var dots = [];
@@ -22,7 +22,10 @@ var NewSwarm = function(_parent, _fadeLabels){
 	var clearLine = false;
 
 	this.update = function(_lines){
-		_this.hasBeenReset = false;
+		if( this.hasBeenReset ) {
+			_this.hasBeenReset = false;
+			$(parent).fadeIn();
+		}
 
 		lines = _lines;
 

@@ -26,8 +26,8 @@ var ControlPanel = function(_id, _parent){
 
 	var data = {};
 	
-	var throttle = 20, 
-		calculationTimeout;
+	var throttle = 50;
+	var calculationTimeout;
 		
 	var setDefaultData = function(){
 		data = {
@@ -87,7 +87,9 @@ var ControlPanel = function(_id, _parent){
 		el.children('.state').hide();
 
 		if(currentState != lastState){
-			//console.log("i did change state!");
+		
+			console.log("statechange ",id, lastState, currentState);
+
 			//elegant transition
 			el.children('.state'+currentState).fadeIn();
 			lastState = currentState;
@@ -116,16 +118,11 @@ var ControlPanel = function(_id, _parent){
 		calculationTimeout = setTimeout(calculate, throttle);
 	}
 	var calculate = function(){
-		//find in the tetris my
-		//console.log("CP UPDATE",lines, claims);
-
-		//first we extract all variables from the tetris and claims.
-
+		
 		var myClaim = _.find(claims, function(claim){
 			return claim.claimer == id;
 		})
-
-		//console.log("\n\n\n",myClaim,"\n\n\n")
+		
 		currentState = 1;
 		
 		//if ClaimStart == -1, nothing is happening
@@ -134,6 +131,9 @@ var ControlPanel = function(_id, _parent){
 			stateChange();
 			return; //no need to change the data.
 		}
+
+		console.log("CP UPDATE", id, myClaim);
+
 		if(myClaim.card < 1){ //still need to swipe card.
 			currentState = STATE_TAP_TO_START;
 		} else {
