@@ -1,0 +1,16 @@
+1 - [x] Zichtbaarheid van de Tetris plannen in de experience.
+
+2 - [x] Pauzeren van de tetris tijdens invoeren parameters
+
+3 - [ ] Magic-cards voor pauzeren en tonen/verbergen tetris
+
+4 - [ ] testen en bugs fixen.
+
+5 - [x] Tijd-resolutie aanpassen, 48 regels als representatie van 6 uur, ipv 12 uur ten behoeve van het creëren van meer frictie in de experience. We zouden ook kunnen stellen dat 1 kWh 2 dotjes gaat beslaan, dan hebben we dezelfde frictie
+
+6 - [ ] In het controle-paneel meer focus leggen op *eindtijd en deadline* en requested charge meer secundair maken. ten behoeve van de leesbaarheid
+
+7 - [ ] Stabiliteit paal verbeteren. Nu wobbelt ie teveel
+
+8 - [x] opleveren relevante indesign bestanden
+9 - [x] opleveren bestanden met broncodes.

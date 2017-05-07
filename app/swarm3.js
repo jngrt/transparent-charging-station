@@ -6,7 +6,7 @@ var NewSwarm = function(_parent, _fadeLabels){
 	var fadeLabels = _fadeLabels || false;
 
 	// var dotSize = lineHeight = 44.8;
-	var lineHeight = 44.8*2;
+	var lineHeight = 44.8;
 	var dotSize = 44.8;
 
 	this.hasBeenReset = true;
@@ -20,17 +20,9 @@ var NewSwarm = function(_parent, _fadeLabels){
 	var time = 0;
 
 	var clearLine = false;
-	var isShown = false;
 
 	this.update = function(_lines){
 		_this.hasBeenReset = false;
-
-		if(isShown){
-			$(parent).fadeIn();
-		}
-		// } else {
-		// 	$(parent).fadeOut();
-		// }
 
 		lines = _lines;
 
@@ -49,18 +41,19 @@ var NewSwarm = function(_parent, _fadeLabels){
 		return time;
 	}
 
-	this.hide = function(){
-		console.log("TRIGGERED!", isShown);
-		
-		if(isShown){
-			$(parent).fadeOut();
-			isShown = false;
-		} else {
-			$(parent).fadeIn();
-			isShown = true;
-		}
-
+	this.toggle = function(){
+		console.log(">> swarm.js - fn:toggle");
+		$(parent).toggle();
 	}
+	this.hide = function(){
+		console.log(">> swarm.js - fn:hide");
+		$(parent).fadeOut();
+	}
+	this.show = function(){
+		console.log(">> swarm.js - fn:show");
+		$(parent).fadeIn();
+	}
+	
 	
 	var makeCoordinates = function(l,p, lineLength){
 
@@ -71,17 +64,7 @@ var NewSwarm = function(_parent, _fadeLabels){
 			top: parentHeight - (l+1)*lineHeight
 		}
 	}
-	var timestampToHour = function(timestamp){
 
-		var hour = (Math.floor(timestamp/4)+12)%24;
-		var min = Math.abs((timestamp%4)*15);
-
-		hour = (hour < 10) ? "0"+hour : hour;
-		min = (min < 10) ? "0"+min : min;
-
-		return hour +":"+min;
-
-	}
 	var addTimeLabel = function(t, l){
 		
 		var time = timestampToHour(t);
@@ -124,7 +107,7 @@ var NewSwarm = function(_parent, _fadeLabels){
 			
 			i++;
 			
-			if(line.t%4 == 0) addTimeLabel(line.t, l);
+			if(line.t%8 == 0) addTimeLabel(line.t, l);
 			
 			if(line.claims){
 				_.each(line.claims, function(claim){

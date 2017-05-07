@@ -7,7 +7,7 @@ var ControlPanel = function(_id, _parent){
 	_.templateSettings.variable = "rc";
 
 	var el;
-	var uiTemplate = $("#ui-panel-template").html();
+	var uiTemplate = $("#ui-panel-template-new").html();
 	var lastLines = [];
 	var lines = [];
 	var claims = [];
@@ -96,17 +96,17 @@ var ControlPanel = function(_id, _parent){
 		}		
 	}
 
-	var timestampToHour = function(timestamp){
+	// var timestampToHour = function(timestamp){
 
-		var hour = (Math.floor(timestamp/4)+12)%24;
-		var min = Math.abs((timestamp%4)*15);
+	// 	var hour = (Math.floor(timestamp/4)+12)%24;
+	// 	var min = Math.abs((timestamp%4)*15);
 
-		hour = (hour < 10) ? "0"+hour : hour;
-		min = (min < 10) ? "0"+min : min;
+	// 	hour = (hour < 10) ? "0"+hour : hour;
+	// 	min = (min < 10) ? "0"+min : min;
 
-		return hour +":"+min;
+	// 	return hour +":"+min;
 
-	}
+	// }
 
 	this.update = function(_claims){
 
@@ -166,9 +166,11 @@ var ControlPanel = function(_id, _parent){
 	
 		data.deadlineValue = timestampToHour(myClaim.predictedClaimEnd);
 		data.deadlineReqValue = timestampToHour(myClaim.deadline);
-		data.chargeReqValue = myClaim.chargeNeeded;
+		// data.chargeReqValue = myClaim.chargeNeeded;
+		data.chargeReqValue = Math.round(myClaim.chargeNeeded/2);
 
 		lastChargeReq = myClaim.chargeNeeded;
+		lastChargeReq = Math.round(myClaim.chargeNeeded/2);
 		lastDeadlineReq = myClaim.deadline;
 
 		render();		

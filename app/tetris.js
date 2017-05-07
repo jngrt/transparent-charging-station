@@ -8,7 +8,7 @@ STRESS -> Only looks at stress regarding total available charge until deadline.
 
 
 */
-const GRID_HEIGHT = 24;
+const GRID_HEIGHT = 48;
 const GRID_WIDTH = 6;
 //Maximum history length of 48 lines
 const HISTORY_LINES = 48;
@@ -191,7 +191,7 @@ class Tetris {
 
     if( encoder % 2 ) {
       // Charge needed should be between 0 and 100
-      c.chargeNeeded = Math.max( 0, Math.min( 100, c.chargeNeeded + changeValue ));
+      c.chargeNeeded = Math.max( 0, Math.min( 200, c.chargeNeeded + changeValue ));
     } else {
       // deadline should be between NOW and NOW + 48
       c.deadline = Math.max( this.now, Math.min( this.now + GRID_HEIGHT, c.deadline + changeValue));

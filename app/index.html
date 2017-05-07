@@ -262,7 +262,80 @@
 				</div>
 			</div>
 		</script>
-
+		<script type="text/template" charset="utf-8" id="ui-panel-template-new">
+			<div class='state state0'>
+				<div class='ui-plug-in'>
+					<div class='ui-plug-in-box'>
+						<span>Plug in your charging cable</span>
+					</div>
+				</div>
+			</div>
+			<div class='state state1'>
+				<div class='ui-tap-card'>
+					<div class='ui-tap-card-box'>
+						<span>Tap your card to start</span>
+					</div>
+				</div>
+				<div class='ui-deadline'>
+					<div class='ui-deadline-value'><%= rc.deadlineReqValue %></div>						
+					<div class='ui-deadline-label'>deadline</div>						
+				</div>
+				<div class='ui-charge'>
+					<div class='ui-charge-value'><%= rc.chargeReqValue %></div>
+					<div class='ui-charge-label'>charge</div>
+				</div>
+			</div>
+			<div class='state state2'>
+				<div class='ui-personal-info'>
+					<span class='ui-personal-plan'><%= rc.chargePlan %></span>
+					<span class='ui-personal-meta'><%= rc.chargePlanMeta %></small>
+				</div>
+				<% if(rc.notificationMsg != ""){ %> 
+				<div class='ui-notification'>
+					<%= rc.notificationMsg %>
+				</div>
+				<% } %>
+				<div class='ui-deadline'>
+					<div class='ui-deadline-value'><%= rc.deadlineReqValue %></div>						
+					<div class='ui-deadline-label'>deadline</div>						
+				</div>
+				<div class='ui-charge'>
+					<div class='ui-charge-value'><%= rc.chargeReqValue %></div>
+					<div class='ui-charge-label'>charge</div>
+				</div>
+			</div>
+			<div class='state state3'>
+				<div class='ui-personal-info'>
+					<span class='ui-personal-plan'><%= rc.chargePlan %></span>
+					<span class='ui-personal-meta'><%= rc.chargePlanMeta %></small>
+				</div>
+				<% if(rc.notificationMsg != ""){ %> 
+				<div class='ui-notification'>
+					<%= rc.notificationMsg %>
+				</div>
+				<% } %>
+				<div class='ui-progress-deadline'>
+					<div class='ui-progress-deadline-value'><%= rc.deadlineValue %></div>
+					<div class='ui-progress-deadline-label'><%= rc.deadlineReqValue %></div>	
+				</div>
+				<div class='ui-progress-charge'>
+					<div class='ui-progress-charge-value'><%= rc.chargeValuePerc %></div>
+					<div class='ui-progress-charge-label'><%= rc.chargeReqValue %></div>				
+				</div>
+			</div>
+			<div class='state state4'>
+				<div class='ui-charged'>
+					<div class='ui-charged-box'>
+						<span>This car is fully charged</span>
+						<% if(rc.notificationChargedMsg != ""){ %> 
+						<span class='ui-notification-charged'>
+							<%= rc.notificationChargedMsg %>
+						</span>
+						<% } %>
+					</div>
+				</div>
+			</div>
+		</script>
 		<script type="text/template" charset="utf-8" id="ui-replay-template">
 			<div class='state state0'>
 				<div class='replay-ui-box'>
@@ -324,7 +397,7 @@
 		<script src="tetris.js"></script>
 		<script src="line.js"></script>
 		<script src="swarm3.js"></script>
-		<script src="controlpanel.js"></script>
+		<script src="controlpanel2.js"></script>
 		<script src="replay3.js"></script>
 		<script src="recorder.js"></script>
 		<script src="clone.js"></script>

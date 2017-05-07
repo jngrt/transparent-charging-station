@@ -18,7 +18,9 @@ let appState = NORMAL;
 
 const greenThreshold = 6; //6 gray energy, 6 green energy
 
-const tickDuration = 10000;
+const tickDuration = 3000;
+let timer;
+
 
 const [P_LOW, P_NORMAL, P_HIGH, P_TOP] = [1, 10, 100, 1000];
 
@@ -43,6 +45,31 @@ const cards = {
 	'82':{ name: 'Green Charge', priority: P_NORMAL, info:['Normal priority', 'Flexible deadline', 'Renewable energy only']},
 	'83':{ name: 'Gift-A-Charge', priority: P_NORMAL, info:['Normal priority', 'Flexible deadline', 'Charge 100 kWh free']}
 };
+
+
+/*
+UTILITY
+*/
+const linesPerHour = 8;
+
+function timestampToHour(timestamp){
+
+
+	var hour = (Math.floor(timestamp/8)+12)%24;
+	var min = Math.round(Math.abs((timestamp%8)*(60/linesPerHour)));
+
+	/*
+		1 - 2   - 3    - 4   - 5    - 6   - 7    - 8
+	  7,5 - 15  - 22,5 - 30  - 37,5 - 45  - 52,5 - 8
+
+	*/
+
+	hour = (hour < 10) ? "0"+hour : hour;
+	min = (min < 10) ? "0"+min : min;
+
+	return hour +":"+min;
+
+}
 
 jQuery(document).ready(function ($) {
 
@@ -110,6 +137,15 @@ jQuery(document).ready(function ($) {
 	/*
 	UPDATE VISUALIZATIONS
 	*/
+	var justDidTimeUpdate = false;
+	var resumeTetrisTimeout = void(0);
+	var revealSwarmTimeout = void(0);
+	var hideSwarmAgainTimeout = void(0);
+	var readyToShowSwarm = true;
+
+
+	// swarm.hide(); 
+
 	var update = function(){
 
 		console.log("\n\n\n-------------- CYCLE --------------");
@@ -122,10 +158,49 @@ jQuery(document).ready(function ($) {
 		
 		//make the controlpanels bleep
 		_.each(controlPanels, function(cp){
-			console.log("PUSHING THESE CLAIMS",tetris.claims);
+			//console.log("PUSHING THESE CLAIMS",tetris.claims);
 			cp.update( tetris.claims );
 		})
 
+		/*
+			Here we would need to detect the a line clear or the result of a parameter update
+
+		*/
+
+
+		if(justDidTimeUpdate == true){
+			console.log(">> app.js: update result of time update");
+
+		} else {
+			console.log(">> app.js: update result of parameter update");
+	
+			console.log(">> app.js: timer is paused");
+			stopTimer();
+
+			clearTimeout(resumeTetrisTimeout);
+			resumeTetrisTimeout = setTimeout(function(){
+				console.log(">> app.js: timer resumed (15s elapsed)");
+				readyToShowSwarm = true;
+				startTimer();
+			}, 5000);
+
+			clearTimeout(hideSwarmAgainTimeout);
+			hideSwarmAgainTimeout = setTimeout(function(){
+				console.log(">> app.js: time to hide the swarm again");
+				swarm.hide();
+			},30000);	
+
+			if(readyToShowSwarm){
+				console.log(">> app.js: hide swarm.");
+				readyToShowSwarm = false;
+				setTimeout(function(){
+					console.log(">> app.js: we can show swarm again");
+					swarm.show();
+				}, 10000);
+			}
+		}
+
+		justDidTimeUpdate = false;
 	}
 
 	tetris.onUpdate(update);
@@ -143,6 +218,8 @@ jQuery(document).ready(function ($) {
 	});
 
 	function updateTime(){
+
+		justDidTimeUpdate = true;
 		
 		_.each(recorders, function(recorder, i){
 			if(recorder.isRecording()) recorder.record(tetris.getCurrentGrid());
@@ -199,7 +276,7 @@ jQuery(document).ready(function ($) {
 		let leds = new Array(36).fill(0);
 
 
-		console.log('updatePlugLights ', line);
+		// console.log('updatePlugLights ', line);
 		if(!line || !line.claims || !line.claims.length ){
 			ArduinoManager.setLights(leds);
 			return console.log('no claims');
@@ -256,7 +333,6 @@ jQuery(document).ready(function ($) {
 	/*
 	TIMER RELATED THINGS
 	 */
-	let timer;
 	startTimer();
 	
 	function stopTimer(){

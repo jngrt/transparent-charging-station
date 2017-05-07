@@ -11,8 +11,8 @@ body{
 	/*background-color: black;*/
 	font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
 	overflow: hidden;
-/*	transform: scale(.40);
-	transform-origin: top right; */
+	transform: scale(.40);
+	transform-origin: top right; 
 }
 
 .state {
@@ -26,7 +26,7 @@ body{
 #tetris_ui, #replay_tetris_ui{
 	position: absolute;
 	left: 263px;
-	top: 80px;
+	top: 80px;	
 	width: 552px;
 	height: 2150px;
 	/*overflow: hidden;*/
@@ -38,11 +38,11 @@ body{
 			position: absolute;
 			width: 44.8px;
 			height: 44.8px;
-			height: 89.6px;
+			/*height: 89.6px;*/
 			background-color: white;
 			font-size: 10px;
 			transition: all 1s;
-			border: 6px solid #999;
+			border: 2px solid #999;
 			border-radius: 22.4px;
 		}
 
