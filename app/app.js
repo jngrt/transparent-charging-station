@@ -181,7 +181,7 @@ var update = function(){
 				console.log(">> app.js: timer resumed (15s elapsed)");
 				readyToShowSwarm = true;
 				startTimer();
-			}, 5000);
+			}, 15000);
 
 			clearTimeout(hideSwarmAgainTimeout);
 			hideSwarmAgainTimeout = setTimeout(function(){
@@ -389,6 +389,8 @@ var update = function(){
 			console.log('triggered replay check-in', replay);
 			if(replay) replay.checkIn();
 		};
+
+		//TOGGLE PAUSE/PLAY
 		if(event.charCode == 32){
 			if(timer) {
 				window.clearInterval(timer);
@@ -409,9 +411,11 @@ var update = function(){
 			$("#tetris_ui").css("transform","translateX("+left+"px)");
 			$("#replay_tetris_ui").css("transform","translateX("+left+"px)");
 		};
+
+		//TOGGLE SWARM
 		if(event.charCode == 105){
 			// $("#tetris_ui").toggle();
-			swarm.hide();
+			swarm.toggle();
 		};
 	});
 	
