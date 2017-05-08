@@ -20,6 +20,8 @@ const claimers = ['A', 'B', 'C'];
 
 const _maxStress = 50;
 
+const START_CHARGE = 50;
+const START_DEADLINE = 24; // 3 hours, 8 lines per hour
 
 class Tetris {
 
@@ -174,7 +176,8 @@ class Tetris {
     } else if( pluggedIn ) {
        c.claimStart = this.now;
        //fix overdue bug, by setting default deadline to now
-       c.deadline = this.now;
+       c.deadline = this.now + START_DEADLINE;
+       c.chargeNeeded = START_CHARGE;
       console.log(">>> DETECTED PLUGIN EVENT", claimer, pluggedIn);
       this.onPlugInCallback( claimer );
     }
@@ -204,8 +207,8 @@ class Tetris {
     this.processClaims();
   }
 
-
-  updateClaim(claimer, pluggedIn, card, chargeNeeded, deadline, info) {
+  // only used when changing values in the debug overlay screen
+  updateClaimDebugForm(claimer, pluggedIn, card, chargeNeeded, deadline, info) {
      //TODO check events: plug in / plug out...
       //TODO update the last line because of plug out.
       // And trigger the animation.

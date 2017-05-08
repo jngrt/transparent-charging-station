@@ -259,7 +259,7 @@ var update = function(){
 			return obj;
 		}, {});
 
-		tetris.updateClaim(+data.claimer, !!data.pluggedIn, +data.card, +data.chargeNeeded, +data.deadline);
+		tetris.updateClaimDebugForm(+data.claimer, !!data.pluggedIn, +data.card, +data.chargeNeeded, +data.deadline);
 	}
 	
 
@@ -409,9 +409,10 @@ var update = function(){
 			$("#tetris_ui").css("transform","translateX("+left+"px)");
 			$("#replay_tetris_ui").css("transform","translateX("+left+"px)");
 		};
+		// "i" toggles swarm
 		if(event.charCode == 105){
 			// $("#tetris_ui").toggle();
-			swarm.hide();
+			swarm.toggle();
 		};
 	});
 	
