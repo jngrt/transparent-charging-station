@@ -133,9 +133,19 @@ jQuery(document).ready(function ($) {
 	/*
 	UPDATE VISUALIZATIONS
 	*/
-	var update = function(){
 
-	
+	var justDidTimeUpdate = false;
+	var resumeTetrisTimeout = void(0);
+	var revealSwarmTimeout = void(0);
+	var hideSwarmAgainTimeout = void(0);
+	var readyToShowSwarm = true;
+
+
+	// swarm.hide(); 
+
+var update = function(){
+
+		console.log("\n\n\n-------------- CYCLE --------------");
 		
 		if(appState == REPLAY) return;
 		
@@ -149,6 +159,45 @@ jQuery(document).ready(function ($) {
 			cp.update( tetris.claims );
 		})
 
+		/*
+			Here we would need to detect the a line clear or the result of a parameter update
+
+		*/
+
+
+		if(justDidTimeUpdate == true){
+			console.log(">> app.js: update result of time update");
+
+		} else {
+			console.log(">> app.js: update result of parameter update");
+	
+			console.log(">> app.js: timer is paused");
+			stopTimer();
+
+			clearTimeout(resumeTetrisTimeout);
+			resumeTetrisTimeout = setTimeout(function(){
+				console.log(">> app.js: timer resumed (15s elapsed)");
+				readyToShowSwarm = true;
+				startTimer();
+			}, 5000);
+
+			clearTimeout(hideSwarmAgainTimeout);
+			hideSwarmAgainTimeout = setTimeout(function(){
+				console.log(">> app.js: time to hide the swarm again");
+				swarm.hide();
+			},30000);	
+
+			if(readyToShowSwarm){
+				console.log(">> app.js: hide swarm.");
+				readyToShowSwarm = false;
+				setTimeout(function(){
+					console.log(">> app.js: we can show swarm again");
+					swarm.show();
+				}, 10000);
+			}
+		}
+
+		justDidTimeUpdate = false;
 	}
 
 	tetris.onUpdate(update);
@@ -167,6 +216,8 @@ jQuery(document).ready(function ($) {
 
 	function updateTime(){
 		console.log("\n\n\n-------------- update time, state: ", appState);
+
+		justDidTimeUpdate = true;
 
 		_.each(recorders, function(recorder, i){
 			if(recorder.isRecording()) recorder.record(tetris.getCurrentGrid());
@@ -294,7 +345,8 @@ jQuery(document).ready(function ($) {
 
 	/*
 	TIMER RELATED THINGS
-	 */
+	*/
+	
 	let timer;
 	startTimer();
 	
