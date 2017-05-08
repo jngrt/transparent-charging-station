@@ -18,8 +18,8 @@ let appState = NORMAL;
 
 const greenThreshold = 6; //6 gray energy, 6 green energy
 
-//const tickDuration = 10000;
-const tickDuration = 2000;
+const tickDuration = 10000;
+// const tickDuration = 2000;
 
 let lightsTimer;
 
@@ -47,6 +47,25 @@ const cards = {
 	'82':{ name: 'Green Charge', priority: P_NORMAL, info:['Normal priority', 'Flexible deadline', 'Renewable energy only']},
 	'83':{ name: 'Gift-A-Charge', priority: P_NORMAL, info:['Normal priority', 'Flexible deadline', 'Charge 100 kWh free']}
 };
+
+const linesPerHour = 8;
+
+function timestampToHour(timestamp){
+
+
+	var hour = (Math.floor(timestamp/8)+12)%24;
+	var min = Math.round(Math.abs((timestamp%8)*(60/linesPerHour)));
+
+	hour = (hour < 10) ? "0"+hour : hour;
+	min = (min < 10) ? "0"+min : min;
+
+	return hour +":"+min;
+
+}
+
+
+
+
 
 jQuery(document).ready(function ($) {
 
