@@ -50,6 +50,9 @@ const cards = {
 	'83':{ name: 'Gift-A-Charge', priority: P_NORMAL, info:['Normal priority', 'Flexible deadline', 'Charge 100 kWh free']}
 };
 
+const VISIBLE_CARD = '90';
+const PLAY_CARD = '89'
+
 const linesPerHour = 8;
 
 function timestampToHour(timestamp){
@@ -78,8 +81,17 @@ jQuery(document).ready(function ($) {
 
 	ArduinoManager.init();
 	ArduinoManager.setReadersCallback( (reader, value) => {
-		if(appState == NORMAL) tetris.updateCard(reader, value);
-		if(appState == REPLAY && replay) replay.checkIn();
+
+		if( value == PLAY_CARD ) {
+			toggleTimer();
+		} else if ( value == VISIBLE_CARD ) {
+			swarm.toggle();
+		} else if(appState == NORMAL){
+			tetris.updateCard(reader, value);
+		} else if(appState == REPLAY && replay) {
+			replay.checkIn();
+		}
+
 	});
 	ArduinoManager.setPlugsCallback( (plug, value) => {
 		
@@ -181,7 +193,7 @@ var update = function(){
 				console.log(">> app.js: timer resumed (15s elapsed)");
 				readyToShowSwarm = true;
 				startTimer();
-			}, 15000);
+			}, 5000);
 
 			clearTimeout(hideSwarmAgainTimeout);
 			hideSwarmAgainTimeout = setTimeout(function(){
@@ -259,7 +271,7 @@ var update = function(){
 			return obj;
 		}, {});
 
-		tetris.updateClaim(+data.claimer, !!data.pluggedIn, +data.card, +data.chargeNeeded, +data.deadline);
+		tetris.updateClaimDebugForm(+data.claimer, !!data.pluggedIn, +data.card, +data.chargeNeeded, +data.deadline);
 	}
 	
 
@@ -351,6 +363,7 @@ var update = function(){
 
 	startTimer();
 	
+
 	function stopTimer(){
 		if( timer ) {
 			console.log("timer stopped");
@@ -363,15 +376,12 @@ var update = function(){
 		if(timer) return;
 		timer = window.setInterval(updateTime, tickDuration);
 	}
+	function toggleTimer(){
+		if( timer ) stopTimer();
+		else startTimer();
+	}
 
-	$('.toggle-timer').click( e => {
-		if(timer) {
-			window.clearInterval(timer);
-			timer = null;
-		} else {
-			startTimer();
-		}
-	});
+	$('.toggle-timer').click( toggleTimer );
 
 	/*
 	DEBUG RELATED THINGS
@@ -389,15 +399,8 @@ var update = function(){
 			console.log('triggered replay check-in', replay);
 			if(replay) replay.checkIn();
 		};
-
-		//TOGGLE PAUSE/PLAY
 		if(event.charCode == 32){
-			if(timer) {
-				window.clearInterval(timer);
-				timer = null;
-			} else {
-				startTimer();
-			}
+			toggleTimer();
 		};
 		if(event.charCode == 111){
 			console.log("nudge left",left);
@@ -411,8 +414,7 @@ var update = function(){
 			$("#tetris_ui").css("transform","translateX("+left+"px)");
 			$("#replay_tetris_ui").css("transform","translateX("+left+"px)");
 		};
-
-		//TOGGLE SWARM
+		// "i" toggles swarm
 		if(event.charCode == 105){
 			// $("#tetris_ui").toggle();
 			swarm.toggle();
