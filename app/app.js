@@ -50,6 +50,9 @@ const cards = {
 	'83':{ name: 'Gift-A-Charge', priority: P_NORMAL, info:['Normal priority', 'Flexible deadline', 'Charge 100 kWh free']}
 };
 
+const VISIBLE_CARD = '90';
+const PLAY_CARD = '91'
+
 const linesPerHour = 8;
 
 function timestampToHour(timestamp){
@@ -78,8 +81,17 @@ jQuery(document).ready(function ($) {
 
 	ArduinoManager.init();
 	ArduinoManager.setReadersCallback( (reader, value) => {
-		if(appState == NORMAL) tetris.updateCard(reader, value);
-		if(appState == REPLAY && replay) replay.checkIn();
+
+		if( value == PLAY_CARD ) {
+			toggleTimer();
+		} else if ( value == VISIBLE_CARD ) {
+			swarm.toggle();
+		} else if(appState == NORMAL){
+			tetris.updateCard(reader, value);
+		} else if(appState == REPLAY && replay) {
+			replay.checkIn();
+		}
+
 	});
 	ArduinoManager.setPlugsCallback( (plug, value) => {
 		
@@ -351,6 +363,7 @@ var update = function(){
 
 	startTimer();
 	
+
 	function stopTimer(){
 		if( timer ) {
 			console.log("timer stopped");
@@ -363,15 +376,12 @@ var update = function(){
 		if(timer) return;
 		timer = window.setInterval(updateTime, tickDuration);
 	}
+	function toggleTimer(){
+		if( timer ) stopTimer();
+		else startTimer();
+	}
 
-	$('.toggle-timer').click( e => {
-		if(timer) {
-			window.clearInterval(timer);
-			timer = null;
-		} else {
-			startTimer();
-		}
-	});
+	$('.toggle-timer').click( toggleTimer );
 
 	/*
 	DEBUG RELATED THINGS
@@ -390,12 +400,7 @@ var update = function(){
 			if(replay) replay.checkIn();
 		};
 		if(event.charCode == 32){
-			if(timer) {
-				window.clearInterval(timer);
-				timer = null;
-			} else {
-				startTimer();
-			}
+			toggleTimer();
 		};
 		if(event.charCode == 111){
 			console.log("nudge left",left);
