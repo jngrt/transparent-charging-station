@@ -18,7 +18,9 @@ let appState = NORMAL;
 
 const greenThreshold = 6; //6 gray energy, 6 green energy
 
-const tickDuration = 10000;
+const tickDuration = 10000;	
+let timer;
+
 // const tickDuration = 2000;
 
 let lightsTimer;
@@ -346,8 +348,7 @@ var update = function(){
 	/*
 	TIMER RELATED THINGS
 	*/
-	
-	let timer;
+
 	startTimer();
 	
 	function stopTimer(){
