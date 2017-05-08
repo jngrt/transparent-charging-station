@@ -259,7 +259,7 @@ class Tetris {
       _totalReceived = _.map(this.claims, c => c.chargeReceived);
     }
     
-     
+    //let lastLine;
     _.each(this.lines, function (_line, _lineNo) {
       if ( _line.t < this.now ) {
         return;
@@ -271,24 +271,11 @@ class Tetris {
       // copy claims which are applicable for this line
       this.copyAndFilterClaims(_line, _totalReceived);
      
-      // TODO for every algo calculate a claim-strength instead of directly to pixels
-      // then use one function to check for leftovers, based on claimstrength
-      // TODO: don't take more than needed: on the last line a claimer will now often claim too much.
-      if( this.algorithm === PRIORITY ) {
-        // Turn priority into pixels
-        this.priorityToPixelsNeeded( _line );
-        // Check for remainders after rounding
-        this.checkLeftoversSimple( _line );
-      } else if ( this.algorithm === STRESS ) {
-        // calculate how much charge is available for each claimer until deadline
-        this.calculateStress( _line, _totalReceived );
-        this.stressToPixelsNeeded( _line );
-        this.checkLeftoversStress( _line );
-      } else if ( this.algorithm === COMBINED ) {
-        this.calculateStress( _line, _totalReceived );
-        this.combinedToPixelsNeeded( _line );
-        this.checkLeftoversStress( _line );
-      }
+      this.calculateStress( _line, _totalReceived );
+      //this.checkClaimSubtotal(_line, lastLine);
+      this.combinedToPixelsNeeded( _line, _totalReceived );
+      this.checkLeftoversStress( _line );
+      
     
       // Keep track of how much charge is received up until this line
       this.updateTotalReceived( _line, _totalReceived, _lineNo === 0  );
@@ -299,12 +286,21 @@ class Tetris {
       // Fill the pixels based on the claims
       this.fillPixels( _line );
       
+     // lastLine = _line;
+
     }, this)
 
     // console.log(this.claims);
     this.update();
 
   }
+  // checkClaimSubtotal( _line, _lastLine ) {
+  //   _.each( _line.claims, claim => {
+  //     let prevClaim = _lastLine? _.find( _lastLine.claims, plc => plc.claimer === claim.claimer):null;
+  //     claim.prevSubtotal = prevClaim? prevClaim.prevSubtotal + prevClaim.pixels : 0;
+      
+  //   });
+  // }
   generateMessages ( _line, _lineNo ) {
     
     let prevLine = _lineNo? this.lines[_lineNo-1] : null;
@@ -401,25 +397,8 @@ class Tetris {
     return _.reduce(this.lines, (t, v, i) => ( i >= _start && i <= _end )? t + v.pixels.length: t, 0);
   }
 
-  priorityToPixelsNeeded(_line) {
-    // Calculate pixels based on priority
-      const _totalPriority = _.reduce(_line.claims, (_tot, _c) => _tot + _c.priority, 0);
 
-      _.each(_line.claims, _claim => {
-        _claim.pixels = Math.round(_claim.priority / _totalPriority * _line.pixels.length);
-      });
-  }
-  stressToPixelsNeeded(_line ) {
-    //TODO: use the priority in the stress calculation
-    //const _totalPriority = _.reduce(_line.claims, (_tot, _c) => _tot + _c.priority, 0);
-
-    const _totalStress =  _.reduce(_line.claims, (_tot, _c) => _tot + _c.stress, 0);
-    _.each(_line.claims, _claim => {
-      _claim.pixels = Math.round(_claim.stress / _totalStress * _line.pixels.length);
-    });
-  }
-
-  combinedToPixelsNeeded(_line){
+  combinedToPixelsNeeded(_line, _totalReceived){
     const _totalPriority = _.reduce(_line.claims, (_tot, _c) => _tot + _c.priority, 0);
     const _totalStress =  _.reduce(_line.claims, (_tot, _c) => _tot + _c.stress, 0);
 
@@ -432,58 +411,26 @@ class Tetris {
           
       //   )
 
+
       //made simplified version.
       _claim.pixels = Math.round(
         (_claim.stress + _claim.priority) / (_totalStress + _totalPriority) * _line.pixels.length
       );
+
+      // Make sure a claimer doesn't take more than needed
+      // before the charge would be divided by line,
+      // now there can also be leftovers and half lines
+      let received = _totalReceived[_claim.claimer];
+      received = received ? received : 0;
+      let needed = _claim.chargeNeeded - received;
+      if( _claim.pixels > needed ) {
+        _claim.pixels = needed;
+        _claim.stress = 0;
+      }
     });
   }
 
-  checkLeftoversSimple( _line ) {
-    
-      // Check if there is discrepancy bc of rounding
-      let pixelsNeeded = this.getPixelsNeeded(_line.claims);
-      let diff = _line.pixels.length - pixelsNeeded;
-      let oldDiff = diff;
-
-      // If more pixels needed than available
-      // (due to rounding) remove low prio pixels
-
-      while (_line.claims.length > 1 && diff < 0) {
-        //subtract from lowest priority;
-        let lowestPrio = _.min(_line.claims, function (c) {
-          return c.priority;
-        }).priority;
-
-        _.each(_line.claims, function (c) {
-          if (diff < 0 && c.priority === lowestPrio) {
-            c.pixels--;
-            diff++;
-          }
-        });
-      }
-
-      // If more pixels available then needed
-      // deal out to highest prio
-      while (_line.claims.length > 1 && diff > 0) {
-        //subtract from lowest priority;
-        let highestPrio = _.min(_line.claims, function (c) {
-          return c.priority;
-        }).priority;
-        _.each(_line.claims, function (c) {
-          if (diff > 0 && c.priority === highestPrio) {
-            c.pixels++;
-            diff--;
-          }
-        });
-      }
-
-      let newDiff = _line.pixels.length - this.getPixelsNeeded(_line.claims);
-
-      if (oldDiff != 0) {
-        // console.log(_line.t + " - needed:" + pixelsNeeded + " avlbl:" + _line.pixels.length + " diff:" + oldDiff + " newDiff:" + newDiff);
-      }
-  }
+  
 
   checkLeftoversStress( _line ) {
     
