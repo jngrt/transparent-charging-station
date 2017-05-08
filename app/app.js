@@ -51,7 +51,7 @@ const cards = {
 };
 
 const VISIBLE_CARD = '90';
-const PLAY_CARD = '91'
+const PLAY_CARD = '89'
 
 const linesPerHour = 8;
 
