@@ -89,5 +89,14 @@ function startListening( portInfo ) {
 				lightsDev = sp;
 			}
 		}
+
+		//if there is no STX symbol clean the whole buffer
+		let stxi = buffer.indexOf(STX);
+		if( !~stxi ) {
+			buffer = '';
+		}
+		
+
+
 	});
 }
