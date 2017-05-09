@@ -241,7 +241,7 @@ var update = function(){
 		})
 
 		//make those lights do cool stuff.
-		updatePlugLights( tetris.getLastLine(-1), tetris.getCurrentChargers() );
+		updatePlugLights( tetris.getLastLine(), tetris.getCurrentChargers() );
 
 
 		var curTime = tetris.increaseTime();

@@ -153,9 +153,11 @@ class Tetris {
     
     _.extend( c, {
       priority: priority,
-      card: card
+      card: card,
+      deadline: this.now + START_DEADLINE,
+      chargeNeeded: START_CHARGE
     })
-
+    
     this.processClaims();
   }
   updatePlugs(claimer, pluggedIn){
@@ -176,8 +178,7 @@ class Tetris {
     } else if( pluggedIn ) {
        c.claimStart = this.now;
        //fix overdue bug, by setting default deadline to now
-       c.deadline = this.now + START_DEADLINE;
-       c.chargeNeeded = START_CHARGE;
+     
       console.log(">>> DETECTED PLUGIN EVENT", claimer, pluggedIn);
       this.onPlugInCallback( claimer );
     }
