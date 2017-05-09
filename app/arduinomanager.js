@@ -56,6 +56,10 @@ function startListening( portInfo ) {
 
 		//console.log(buffer);
 
+		buffer = buffer.replace(/Start read/g, '');
+		buffer = buffer.replace(/End read/g, '');
+
+
 		while( ~buffer.indexOf(STX) && ~buffer.indexOf(ETX)){
 	
 			let stxi = buffer.indexOf(STX);
@@ -94,6 +98,7 @@ function startListening( portInfo ) {
 		let stxi = buffer.indexOf(STX);
 		if( !~stxi ) {
 			buffer = '';
+			//sp.flush();
 		}
 		
 
