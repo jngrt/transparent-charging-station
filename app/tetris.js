@@ -150,13 +150,19 @@ class Tetris {
     let c = this.claims[claimer];
     if(!c) return console.error('Not a valid claimer:' + claimer);
     
-    
-    _.extend( c, {
-      priority: priority,
-      card: card,
-      deadline: this.now + START_DEADLINE,
-      chargeNeeded: START_CHARGE
-    })
+    if( c.card === -1 ) {
+      _.extend( c, {
+        priority: priority,
+        card: card,
+        deadline: this.now + START_DEADLINE,
+        chargeNeeded: START_CHARGE
+      });
+    } else {
+      _.extend( c, {
+        priority: priority,
+        card: card
+      });
+    }
     
     this.processClaims();
   }
@@ -177,6 +183,7 @@ class Tetris {
       this.onUnplugCallback( claimer, replayLines );
     } else if( pluggedIn ) {
        c.claimStart = this.now;
+       c.deadline = this.now;
        //fix overdue bug, by setting default deadline to now
      
       console.log(">>> DETECTED PLUGIN EVENT", claimer, pluggedIn);
