@@ -459,8 +459,7 @@ class Tetris {
       // If more pixels available then needed
       // deal out to highest prio
       while (_line.claims.length > 1 && diff > 0) {
-        //subtract from lowest priority;
-        let highestStress = _.min(_line.claims, function (c) {
+        let highestStress = _.max(_line.claims, function (c) {
           return c.stress;
         }).stress;
         _.each(_line.claims, function (c) {
