@@ -10,6 +10,7 @@ const _ 	 = require('underscore')
 const jQuery = require('jquery')
 const $ 	 = jQuery;
 const ArduinoManager = require('./arduinomanager')
+const {ipcRenderer} = require('electron');
 
 // const [ABSOLUTE_PRIORITY, MEDIUM_PRIORITY, NO_PRIORITY, GREEN_PRIORITY] = [1, 2, 3, 4];
 
@@ -69,9 +70,6 @@ function timestampToHour(timestamp){
 }
 
 
-
-
-
 jQuery(document).ready(function ($) {
 
 	/*
@@ -80,6 +78,14 @@ jQuery(document).ready(function ($) {
 
 
 	ArduinoManager.init();
+
+
+	ipcRenderer.on('app-quit', function () {
+			console.log('on quit');
+			let leds = new Array(36).fill(0);
+			ArduinoManager.setLights(leds);
+	});
+
 	ArduinoManager.setReadersCallback( (reader, value) => {
 
 		if( value == PLAY_CARD ) {
