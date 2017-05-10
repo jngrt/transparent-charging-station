@@ -54,11 +54,25 @@ app.on('ready', createWindow)
 
 // Quit when all windows are closed.
 app.on('window-all-closed', function () {
+
+  mainWindow.webContents.send('app-quit');
+
   // On OS X it is common for applications and their menu bar
   // to stay active until the user quits explicitly with Cmd + Q
   if (process.platform !== 'darwin') {
     app.quit()
   }
+})
+
+
+app.on('before-quit', function(){
+  mainWindow.webContents.send('app-quit');
+});
+
+app.on('quit', function(){
+  mainWindow.webContents.send('app-quit');
+  console.log('quit');
+
 })
 
 app.on('activate', function () {
@@ -67,6 +81,7 @@ app.on('activate', function () {
   if (mainWindow === null) {
     createWindow()
   }
+
 })
 
 // In this file you can include the rest of your app's specific main process
