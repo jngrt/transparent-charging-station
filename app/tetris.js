@@ -340,6 +340,12 @@ class Tetris {
       else if ( claim.claimStart !== _line.t && prevClaim && prevClaim.card !== claim.card ) {
         claim.message = this.cards[prevClaim.card].name + ' switched cards to ' + cName;
       }
+      else if ( prevClaim && claim.chargeNeeded != prevClaim.chargeNeeded ){
+        claim.message = cName + ' changed the requested charge';
+      } 
+      else if ( prevClaim && claim.deadline != prevClaim.deadline ){
+        claim.message = cName + ' changed the deadline';
+      }
     }, this);
   }
   copyAndFilterClaims( _line, _totalReceived ) {
