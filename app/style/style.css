@@ -43,7 +43,7 @@ body{
 
 #tetris_ui, #replay_tetris_ui{
 	position: absolute;
-	left: 263px;
+	left: 265px;
 	top: 80px;	
 	width: 552px;
 	height: 2150px;
@@ -65,7 +65,7 @@ body{
 			background-image: url("../img/bolt.svg");
 			background-position: center center;
 			background-repeat: no-repeat;
-			background-size: 10px;
+			background-size: 8px;
 		}
 
 		.dot0{ background-color: red	}
@@ -73,20 +73,14 @@ body{
 		.dot2{ background-color: blue	}
 
 		.overdue		{ 	animation: pulse .5s infinite alternate;}
-		.dot0.overdue	{ 	animation: pulse .5s infinite alternate;}
-		.dot1.overdue	{ 	animation: pulse .5s infinite alternate;}
-		.dot2.overdue	{ 	animation: pulse .5s infinite alternate;}
 		
-		@keyframes pulse 		{ 0%  {  opacity: 0; } 				100% { opacity: 1; }}
-		@keyframes pulseRed 	{ 80% {  background-color: red;}  	100% { background-color: yellow; }}
-		@keyframes pulseGreen 	{ 80% {  background-color: green;}  100% { background-color: yellow; }}
-		@keyframes pulseBlue	{ 80% {  background-color: blue; } 	100% { background-color: yellow; }}
+		@keyframes pulse { 0%  {  opacity: 0; } 100% { opacity: 1; }}
 		
 		.dot.overdue{
 			background-image: url("../img/sad.svg");
 			background-position: center center;
 			background-repeat: no-repeat;
-			background-size: 30px;
+			background-size: 20px;
 		}
 
 		.timeLabel { 
