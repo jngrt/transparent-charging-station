@@ -62,11 +62,32 @@ body{
 			transition: all 1s;
 			border: 2px solid #999;
 			border-radius: 22.4px;
+			background-image: url("../img/bolt.svg");
+			background-position: center center;
+			background-repeat: no-repeat;
+			background-size: 10px;
 		}
 
 		.dot0{ background-color: red	}
 		.dot1{ background-color: green	}
 		.dot2{ background-color: blue	}
+
+		.overdue		{ 	animation: pulse .5s infinite alternate;}
+		.dot0.overdue	{ 	animation: pulse .5s infinite alternate;}
+		.dot1.overdue	{ 	animation: pulse .5s infinite alternate;}
+		.dot2.overdue	{ 	animation: pulse .5s infinite alternate;}
+		
+		@keyframes pulse 		{ 0%  {  opacity: 0; } 				100% { opacity: 1; }}
+		@keyframes pulseRed 	{ 80% {  background-color: red;}  	100% { background-color: yellow; }}
+		@keyframes pulseGreen 	{ 80% {  background-color: green;}  100% { background-color: yellow; }}
+		@keyframes pulseBlue	{ 80% {  background-color: blue; } 	100% { background-color: yellow; }}
+		
+		.dot.overdue{
+			background-image: url("../img/sad.svg");
+			background-position: center center;
+			background-repeat: no-repeat;
+			background-size: 30px;
+		}
 
 		.timeLabel { 
 			position: absolute;

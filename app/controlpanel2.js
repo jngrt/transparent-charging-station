@@ -12,7 +12,7 @@ var ControlPanel = function(_id, _parent){
 	var lines = [];
 	var claims = [];
 
-	var lastChargeReq = 0;
+	var lastChargeNeeded = 0;
 	var lastDeadlineReq = 0;
 
 	var currentState = 0;
@@ -38,7 +38,8 @@ var ControlPanel = function(_id, _parent){
 			deadlineValue: "12:00",
 			deadlineReqValue: "12:00",
 			chargeValuePerc: 100,
-			chargeReqValue: 0
+			chargeReqValue: 0,
+			hidePersonalInfo: false
 		}
 	}
 	var clearLine = function(){
@@ -55,6 +56,11 @@ var ControlPanel = function(_id, _parent){
 
 		lastLines = lines;
 
+	}
+
+	this.togglePersonalInfo = function(){
+		data.hidePersonalInfo = !(data.hidePersonalInfo);
+		calculate();
 	}
 
 	this.bleep = function(line){
@@ -125,6 +131,8 @@ var ControlPanel = function(_id, _parent){
 			return claim.claimer == id;
 		})
 
+		console.log("Can I proceed to state 3:",lastDeadlineReq, myClaim.deadline, lastChargeNeeded, myClaim.chargeNeeded);
+
 		//console.log("\n\n\n",myClaim,"\n\n\n")
 		currentState = 1;
 		
@@ -145,7 +153,7 @@ var ControlPanel = function(_id, _parent){
 				} else {
 					data.notificationChargedMsg = "";
 				}
-			} else if(lastDeadlineReq == myClaim.deadline && lastChargeReq == myClaim.chargeNeeded){
+			} else if(lastDeadlineReq == myClaim.deadline && lastChargeNeeded == myClaim.chargeNeeded){
 				currentState = STATE_CHARGING;
 			} else {
 				currentState = STATE_CHANGE_PARAMS;
@@ -169,9 +177,12 @@ var ControlPanel = function(_id, _parent){
 		// data.chargeReqValue = myClaim.chargeNeeded;
 		data.chargeReqValue = Math.round(myClaim.chargeNeeded/2);
 
-		lastChargeReq = myClaim.chargeNeeded;
-		lastChargeReq = Math.round(myClaim.chargeNeeded/2);
+		lastChargeNeeded = myClaim.chargeNeeded;
+		// lastChargeNeeded = Math.round(myClaim.chargeNeeded/2);
 		lastDeadlineReq = myClaim.deadline;
+
+		console.log("data overview: for cp"+id,data);
+
 
 		render();		
 		stateChange();

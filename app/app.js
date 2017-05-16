@@ -21,13 +21,11 @@ const greenThreshold = 6; //6 gray energy, 6 green energy
 
 const tickDuration = 10000;	
 let timer;
-
-// const tickDuration = 2000;
-
 let lightsTimer;
 
 
-const [P_LOW, P_NORMAL, P_HIGH, P_TOP] = [1, 10, 100, 1000];
+
+const [P_LOW, P_NORMAL, P_HIGH, P_TOP] = [1, 50, 200, 4000];
 
 const cards = {
   	'65':{ name: 'Community Service', priority:P_HIGH, info:['High priority','Flexible deadline','Outside peak hours']},
@@ -76,7 +74,6 @@ jQuery(document).ready(function ($) {
 	ARDUINO
 	*/
 
-
 	ArduinoManager.init();
 
 
@@ -91,8 +88,7 @@ jQuery(document).ready(function ($) {
 		if( value == PLAY_CARD ) {
 			toggleTimer();
 		} else if ( value == VISIBLE_CARD ) {
-			swarm.toggle();
-			$(".ui-personal-info").toggle();
+			leBigReveal();
 		} else if(appState == NORMAL){
 			tetris.updateCard(reader, value);
 		} else if(appState == REPLAY && replay) {
@@ -161,10 +157,7 @@ jQuery(document).ready(function ($) {
 	var hideSwarmAgainTimeout = void(0);
 	var readyToShowSwarm = true;
 
-
-	// swarm.hide(); 
-
-var update = function(){
+	var update = function(){
 
 		console.log("\n\n\n-------------- CYCLE --------------");
 		
@@ -175,10 +168,11 @@ var update = function(){
 
 		
 		//make the controlpanels bleep
-		_.each(controlPanels, function(cp){
-			//console.log("PUSHING THESE CLAIMS",tetris.claims);
-			cp.update( tetris.claims );
-		})
+		// _.each(controlPanels, function(cp){
+		// 	//console.log("PUSHING THESE CLAIMS",tetris.claims);
+		// 	cp.update( tetris.claims );
+		// })
+		_.invoke(controlPanels, "update", tetris.claims);
 
 		/*
 			Here we would need to detect the a line clear or the result of a parameter update
@@ -192,32 +186,32 @@ var update = function(){
 		} else {
 			console.log(">> app.js: update result of parameter update");
 	
-			console.log(">> app.js: timer is paused");
-			stopTimer();
+			// console.log(">> app.js: timer is paused");
+			// stopTimer();
 
-			clearTimeout(resumeTetrisTimeout);
-			resumeTetrisTimeout = setTimeout(function(){
-				console.log(">> app.js: timer resumed (15s elapsed)");
-				readyToShowSwarm = true;
-				startTimer();
-			}, 5000);
+			// clearTimeout(resumeTetrisTimeout);
+			// resumeTetrisTimeout = setTimeout(function(){
+			// 	console.log(">> app.js: timer resumed (15s elapsed)");
+			// 	readyToShowSwarm = true;
+			// 	startTimer();
+			// }, 5000);
 
-			clearTimeout(hideSwarmAgainTimeout);
-			hideSwarmAgainTimeout = setTimeout(function(){
-				console.log(">> app.js: time to hide the swarm again");
-				$(".ui-personal-info").hide();
-				swarm.hide();
-			},30000);	
+			// clearTimeout(hideSwarmAgainTimeout);
+			// hideSwarmAgainTimeout = setTimeout(function(){
+			// 	console.log(">> app.js: time to hide the swarm again");
+			// 	// $(".ui-personal-info").hide();
+			// 	swarm.hide();
+			// },30000);	
 
-			if(readyToShowSwarm){
-				console.log(">> app.js: hide swarm.");
-				readyToShowSwarm = false;
-				setTimeout(function(){
-					console.log(">> app.js: we can show swarm again");
-					$(".ui-personal-info").show();
-					swarm.show();
-				}, 10000);
-			}
+			// if(readyToShowSwarm){
+			// 	console.log(">> app.js: hide swarm.");
+			// 	readyToShowSwarm = false;
+			// 	setTimeout(function(){
+			// 		console.log(">> app.js: we can show swarm again");
+			// 		// $(".ui-personal-info").show();
+			// 		swarm.show();
+			// 	}, 10000);
+			// }
 		}
 
 		justDidTimeUpdate = false;
@@ -259,6 +253,11 @@ var update = function(){
 
 
 	}
+	var leBigReveal = function(){
+		swarm.toggle();
+		_.invoke(controlPanels, "togglePersonalInfo");
+	}
+
 
 
 	/*
@@ -285,17 +284,11 @@ var update = function(){
 
 		tetris.updateClaimDebugForm(+data.claimer, !!data.pluggedIn, +data.card, +data.chargeNeeded, +data.deadline);
 	}
-	
-
 
 	/*
 	PLUG LEDS
 	*/
 	function updatePlugLights( line, currentChargers ) {
-
-		//we animate for tickDuration...
-		//first step:
-		// 
 
 		let leds = new Array(36).fill(0);
 
@@ -404,7 +397,9 @@ var update = function(){
 	var left = 0;
 
 	$(window).on('keypress', function(event) {
+		
 		console.log(event.charCode);
+		
 		if(event.charCode == 120){
 			$(".debug-ui").toggle();
 		};
@@ -429,8 +424,7 @@ var update = function(){
 		};
 		// "i" toggles swarm
 		if(event.charCode == 105){
-			// $("#tetris_ui").toggle();
-			swarm.toggle();
+			leBigReveal();
 		};
 	});
 	

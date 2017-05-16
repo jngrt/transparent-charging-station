@@ -63,9 +63,7 @@
 				.pixelA{ background-color: red; }
 				.pixelB{ background-color: green; }
 				.pixelC{ background-color: blue; }
-				.overdue{ animation: pulse .5s infinite alternate;}
-
-				@keyframes pulse {0% {  opacity: 0; } 100% { opacity: 1; } }
+				
 
 			
 			.debug {
@@ -114,16 +112,15 @@
 				<input type="hidden" name="claimer" value='0'>
 				<label><input type="checkbox" name="pluggedIn"/>Plugged in</label><br/>
 				<label>Charge needed
-					<input type="range" min="0" max="200" value="0" name="chargeNeeded" class="claim">
+					<input type="range" min="0" max="200" value="80" name="chargeNeeded" class="claim">
 				</label>
 				<label>Deadline
-					<input type="range" min="0" max="48" value='0' name="deadline" class="deadline">
+					<input type="range" min="0" max="48" value='24' name="deadline" class="deadline">
 				</label>
 				<label>Card
 					<select name="card">
 						<option disabled>Card</option>
-						<option disabled>Card</option>
-						<option value="75">DiscountCharge - low priority</option>
+						<option value="75" selected>DiscountCharge - low priority</option>
 						<option value="83">Gift-A-Charge - Normal priority</option>
 						<option value="66">Optimus Platinum - High</option>	
 						<option value="81">Medical Doctor - Top priority</option>
@@ -137,16 +134,16 @@
 				<label><input type="checkbox" name="pluggedIn"/>Plugged in</label><br/>
 
 				<label>Charge needed
-					<input type="range" min="0" max="200" value="0" name="chargeNeeded" class="claim">
+					<input type="range" min="0" max="200" value="80" name="chargeNeeded" class="claim">
 				</label>
 				<label>Deadline
-					<input type="range" min="0" max="48" value='0' name="deadline" class="deadline">
+					<input type="range" min="0" max="48" value='24' name="deadline" class="deadline">
 				</label>
 				<label>Card
 					<select name="card">
 						<option disabled>Card</option>
 						<option value="75">DiscountCharge - low priority</option>
-						<option value="83">Gift-A-Charge - Normal priority</option>
+						<option value="83" selected>Gift-A-Charge - Normal priority</option>
 						<option value="66">Optimus Platinum - High priority</option>
 						<option value="81">Medical Doctor - Top priority</option>
 					</select>
@@ -158,10 +155,10 @@
 				<input type="hidden" name="claimer" value='2'>
 				<label><input type="checkbox" name="pluggedIn"/>Plugged in</label><br/>				
 				<label>Charge needed
-					<input type="range" min="0" max="200" value="0" name="chargeNeeded" class="claim">
+					<input type="range" min="0" max="200" value="80" name="chargeNeeded" class="claim">
 				</label>
 				<label>Deadline
-					<input type="range" min="0" max="48" value='0' name="deadline" class="deadline">
+					<input type="range" min="0" max="48" value='24' name="deadline" class="deadline">
 				</label>
 				<label>Card
 					<select name="card">
@@ -169,7 +166,7 @@
 						<option disabled>Card</option>
 						<option value="75">DiscountCharge - low priority</option>
 						<option value="83">Gift-A-Charge - Normal priority</option>
-						<option value="66">Optimus Platinum - High</option>
+						<option value="66" selected>Optimus Platinum - High</option>
 						<option value="81">Medical Doctor - Top priority</option>
 					</select>
 				</label>
@@ -219,8 +216,10 @@
 			</div>
 			<div class='state state2'>
 				<div class='ui-personal-info'>
-					<span class='ui-personal-plan'><%= rc.chargePlan %></span>
-					<span class='ui-personal-meta'><%= rc.chargePlanMeta %></small>
+					<% if(!rc.hidePersonalInfo){ %>
+						<span class='ui-personal-plan'><%= rc.chargePlan %></span>
+						<span class='ui-personal-meta'><%= rc.chargePlanMeta %></small>
+					<% } %>
 				</div>
 				<% if(rc.notificationMsg != ""){ %> 
 				<div class='ui-notification'>
@@ -238,8 +237,10 @@
 			</div>
 			<div class='state state3'>
 				<div class='ui-personal-info'>
-					<span class='ui-personal-plan'><%= rc.chargePlan %></span>
-					<span class='ui-personal-meta'><%= rc.chargePlanMeta %></small>
+					<% if(!rc.hidePersonalInfo){ %>
+						<span class='ui-personal-plan'><%= rc.chargePlan %></span>
+						<span class='ui-personal-meta'><%= rc.chargePlanMeta %></small>
+					<% } %>
 				</div>
 				<% if(rc.notificationMsg != ""){ %> 
 				<div class='ui-notification'>
@@ -293,8 +294,10 @@
 			</div>
 			<div class='state state2'>
 				<div class='ui-personal-info'>
-					<span class='ui-personal-plan'><%= rc.chargePlan %></span>
-					<span class='ui-personal-meta'><%= rc.chargePlanMeta %></small>
+					<% if(!rc.hidePersonalInfo){ %>
+						<span class='ui-personal-plan'><%= rc.chargePlan %></span>
+						<span class='ui-personal-meta'><%= rc.chargePlanMeta %></span>
+					<% } %>
 				</div>
 				<% if(rc.notificationMsg != ""){ %> 
 				<div class='ui-notification'>
@@ -312,8 +315,10 @@
 			</div>
 			<div class='state state3'>
 				<div class='ui-personal-info'>
-					<span class='ui-personal-plan'><%= rc.chargePlan %></span>
-					<span class='ui-personal-meta'><%= rc.chargePlanMeta %></small>
+					<% if(!rc.hidePersonalInfo){ %>
+						<span class='ui-personal-plan'><%= rc.chargePlan %></span>
+						<span class='ui-personal-meta'><%= rc.chargePlanMeta %></span>
+					<% } %>
 				</div>
 				<% if(rc.notificationMsg != ""){ %> 
 					<div class='ui-progress-deadline ui-progress-notification'>

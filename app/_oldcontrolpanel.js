@@ -28,6 +28,7 @@ var ControlPanel = function(_id, _parent){
 	
 	var throttle = 50;
 	var calculationTimeout;
+	var hidePersonalInfo = false;
 		
 	var setDefaultData = function(){
 		data = {
@@ -56,6 +57,11 @@ var ControlPanel = function(_id, _parent){
 		lastLines = lines;
 
 	}
+	this.togglePersonalInfo = function(){
+		hidePersonalInfo = !(hidePersonalInfo);
+		data.hidePersonalInfo = hidePersonalInfo;
+		render();
+	}
 
 	this.bleep = function(line){
 		// var times = _times + 1; 
@@ -76,6 +82,8 @@ var ControlPanel = function(_id, _parent){
 	}
 	var render = function(){
 		var tmp = _.template(uiTemplate);
+
+
 		el.html(tmp(data));	
 	}
 	var hideStates = function(){

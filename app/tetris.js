@@ -39,8 +39,16 @@ class Tetris {
     this.onUnplugCallback = null;
     this.algorithm = COMBINED;
 
-  
-    _.times( GRID_HEIGHT, this.createLine, this);
+    //create grid with predictable settings
+    _.times(24, function(){
+      this.createLine(undefined, 6, 4);
+    },this);
+    
+    //the rest of the lines can be random.
+    _.times(GRID_HEIGHT - 24, function(){
+      this.createLine();
+    },this);
+
 
     this.claims = _.times(3, n => ({
       claimer: n,
@@ -112,19 +120,24 @@ class Tetris {
 
   }
 
-  createLine (_lineTime) {
+  createLine (_lineTime, _maxWidth, _minWidth) {
     
     if ( _lineTime === void(0)) {
       _lineTime = this.lines.length ? _.last(this.lines).t + 1 : 0;
     }
 
+
+    var maxWidth = _maxWidth || this.maxWidth;
+    var minWidth = _minWidth || this.minWidth;
+    
     //add random variations to width
-    const prev = (this.lines.length > 0) ? _.last(this.lines).pixels.length : _.random(this.minWidth, this.width);
+    const prev = (this.lines.length > 0) ? _.last(this.lines).pixels.length : _.random(minWidth, this.width);
     const variation = Math.round(_.random(-2,2));
+
     
     let lineLength = prev + variation;
-    if(lineLength <= this.minWidth) lineLength = this.minWidth;
-    if(lineLength > this.maxWidth) lineLength = this.maxWidth;
+    if(lineLength <= minWidth) lineLength = minWidth;
+    if(lineLength > maxWidth) lineLength = maxWidth;
        
     // add line
     const line = {
@@ -428,7 +441,7 @@ class Tetris {
 
       //made simplified version.
       _claim.pixels = Math.round(
-        (_claim.stress + _claim.priority) / (_totalStress + _totalPriority) * _line.pixels.length
+        (_claim.stress + 2 * _claim.priority) / (_totalStress + 2 * _totalPriority) * _line.pixels.length
       );
 
       // Make sure a claimer doesn't take more than needed
