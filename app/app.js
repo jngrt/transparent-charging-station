@@ -92,6 +92,7 @@ jQuery(document).ready(function ($) {
 			toggleTimer();
 		} else if ( value == VISIBLE_CARD ) {
 			swarm.toggle();
+			$(".ui-personal-info").toggle();
 		} else if(appState == NORMAL){
 			tetris.updateCard(reader, value);
 		} else if(appState == REPLAY && replay) {
