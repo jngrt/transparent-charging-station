@@ -204,6 +204,7 @@ var update = function(){
 			clearTimeout(hideSwarmAgainTimeout);
 			hideSwarmAgainTimeout = setTimeout(function(){
 				console.log(">> app.js: time to hide the swarm again");
+				$(".ui-personal-info").hide();
 				swarm.hide();
 			},30000);	
 
@@ -212,6 +213,7 @@ var update = function(){
 				readyToShowSwarm = false;
 				setTimeout(function(){
 					console.log(">> app.js: we can show swarm again");
+					$(".ui-personal-info").show();
 					swarm.show();
 				}, 10000);
 			}
