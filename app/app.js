@@ -252,6 +252,9 @@ var update = function(){
 
 		var curTime = tetris.increaseTime();
 		$('.time-display').html( curTime );
+		$('#clock').html( timestampToHour(curTime) );
+
+
 	}
 
 
@@ -368,6 +371,7 @@ var update = function(){
 	*/
 
 	startTimer();
+
 	
 
 	function stopTimer(){

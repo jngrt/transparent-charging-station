@@ -104,7 +104,6 @@
 			</div>
 			<div id="socket-ui">
 			</div>
-			<div id="clock">12:00</div>
 		</div>
 		<div class='debug-input debug-ui'>
 			<button class="toggle-timer">Timer</button>
@@ -316,19 +315,17 @@
 					<span class='ui-personal-meta'><%= rc.chargePlanMeta %></small>
 				</div>
 				<% if(rc.notificationMsg != ""){ %> 
-					<div class='ui-progress-deadline ui-progress-notification'>
-						<div class='ui-progress-deadline-value'><%= rc.deadlineValue %></div>
-						<div class='ui-progress-deadline-label'><%= rc.deadlineReqValue %></div>	
-					</div>
-				<% } else {%>
-					<div class='ui-progress-deadline'>
-						<div class='ui-progress-deadline-value'><%= rc.deadlineValue %></div>
-						<div class='ui-progress-deadline-label'><%= rc.deadlineReqValue %></div>	
-					</div>
-				<% } %>			
+				<div class='ui-notification'>
+					<%= rc.notificationMsg %>
+				</div>
+				<% } %>
+				<div class='ui-progress-deadline'>
+					<div class='ui-progress-deadline-value'><%= rc.deadlineValue %></div>
+					<div class='ui-progress-deadline-label'><%= rc.deadlineReqValue %></div>	
+				</div>
 				<div class='ui-progress-charge'>
-					<span class='ui-progress-charge-value'><%= rc.chargeValuePerc %></span>
-					<span class='ui-progress-charge-label'><%= rc.chargeReqValue %></span>				
+					<div class='ui-progress-charge-value'><%= rc.chargeValuePerc %></div>
+					<div class='ui-progress-charge-label'><%= rc.chargeReqValue %></div>				
 				</div>
 			</div>
 			<div class='state state4'>

@@ -33,7 +33,7 @@ var ControlPanel = function(_id, _parent){
 		data = {
 			chargePlan: "No Plan Selected",
 			chargePlanMeta: "-",
-			notificationMsg: "No Warnings",
+			notificationMsg: "User cannot charge before deadline.",
 			notificationChargedMsg: "No Warnings",
 			deadlineValue: "12:00",
 			deadlineReqValue: "12:00",

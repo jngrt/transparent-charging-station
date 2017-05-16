@@ -4,8 +4,8 @@ body{
 #ui{
 	position: absolute;
 	right: 0px;
-	/*top: -1600px;*/
-	top: 0px;
+	top: -1600px;
+	/*top: 0px;*/
 	width: 1080px;
 	height: 2560px;
 	/*background-color: black;*/
@@ -13,24 +13,8 @@ body{
 	overflow: hidden;
 	/*transform: scale(.40);*/
 	/*transform-origin: top right; */
-	cursor: none;
+	/*cursor: none;*/
 
-}
-#clock{
-	position: absolute;
-	left: 80px;
-	top: 2185px;
-	width: 138px;
-	height: 44.8px;
-	border-radius: 22.4px;
-	line-height: 32.8px;
-	background-color: white;
-	text-align: center;
-	font-weight: 800;
-	font-size: 18px;
-	background-color: black;
-	color: white;
-	border: 6px solid black;
 }
 
 .state {
@@ -109,7 +93,6 @@ body{
 	.dead{
 		border-color: red;
 	}
-
 #replay-ui{
 	position: absolute;
 	left: 0px;
@@ -335,7 +318,7 @@ body{
 			background: linear-gradient(to bottom, rgba(0,0,255,.4) 0%,rgba(0,0,255,0) 25%);
 		}
 		.ui-panel div{
-			/*border: 1px solid red;*/
+			border: 1px solid red;
 		}
 		.ui-panel h1{
 			font-weight: 600;
@@ -409,16 +392,12 @@ body{
 				font-size: 56px;
 				text-align: center;
 				font-weight: 100;
-				/*font-size: 72px;*/
 			}
 				.ui-deadline-value:after{
 					content: " h";
 					font-size: 18px;
 					font-weight: 600;
 				}
-			 .ui-charge-value{
-			 	/*font-size: 24px;*/
-			 }
 				.ui-charge-value:after{
 					content: " kWh";
 					font-size: 18px;
@@ -436,7 +415,6 @@ body{
 				font-weight: 600;
 				text-align: center;
 			}
-	
 	.ui-personal-info{
 		position: absolute;
 		padding: 20px;
@@ -452,7 +430,6 @@ body{
 			font-size: 12px;
 
 		}
-	
 	.ui-notification{
 		position: absolute;
 		left: 0px;
@@ -478,69 +455,40 @@ body{
 			margin: 0 10px;
 		}
 
-	.ui-progress-deadline{
-		width: 100%;
-		height: 115px;
+	
+	.ui-progress-deadline, .ui-progress-charge{
+		width: 176px;
+		height: 120px;
 		position: absolute;
 		left: 0;
-		top: 85px;
-		text-align: center;
-		border-top: 1px solid rgba(255,255,255,.2);
+		top: 150px;
+		border-right: 1px solid rgba(255,255,255,.2);
 	}
-
-	 .ui-progress-charge{
-		width: 100%;
-		height: 70px;
-		position: absolute;
-		top: 200px;
-		left: 0px;
-		border-right: none;
-		border-top: 1px solid rgba(255,255,255,.2);
-
-	}
-		.ui-progress-deadline-value{
-			position: absolute;
-			left: 20px;
-			top: 5px;
-			font-size: 90px;
-			line-height: 120px;
-			height: 100px;
-			font-weight: 100;
-			text-align: left;
-
+		.ui-progress-charge{
+			right: 0;
+			left: 176px;
+			border-right: none;
 		}
-		.ui-progress-charge-value{
+		.ui-progress-deadline-value, .ui-progress-charge-value{
 			position: absolute;
 			left: 0px;
-			top: 5px;
-			width: 100%;
+			top: 0px;
+			width: 176px;
+			font-size: 50px;
 			line-height: 60px;
-			height: 60px;
+			height: 135px;
 			font-weight: 100;
-			font-size: 42px;
 		}
-			.ui-progress-deadline-value:before{
-				position: absolute;
-				left: 0px;
-				top: 0px;
-				text-align: left;
+			.ui-progress-deadline-value:before, .ui-progress-charge-value:before{
 				font-size: 12px;
-				line-height: 20px;
+				line-height: 12px;
 				font-weight: 600;
+				width: 178px;
 				display: block;
-			}
-
-			.ui-progress-charge-value:before{
-				position: absolute;
-				left: 20px;
-				top: 0px;
-				font-size: 12px;
-				line-height: 20px;
-				font-weight: 600;
-				text-align: left;
+				padding: 10px 0 5px;
 			}
 			.ui-progress-deadline-value:before{
-				content: "expected to be charged";
+				content: "finished";
 			}
 			.ui-progress-charge-value:before{
 				content: "currently charged";
@@ -550,28 +498,19 @@ body{
 				font-size: 18px;
 				font-weight: 600;
 			}
-		.ui-progress-deadline-label{
+		.ui-progress-deadline-label, .ui-progress-charge-label{
 			position: absolute;
-			right: 20px;
+			left: 0px;
 			bottom: 10px;
-			width: 100px;
+			width: 176px;
 			font-size: 18px;
 			font-weight: 600;
-			text-align: right;
-		}
-		.ui-progress-charge-label{
-			position: absolute;
-			right: 20px;
-			bottom: 15px;
-			line-height: 20px;
-			font-weight: 600;
+			text-align: center;
+
 		}
 			.ui-progress-deadline-label:before{
 				font-weight: 200;
-				content: "deadline";
-				clear: both;
-				float: right;
-				line-height: 20px;
+				content: "deadline ";
 			}
 			.ui-progress-charge-label:before{
 				font-weight: 200;
@@ -580,29 +519,6 @@ body{
 			.ui-progress-charge-label:after{
 				font-weight: 200;
 				content: " kWh";
-			}
-
-		.ui-progress-notification{
-			background-color: yellow;
-			color: black;
-			text-shadow: none;
-		}
-			.ui-progress-notification .ui-progress-deadline-label:before{
-			}
-			.ui-progress-notification .ui-progress-deadline-value:before{
-				content: "⚠ User cannot charge before deadline";
-				text-align: center;
-				font-size: 14px;
-				display: block;
-				width: 332px;
-				animation-name: blink;
-			    animation-duration: .5s;
-			    animation-direction: alternate;
-			    animation-iteration-count: infinite;
-			}
-			@keyframes blink{
-				0% {color: red},
-				100% {color: black}
 			}
 	.ui-charged{
 		position: absolute;
