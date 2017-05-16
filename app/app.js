@@ -98,14 +98,12 @@ jQuery(document).ready(function ($) {
 	});
 	ArduinoManager.setPlugsCallback( (plug, value) => {
 		
-		tetris.updatePlugs(plug, !!value);
-		
+		tetris.updatePlugs(plug, !!value);	
 	
 	});
 	ArduinoManager.setEncodersCallback( (encoder, value) => {
 
 		tetris.updateParameters(encoder, value);
-
 
 	});
 
@@ -163,15 +161,7 @@ jQuery(document).ready(function ($) {
 		
 		if(appState == REPLAY) return;
 		
-		//update Swarm
 		swarm.update(tetris.getCurrentGrid());
-
-		
-		//make the controlpanels bleep
-		// _.each(controlPanels, function(cp){
-		// 	//console.log("PUSHING THESE CLAIMS",tetris.claims);
-		// 	cp.update( tetris.claims );
-		// })
 		_.invoke(controlPanels, "update", tetris.claims);
 
 		/*
@@ -179,42 +169,14 @@ jQuery(document).ready(function ($) {
 
 		*/
 
+		// if(justDidTimeUpdate == true){
+		// 	console.log(">> app.js: update result of time update");
 
-		if(justDidTimeUpdate == true){
-			console.log(">> app.js: update result of time update");
+		// } else {
+		// 	console.log(">> app.js: update result of parameter update");
+		// }
 
-		} else {
-			console.log(">> app.js: update result of parameter update");
-	
-			// console.log(">> app.js: timer is paused");
-			// stopTimer();
-
-			// clearTimeout(resumeTetrisTimeout);
-			// resumeTetrisTimeout = setTimeout(function(){
-			// 	console.log(">> app.js: timer resumed (15s elapsed)");
-			// 	readyToShowSwarm = true;
-			// 	startTimer();
-			// }, 5000);
-
-			// clearTimeout(hideSwarmAgainTimeout);
-			// hideSwarmAgainTimeout = setTimeout(function(){
-			// 	console.log(">> app.js: time to hide the swarm again");
-			// 	// $(".ui-personal-info").hide();
-			// 	swarm.hide();
-			// },30000);	
-
-			// if(readyToShowSwarm){
-			// 	console.log(">> app.js: hide swarm.");
-			// 	readyToShowSwarm = false;
-			// 	setTimeout(function(){
-			// 		console.log(">> app.js: we can show swarm again");
-			// 		// $(".ui-personal-info").show();
-			// 		swarm.show();
-			// 	}, 10000);
-			// }
-		}
-
-		justDidTimeUpdate = false;
+		// justDidTimeUpdate = false;
 	}
 
 	tetris.onUpdate(update);
