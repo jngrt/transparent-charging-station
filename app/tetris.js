@@ -20,8 +20,8 @@ const claimers = ['A', 'B', 'C'];
 
 const _maxStress = 50;
 
-const START_CHARGE = 100;
-const START_DEADLINE = 16; // 3 hours, 8 lines per hour
+const START_CHARGE = 80;
+const START_DEADLINE = 24; // 3 hours, 8 lines per hour
 
 class Tetris {
 
