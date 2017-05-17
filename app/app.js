@@ -86,7 +86,9 @@ jQuery(document).ready(function ($) {
 
 	ArduinoManager.setReadersCallback( (reader, value) => {
 
-		if( value === RESET_CARD ) {
+		if( value == RESET_CARD ) {
+			let leds = new Array(36).fill(0);
+			ArduinoManager.setLights(leds);
 			window.location.reload();
 		} else if( value == PLAY_CARD ) {
 			toggleTimer();
