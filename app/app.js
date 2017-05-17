@@ -50,7 +50,8 @@ const cards = {
 };
 
 const VISIBLE_CARD = '90';
-const PLAY_CARD = '89'
+const PLAY_CARD = '89';
+const RESET_CARD = '88';
 
 const linesPerHour = 8;
 
@@ -85,7 +86,9 @@ jQuery(document).ready(function ($) {
 
 	ArduinoManager.setReadersCallback( (reader, value) => {
 
-		if( value == PLAY_CARD ) {
+		if( value === RESET_CARD ) {
+			window.location.reload();
+		} else if( value == PLAY_CARD ) {
 			toggleTimer();
 		} else if ( value == VISIBLE_CARD ) {
 			leBigReveal();
