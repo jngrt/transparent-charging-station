@@ -40,12 +40,12 @@ class Tetris {
     this.algorithm = COMBINED;
 
     //create grid with predictable settings
-    _.times(24, function(){
+    _.times(32, function(){
       this.createLine(undefined, 6, 4);
     },this);
     
     //the rest of the lines can be random.
-    _.times(GRID_HEIGHT - 24, function(){
+    _.times(GRID_HEIGHT - 32, function(){
       this.createLine();
     },this);
 

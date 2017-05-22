@@ -339,6 +339,7 @@ jQuery(document).ready(function ($) {
 
 	function stopTimer(){
 		if( timer ) {
+			$("#clock").css("background-color","black").css("border-color","black");
 			console.log("timer stopped");
 			window.clearInterval(timer);
 			timer = void(0);	
@@ -347,6 +348,7 @@ jQuery(document).ready(function ($) {
 	function startTimer(){
 		console.log("triggered timer start", timer);
 		if(timer) return;
+		$("#clock").css("background-color","green").css("border-color","green");
 		timer = window.setInterval(updateTime, tickDuration);
 	}
 	function toggleTimer(){
