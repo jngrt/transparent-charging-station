@@ -1,8 +1,5 @@
-const electron = require('electron')
-// Module to control application life.
-const app = electron.app
-// Module to create native browser window.
-const BrowserWindow = electron.BrowserWindow
+
+const {app, globalShortcut, BrowserWindow} = require('electron');
 
 const path = require('path')
 const url = require('url')
@@ -43,6 +40,14 @@ function createWindow () {
     // when you should delete the corresponding element.
     mainWindow = null
   })
+
+  globalShortcut.register('T', () => {
+
+    mainWindow.webContents.toggleDevTools();
+
+  })
+
+
 }
 
 
@@ -77,6 +82,8 @@ app.on('activate', function () {
   }
 
 })
+
+
 
 app.commandLine.appendSwitch('remote-debugging-port', '8315');
 app.commandLine.appendSwitch('host-rules', 'MAP * 127.0.0.1');
