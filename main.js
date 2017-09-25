@@ -19,8 +19,8 @@ let mainWindow
 function createWindow () {
   // Create the browser window.
   mainWindow = new BrowserWindow({
-    width: 800, 
-    height: 1000, 
+    width: 800,
+    height: 1000,
     // kiosk:true,
     autoHideMenuBar:true
   });
@@ -77,6 +77,9 @@ app.on('activate', function () {
   }
 
 })
+
+app.commandLine.appendSwitch('remote-debugging-port', '8315');
+app.commandLine.appendSwitch('host-rules', 'MAP * 127.0.0.1');
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
